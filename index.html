@@ -27,8 +27,8 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto my-2 my-lg-0">
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#about">About</a></li>
-            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#skillsets">Skills</a></li>
-            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#portfolio">Portfolio</a></li>
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#projects">Projects</a></li>
+	    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#skillsets">Skills</a></li>
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#contact">Contact</a></li>
           </ul>
         </div>
@@ -36,7 +36,7 @@
     </nav>
     <!-- Masthead-->
     <header class="masthead">
-      <div class="container h-100">
+      <div class="container h-100" id="about">
         <div class="row h-100 align-items-center justify-content-center text-center">
           <div class="col-lg-10 align-self-end">
 	    <img src="assets/img/head.png" height=200px class="img-responsive rounded-circle">
@@ -45,237 +45,296 @@
           </div>
           <div class="col-lg-8 align-self-baseline">
             <p class="text-white-75 font-weight-light mb-5">Experienced nonprofit professional with proven ability to build collaborative teams and engage stakeholders.<br><br>Available to support full stack web development.</p>
-            <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">See what I can do for you.</a>
+            <a class="btn btn-primary btn-xl js-scroll-trigger" href="#projects">See more.</a>
           </div>
         </div>
       </div>
     </header>
-    <!-- About
-         <section class="page-section bg-primary" id="about">
-           <div class="container">
-             <div class="row justify-content-center">
-               <div class="col-lg-8 text-center">
-                 <h2 class="text-white mt-0">We've got what you need!</h2>
-                 <hr class="divider light my-4" />
-                 <p class="text-white-50 mb-4">Start Bootstrap has everything you need to get your new website up and running in no time! Choose one of our open source, free to download, and easy to use themes! No strings attached!</p>
-                 <a class="btn btn-light btn-xl js-scroll-trigger" href="#skillsets">Get Started!</a>
-               </div>
-             </div>
-           </div>
-         </section> -->
-         <!-- Skillsets-->
-         <section class="page-section" id="skillsets">
-           <div class="container">
-	     <!--             <h2 class="text-center mt-0">Skillsets</h2> -->
-	     <h2 class="text-center mt-0">Development</h2>
-             <hr class="divider my-4" />
-	     <div class="row">
-               <div class="col-lg-6 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/python.png" height=70px><br>
-                   <h3 class="h4 mb-2">Python</h3>
-                   <p class="text-muted mb-0">My core development language.</p>
-                 </div>
-               </div>
-	       <div class="col-lg-6 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/github2.png" height=70px><br>
-                   <h3 class="h4 mb-2">GitHub</h3>
-                   <p class="text-muted mb-0">Collaboration and version control.</p>
-                 </div>
-               </div>
-	     </div><br><br>
-	     <h2 class="text-center mt-0">Front-End</h2>
-	     <hr class="divider my-4" />
-             <div class="row">
-	       <div class="col-lg-3 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/bootstrap.png" height=70px><br>
-                   <h3 class="h4 mb-2">Bootstrap</h3>
-                   <p class="text-muted mb-0">HTML, CSS & Javascript libraries for mobile-ready, responsive web applications.</p>
-                 </div>
-               </div>
-	       <div class="col-lg-3 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/html5.png" height=70px><br>
-                   <h3 class="h4 mb-2">HTML</h3>
-                   <p class="text-muted mb-0"></p>
-                 </div>
-               </div>
-               <div class="col-lg-3 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/css.jpg" height=70x><br>
-		   <h3 class='h4 mb-2'>CSS</h3>
-                   <p class="text-muted mb-0"></p>
-                 </div>
-               </div>
-	       <div class="col-lg-3 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/js.png" height=70px><br>
-                   <h3 class="h4 mb-2">Javascript</h3>
-                   <p class="text-muted mb-0">I'm newer to Javascript and excited about its power.</p>
-                 </div>
-               </div>  
-             </div>
-	     <h2 class="text-center mt-0">Back-End</h2>
-	     <hr class="divider my-4" />
-	     <div class="row">
-               <div class="col-lg-4 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/flask.png" height=70x><br>
-		   <h3 class="h4 mb-2">Flask</h3>
-                   <p class="text-muted mb-0">Full-stack, functional web application microframework.</p>
-                 </div>
-               </div>
-	       <div class="col-lg-4 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/jinja2.png" height=70x><br>
-		   <h3 class='h4 mb-2'>Jinja2</h3>
-                   <p class="text-muted mb-0">Agile template rendering.</p>
-                 </div>
-	       </div>
-	       <div class="col-lg-4 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/sqlite.png" height=70x><br>
-		   <h3 class='h4 mb-2'>SQLite</h3>
-                   <p class="text-muted mb-0">Lightweight SQL database implementation.</p>
-                 </div>
-	       </div>
-             </div>
-	     <br><br>
-	     <h2 class="text-center mt-0">Deployment</h2>
-	     <hr class="divider my-4" />
-             <div class="row">
-	       <div class="col-lg-4 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/ec2.svg" height=70px><br>
-                   <h3 class="h4 mb-2">Amazon Web Service</h3>
-                   <p class="text-muted mb-0"></p>
-                 </div>
-               </div>
-	       <div class="col-lg-4 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/heroku.png" height=70px><br>
-                   <h3 class="h4 mb-2">Heroku</h3>
-                   <p class="text-muted mb-0"></p>
-                 </div>
-               </div>
-               <div class="col-lg-4 col-md-6 text-center">
-                 <div class="mt-5">
-		   <img src="assets/img/gcloud.png" height=70x><br>
-		   <h3 class='h4 mb-2'>GCloud</h3>
-                   <p class="text-muted mb-0"></p>
-                 </div>
-               </div>
-             </div>
-           </div>
-         </section>
-         <!-- Portfolio-->
-         <div id="portfolio">
-           <div class="container-fluid">
-	     <h2 class="text-center mt-0">Projects</h2>
-	     <hr class="divider my-4" />
-             <div class="row no-gutters">
-	       <div class='col-lg-4 col-sm-6'></div>
-               <div class="col-lg-4 col-sm-6">
-                 <a class="portfolio-box" href="assets/img/portfolio/fullsize/QIJC_voting.png">
-                   <img class="img-fluid" src="assets/img/portfolio/fullsize/QIJC_voting.png" alt="" />
-                   <div class="portfolio-box-caption">
-                     <div class="project-category text-white-50">Web Applications</div>
-                     <div class="project-name">Quantum Information Journal Club</div>
-                   </div>
-                 </a>
-               </div>
-	       <div class='col-lg-4 col-sm-6'></div>
-	       <!---
-               <div class="col-lg-4 col-sm-6">
-                 <a class="portfolio-box" href="assets/img/portfolio/fullsize/2.jpg">
-                   <img class="img-fluid" src="assets/img/portfolio/thumbnails/2.jpg" alt="" />
-                   <div class="portfolio-box-caption">
-                     <div class="project-category text-white-50">Category</div>
-                     <div class="project-name">Project Name</div>
-                   </div>
-                 </a>
-               </div>
-               <div class="col-lg-4 col-sm-6">
-                 <a class="portfolio-box" href="assets/img/portfolio/fullsize/3.jpg">
-                   <img class="img-fluid" src="assets/img/portfolio/thumbnails/3.jpg" alt="" />
-                   <div class="portfolio-box-caption">
-                     <div class="project-category text-white-50">Category</div>
-                     <div class="project-name">Project Name</div>
-                   </div>
-                 </a>
-               </div>
-               <div class="col-lg-4 col-sm-6">
-                 <a class="portfolio-box" href="assets/img/portfolio/fullsize/4.jpg">
-                   <img class="img-fluid" src="assets/img/portfolio/thumbnails/4.jpg" alt="" />
-                   <div class="portfolio-box-caption">
-                     <div class="project-category text-white-50">Category</div>
-                     <div class="project-name">Project Name</div>
-                   </div>
-                 </a>
-               </div>
-               <div class="col-lg-4 col-sm-6">
-                 <a class="portfolio-box" href="assets/img/portfolio/fullsize/5.jpg">
-                   <img class="img-fluid" src="assets/img/portfolio/thumbnails/5.jpg" alt="" />
-                   <div class="portfolio-box-caption">
-                     <div class="project-category text-white-50">Category</div>
-                     <div class="project-name">Project Name</div>
-                   </div>
-                 </a>
-               </div>
-               <div class="col-lg-4 col-sm-6">
-                 <a class="portfolio-box" href="assets/img/portfolio/fullsize/6.jpg">
-                   <img class="img-fluid" src="assets/img/portfolio/thumbnails/6.jpg" alt="" />
-                   <div class="portfolio-box-caption p-3">
-                     <div class="project-category text-white-50">Category</div>
-                     <div class="project-name">Project Name</div>
-                   </div>
-                 </a>
-               </div>--->
-             </div>
-           </div>
-         </div>
-         <!-- Call to action
-              <section class="page-section bg-dark text-white">
-		<div class="container text-center">
-                  <h2 class="mb-4">Free Download at Start Bootstrap!</h2>
-                  <a class="btn btn-light btn-xl" href="https://startbootstrap.com/themes/creative/">Download Now!</a>
+
+    <!-- Portfolio Section-->
+    <section class="page-section portfolio" id="projects">
+      <div class="container">
+        <!-- Portfolio Section Heading-->
+        <h2 class="text-center mt-0">Recent Projects</h2>
+	<hr class="divider my-4" />
+        <!-- Portfolio Grid Items-->
+        <div class="row no-gutters">
+          <!-- Portfolio Item 1-->
+	  <div class="col-md-3"></div>
+	  <!--	  <div class="col mb-5"> -->
+            <div class="col-md-6 col-lg-6 mb-5">
+              <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal1">
+		<div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                  <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
 		</div>
-              </section>
-              <!-- Contact -->
-              <section class="page-section" id="contact">
-		<div class="container">
-                  <div class="row justify-content-center">
-                    <div class="col-lg-8 text-center">
-                      <h2 class="mt-0">Contact</h2>
-                      <hr class="divider my-4" />
-                      <p class="text-muted mb-5">Ready for me to join your team? Reach out!</p>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-4 ml-auto text-center mb-5 mb-lg-0">
-                      <i class="fas fa-phone fa-3x mb-3 text-muted"></i>
-                      <div>(858) 692-1514</div>
-                    </div>
-                    <div class="col-lg-4 mr-auto text-center">
-                      <i class="fas fa-envelope fa-3x mb-3 text-muted"></i>
-                      <a class="d-block" href="mailto:austinweisgrau@gmail.com">austinweisgrau@gmail.com</a>
-                    </div>
-                  </div>
+		<img class="img-fluid" src="assets/img/qijc_icon_burned.jpg" alt="" />
+		<div class='text-center'><h4>Journal Club</h4></div>
+              </div>
+            </div>
+	    <div class="col-md-3"></div>
+            <!-- Portfolio Item 2-->
+	    <!--<div class="col mb-5">-->
+	      <!--
+	      <div class="col-md-6 col-lg-6 mb-5">
+		<div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal2">
+		  <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                    <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+		  </div>
+		  <img class="img-fluid" src="assets/img/exptrkr_icon_burned.jpg" alt="" />
+		  <div class='text-center'><h4>Expense Tracker</h4></div>
 		</div>
-              </section>
-              <!-- Footer-->
-              <footer class="bg-light py-5">
-		<div class="container"><div class="small text-center text-muted"></div></div>
-              </footer>
-              <!-- Bootstrap core JS-->
-              <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-              <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
-              <!-- Third party plugin JS-->
-              <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-              <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
-              <!-- Core theme JS-->
-              <script src="js/scripts.js"></script>
+              </div> -->
+            </div>
+	  </div>
+    </section>
+    <!-- Portfolio Modals-->
+    <!-- Portfolio Modal 1-->
+    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-labelledby="portfolioModal1Label" aria-hidden="true">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"><i class="fas fa-times"></i></span>
+          </button>
+          <div class="modal-body">
+            <div class="container">
+              <div class="row justify-content-center">
+                <div class="col-lg-8">
+                  <!-- Portfolio Modal - Title-->
+                  <h2 class="text-center mt-0" id="portfolioModal1Label">Quantum Information Journal Club</h2>
+		  <hr class="divider my-4" />
+		  <!-- Heroku & Github Icon/Links -->
+		  <div class="container">
+		    <div class="row">
+		      <div class="col-sm-3"></div>
+		      <div class="col-sm-3 text-center">
+			<div class="mt-5">
+			  <a href="http://github.com/aradox66/QIJC" target="_blank">
+			    <img src="assets/img/github2.png" height=50px><br>
+			    <p>Github Repository</p>
+			  </a>
+			</div>
+		      </div>
+		      <div class="col-sm-3 text-center">
+			<div class="mt-5">
+			  <a href="http://qijcmockup.herokuapp.com" target="_blank">
+			    <img src="assets/img/heroku.png" height=50px><br>
+			    <p>Heroku Mockup</p>
+			  </a>
+			</div>
+		      </div>
+		      <div class="col-sm-3"></div>
+		    </div>
+		  </div>
+                  <!-- Portfolio Modal - Image-->
+                  <img class="img-fluid rounded mb-5" src="assets/img/portfolio/fullsize/QIJC_voting.png" alt="" />
+                  <!-- Portfolio Modal - Text-->
+		  <p class="mb-5">This web application serves a journal club run by a physics lab. The platform facilitates user submission of papers for group review, evaluation, and searchable archiving.</p>
+		  <h5>QIJC is a responsive flask application written with Flask libraries:</h5>
+		  <ul>
+		    <li>User authentication with Flask-Login</li>
+		    <li>WTForms with Flask-WTF</li>
+		    <li>Bootstrap with Flask-Bootstrap</li>
+		    <li>Blueprints with Flask-Blueprint</li>
+		    <li>SQLite with Flask-SQLAlchemy</li>
+		    <li>Outgoing mail service with Flask-Mail</li>
+		    <li>Sessions with Flask-Session</li>
+		    <li>Views rendered with HTML, CSS, Bootstrap &amp; Jinja2</li>
+		  </ul>
+		  <br>
+		  <div class="text-center">
+                    <button class="btn btn-primary text-center" data-dismiss="modal">
+                      <i class="fas fa-times fa-fw"></i>
+                      Close Window
+                    </button>
+		  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Portfolio Modal 2-->
+    <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-labelledby="portfolioModal2Label" aria-hidden="true">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"><i class="fas fa-times"></i></span>
+          </button>
+          <div class="modal-body text-center">
+            <div class="container">
+              <div class="row justify-content-center">
+                <div class="col-lg-8">
+                  <!-- Portfolio Modal - Title-->
+                  <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0" id="portfolioModal2Label">Tasty Cake</h2>
+                  <!-- Icon Divider-->
+                  <div class="divider-custom">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                  </div>
+                  <!-- Portfolio Modal - Image-->
+                  <img class="img-fluid rounded mb-5" src="assets/img/portfolio/cake.png" alt="" />
+                  <!-- Portfolio Modal - Text-->
+                  <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                  <button class="btn btn-primary" data-dismiss="modal">
+                    <i class="fas fa-times fa-fw"></i>
+                    Close Window
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Skillsets-->
+    <section class="page-section skills" id="skillsets">
+      <div class="container">
+	<h1 class="text-center mt-0">Skillsets</h1><br><br>
+	<h3 class="text-center mt-0">Development</h3>
+	<hr class="divider my-4" />
+	<div class="row">
+	  <div class="col-lg-6 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/python.png" height=70px><br>
+	      <h4 class="h4 mb-2">Python</h4>
+	      <p class="text-muted mb-0">My core development language.</p>
+	    </div>
+	  </div>
+	  <div class="col-lg-6 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/github2.png" height=70px><br>
+	      <h4 class="h4 mb-2">GitHub</h4>
+	      <p class="text-muted mb-0">Collaboration and version control.</p>
+	    </div>
+	  </div>
+	</div><br><br>
+	<h3 class="text-center mt-0">Front-End</h3>
+	<hr class="divider my-4" />
+	<div class="row">
+	  <div class="col-lg-3 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/bootstrap.png" height=70px><br>
+	      <h3 class="h4 mb-2">Bootstrap</h3>
+	      <p class="text-muted mb-0">HTML, CSS & Javascript libraries for mobile-ready, responsive web applications.</p>
+	    </div>
+	  </div>
+	  <div class="col-lg-3 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/html5.png" height=70px><br>
+	      <h3 class="h4 mb-2">HTML</h3>
+	      <p class="text-muted mb-0"></p>
+	    </div>
+	  </div>
+	  <div class="col-lg-3 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/css.png" height=70x><br>
+	      <h3 class='h4 mb-2'>CSS</h3>
+	      <p class="text-muted mb-0"></p>
+	    </div>
+	  </div>
+	  <div class="col-lg-3 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/js.png" height=70px><br>
+	      <h3 class="h4 mb-2">Javascript</h3>
+	      <p class="text-muted mb-0">I'm newer to Javascript and excited about its power.</p>
+	    </div>
+	  </div>  
+	</div>
+	<h3 class="text-center mt-0">Back-End</h3>
+	<hr class="divider my-4" />
+	<div class="row">
+	  <div class="col-lg-4 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/flask.png" height=70x><br>
+	      <h3 class="h4 mb-2">Flask</h3>
+	      <p class="text-muted mb-0">Full-stack, functional web application microframework.</p>
+	    </div>
+	  </div>
+	  <div class="col-lg-4 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/jinja2.png" height=70x><br>
+	      <h3 class='h4 mb-2'>Jinja2</h3>
+	      <p class="text-muted mb-0">Agile template rendering.</p>
+	    </div>
+	  </div>
+	  <div class="col-lg-4 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/sqlite.png" height=70x><br>
+	      <h3 class='h4 mb-2'>SQLite</h3>
+	      <p class="text-muted mb-0">Lightweight SQL database implementation.</p>
+	    </div>
+	  </div>
+	</div>
+	<br><br>
+	<h3 class="text-center mt-0">Deployment</h3>
+	<hr class="divider my-4" />
+	<div class="row">
+	  <div class="col-lg-4 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/ec2.svg" height=70px><br>
+	      <h3 class="h4 mb-2">Amazon Web Service</h3>
+	      <p class="text-muted mb-0"></p>
+	    </div>
+	  </div>
+	  <div class="col-lg-4 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/heroku.png" height=70px><br>
+	      <h3 class="h4 mb-2">Heroku</h3>
+	      <p class="text-muted mb-0"></p>
+	    </div>
+	  </div>
+	  <div class="col-lg-4 col-md-6 text-center">
+	    <div class="mt-5">
+	      <img src="assets/img/gcloud.png" height=70x><br>
+	      <h3 class='h4 mb-2'>GCloud</h3>
+	      <p class="text-muted mb-0"></p>
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </section>
+    <!-- Call to action
+	 <section class="page-section bg-dark text-white">
+	   <div class="container text-center">
+	     <h2 class="mb-4">Free Download at Start Bootstrap!</h2>
+	     <a class="btn btn-light btn-xl" href="https://startbootstrap.com/themes/creative/">Download Now!</a>
+	   </div>
+	 </section>
+	 <!-- Contact -->
+	 <section class="page-section" id="contact">
+	   <div class="container">
+	     <div class="row justify-content-center">
+	       <div class="col-lg-8 text-center">
+		 <h2 class="mt-0">Contact</h2>
+		 <hr class="divider my-4" />
+		 <p class="text-muted mb-5">Ready for me to join your team? Reach out!</p>
+	       </div>
+	     </div>
+	     <div class="row">
+	       <div class="col-lg-4 ml-auto text-center mb-5 mb-lg-0">
+		 <i class="fas fa-phone fa-3x mb-3 text-muted"></i>
+		 <div>(858) 692-1514</div>
+	       </div>
+	       <div class="col-lg-4 mr-auto text-center">
+		 <i class="fas fa-envelope fa-3x mb-3 text-muted"></i>
+		 <a class="d-block" href="mailto:austinweisgrau@gmail.com">austinweisgrau@gmail.com</a>
+	       </div>
+	     </div>
+	   </div>
+	 </section>
+	 <!-- Footer-->
+	 <footer class="bg-light py-5">
+	   <div class="container"><div class="small text-center text-muted"></div></div>
+	 </footer>
+	 <!-- Bootstrap core JS-->
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+	 <!-- Third party plugin JS-->
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+	 <!-- Core theme JS-->
+	 <script src="js/scripts.js"></script>
   </body>
 </html>
