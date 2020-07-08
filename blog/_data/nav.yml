@@ -1,8 +1,0 @@
----
-- name: All Posts
-  url: /
-- name: Portfolio
-  url: /portfolio
-- name: Contact
-  url: /contact
-...
