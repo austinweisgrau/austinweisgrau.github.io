@@ -1,0 +1,10 @@
+---
+- title: first post
+  link: 
+  date: 5/1/2020
+  content: this is the best post
+- title: second post
+  link: 
+  date: 6/1/2020
+  content: this is an okay post
+...

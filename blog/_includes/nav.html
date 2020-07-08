@@ -1,0 +1,13 @@
+<!-- Sidenav -->
+<div class='sidenav'>
+  {% assign first = site.data.nav | first %}
+  {% assign navs = first | concat: site.categories | concat: site.data.nav | uniq %}
+  {% for item in navs %}
+    <li class='nav-item'>
+      <a href="{{ item.url }}">
+	{{ item.name }}
+      </a>
+    </li>
+  {% endfor %}
+</div>
+
