@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!--- Favicon <link rel="icon" type="image/x-icon" href="assets/img/favicon.svg" /> --->
+    <!--- Custom CSS -->
+    <link href='/blog/assets/css/styles.css' rel='stylesheet'>
+    <title>Mathjax</title>
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Mathjax | Blog - Austin Weisgrau</title>
+<meta name="generator" content="Jekyll v3.8.7" />
+<meta property="og:title" content="Mathjax" />
+<meta name="author" content="Austin Weisgrau" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="MathJax in Emacs/Markdown/Jekyll" />
+<meta property="og:description" content="MathJax in Emacs/Markdown/Jekyll" />
+<link rel="canonical" href="http://aradox66.github.io/blog/ds/2020/07/08/Mathjax.html" />
+<meta property="og:url" content="http://aradox66.github.io/blog/ds/2020/07/08/Mathjax.html" />
+<meta property="og:site_name" content="Blog - Austin Weisgrau" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-07-08T00:00:00-07:00" />
+<script type="application/ld+json">
+{"description":"MathJax in Emacs/Markdown/Jekyll","author":{"@type":"Person","name":"Austin Weisgrau"},"@type":"BlogPosting","url":"http://aradox66.github.io/blog/ds/2020/07/08/Mathjax.html","headline":"Mathjax","dateModified":"2020-07-08T00:00:00-07:00","datePublished":"2020-07-08T00:00:00-07:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://aradox66.github.io/blog/ds/2020/07/08/Mathjax.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+  <body>
+    <!-- Sidenav -->
+<div class='sidenav'>
+  
+  
+  
+    <li class='nav-item'>
+      <a href="/blog/">
+	All Posts
+      </a>
+    </li>
+  
+    <li class='nav-item'>
+      <a href="/blog/categories/data.html">
+	Data
+      </a>
+    </li>
+  
+    <li class='nav-item'>
+      <a href="/blog/categories/web.html">
+	Web
+      </a>
+    </li>
+  
+    <li class='nav-item'>
+      <a href="/">
+	Portfolio
+      </a>
+    </li>
+  
+    <li class='nav-item'>
+      <a href="/#contact">
+	Contact
+      </a>
+    </li>
+  
+</div>
+
+    <div id='content' class='main'>
+      <h1 id="mathjax-in-emacsmarkdownjekyll">MathJax in Emacs/Markdown/Jekyll</h1>
+
+<h3 id="first-tries">First tries</h3>
+<p>$-
+\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}
+-$</p>
+
+<h4 id="greek">Greek</h4>
+<p>alpha: $\alpha$<br />
+beta: $\beta$<br />
+gamma: $\gamma, \Gamma$<br />
+delta: $\delta, \Delta$<br />
+phi: $\phi, \Phi$<br />
+omega: $\omega, \Omega$</p>
+
+<h4 id="limits">Limits</h4>
+<p>$\lim\limits_{x \to \infty} \frac{1}{x} = 0$</p>
+
+<h4 id="subscripts">Subscripts</h4>
+<p>$x_{i}$, $x_{0}$, $x^{‘}$</p>
+
+<h4 id="miscellaneous">Miscellaneous</h4>
+<p>$\sqrt{\frac{a}{b}}$<br />
+$\sqrt{1+x+x^2+x^3+\dots+x^n}$</p>
+
+<h4 id="sums">Sums</h4>
+<p>$-
+\displaystyle\sum_{i=i}^n t_i
+-$
+$-
+\int_0^\infty \mathrm{e}^{-x}\,\mathrm{d}x
+-$</p>
+
+<h4 id="set-notation">Set Notation</h4>
+<p>$A \bigcup B$<br />
+$A \bigcap B$</p>
+
+<h4 id="brackets">Brackets</h4>
+<p>$(\dots)$<br />
+$[\dots]$<br />
+$\{ \dots \}$ (Note the double escape)<br />
+$|\dots|$</p>
+
+<p>$\left( \frac{x^2}{y^3} \right)$</p>
+
+<h4 id="matrices">Matrices</h4>
+<p>These require a triple escape</p>
+
+<p>$\left[
+\begin{matrix}
+1 &amp; 0 &amp; 0 \\ <br />
+0 &amp; 1 &amp; 0 \\ <br />
+0 &amp; 0 &amp; 1
+\end{matrix}
+\right]$</p>
+
+
+    </div>
+    <script>
+      window.MathJax = {
+	  tex: {
+	      inlineMath: [['$', '$']],
+	      displayMath: [['$-', '-$']],
+	      processEscapes: true
+	  },
+	  svg: {
+	      fontCache: 'global'
+	  }
+      };</script>
+    <script type="text/javascript" id="MathJax-script" async
+src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+      </script>
+  </body>
+</html>
