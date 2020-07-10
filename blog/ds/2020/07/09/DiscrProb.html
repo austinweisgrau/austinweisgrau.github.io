@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!--- Favicon <link rel="icon" type="image/x-icon" href="assets/img/favicon.svg" /> --->
+    <!--- Custom CSS -->
+    <link href='/blog/assets/css/styles.css' rel='stylesheet'>
+    <title>Discrete Probability Distributions</title>
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Discrete Probability Distributions | Blog - Austin Weisgrau</title>
+<meta name="generator" content="Jekyll v3.8.7" />
+<meta property="og:title" content="Discrete Probability Distributions" />
+<meta name="author" content="Austin Weisgrau" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Discrete Probability Distributions Discrete/continuous random variable behavior Probability mass functions Cumulative density functions Bernoulli/Binomial/Poisson/Geometric Distributions" />
+<meta property="og:description" content="Discrete Probability Distributions Discrete/continuous random variable behavior Probability mass functions Cumulative density functions Bernoulli/Binomial/Poisson/Geometric Distributions" />
+<link rel="canonical" href="http://localhost:4000/blog/ds/2020/07/09/DiscrProb.html" />
+<meta property="og:url" content="http://localhost:4000/blog/ds/2020/07/09/DiscrProb.html" />
+<meta property="og:site_name" content="Blog - Austin Weisgrau" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-07-09T00:00:00-07:00" />
+<script type="application/ld+json">
+{"description":"Discrete Probability Distributions Discrete/continuous random variable behavior Probability mass functions Cumulative density functions Bernoulli/Binomial/Poisson/Geometric Distributions","author":{"@type":"Person","name":"Austin Weisgrau"},"@type":"BlogPosting","url":"http://localhost:4000/blog/ds/2020/07/09/DiscrProb.html","headline":"Discrete Probability Distributions","dateModified":"2020-07-09T00:00:00-07:00","datePublished":"2020-07-09T00:00:00-07:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blog/ds/2020/07/09/DiscrProb.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+  <body>
+    <!-- Sidenav -->
+<div class='sidenav'>
+  
+  
+  
+    <li class='nav-item'>
+      <a href="/blog/">
+	All Posts
+      </a>
+    </li>
+  
+    <li class='nav-item'>
+      <a href="/blog/categories/data.html">
+	Data
+      </a>
+    </li>
+  
+    <li class='nav-item'>
+      <a href="/blog/categories/web.html">
+	Web
+      </a>
+    </li>
+  
+    <li class='nav-item'>
+      <a href="/">
+	Portfolio
+      </a>
+    </li>
+  
+    <li class='nav-item'>
+      <a href="/#contact">
+	Contact
+      </a>
+    </li>
+  
+</div>
+
+    <div id='content' class='main'>
+      <h2 id="discrete-probability-distributions">Discrete Probability Distributions</h2>
+<ul>
+  <li>Discrete/continuous random variable behavior</li>
+  <li>Probability mass functions</li>
+  <li>Cumulative density functions</li>
+  <li>Bernoulli/Binomial/Poisson/Geometric Distributions</li>
+</ul>
+
+<p>For random variable $X$:<br />
+Expected value: $E(X) = \mu = \sum{x_{i}*P(X==x_{i})}$<br />
+Variance: $\sigma^2 = \sum (x_{i}-\mu)^2 * P(X==x_{i})$</p>
+
+<p>Probability Mass Function: $f_{X} x$<br />
+Cumulative Density Function: $F_{X} x$</p>
+
+<dl>
+  <dt><strong>Bernoulli Distribution</strong> is binary (coin toss):</dt>
+  <dd>$E(x) = p$</dd>
+  <dd>$X \sim Bernoulli(p) $</dd>
+  <dt><br /></dt>
+  <dt><strong>Binomial Distribution</strong></dt>
+  <dd>$P ($ $k$ successes after $n$ Bernoulli trials $)$</dd>
+  <dd>for binomial variable $X \; Bin(n, p)$</dd>
+  <dd>
+    <dl>
+      <dt>$P(X==k) = (^{n}_{k})p^{k}(1-p)^{n-k}$</dt>
+      <dd>Reminder: $\left( _{r}^{n} \right) = \frac{n!}{(n-r)!r!}$</dd>
+      <dd><code class="highlighter-rouge">scipy.stats.binom.pmf(k=k, n=n, p=p)</code></dd>
+    </dl>
+  </dd>
+  <dd>
+    <dl>
+      <dt>Binomial CDF:</dt>
+      <dd>$ P(X \leq k) = \displaystyle\sum_{i=0}^{k}(^{n}_{k})p^{k}(1-p)^{n-k} $</dd>
+      <dd><code class="highlighter-rouge">scipy.stats.binom(n=n, p=p).cdf(k))</code></dd>
+    </dl>
+  </dd>
+  <dd>Expected value: $E(X) = \bar{X} = \mu_{X} = np$</dd>
+  <dd>Variance: $\sigma^2 = np(1-p)$</dd>
+  <dt><br /></dt>
+  <dt><strong>Geometric Distribution</strong> (time until factory failure)</dt>
+  <dd>$n$ Bernoulli trials until first success</dd>
+  <dd>$X \sim \text{ or } X \sim G(p)$</dd>
+  <dd>PMF: $ P(X==k) = p(1-p)^{k-1} \text{ for } 1\leq k \leq \infty $</dd>
+  <dd>CDF: $ P(X \leq k) = 1 - (1-p)^{k} \text{ for } 1\leq k\leq \infty $</dd>
+  <dd>$\mu=\frac{1}{p}$</dd>
+  <dd>$\sigma^{2}=\frac{1-p}{p^2}$</dd>
+  <dt><br /></dt>
+  <dt><strong>Poisson Distribution</strong> (how many shooting stars)</dt>
+  <dd>Probability of $k$ (# independent events $\left|\{E_{i}\}\right|$) within a fixed period given rate of occurence $\lambda$.</dd>
+  <dd>$ X \sim \text{Po}(\lambda)$</dd>
+  <dd>
+    <dl>
+      <dt>PMF: $ P(X==k) = \frac{\lambda^{k} e^{-\lambda}}{k!} $</dt>
+      <dd><code class="highlighter-rouge">scipy.stats.poisson.pmf(k=k, mu=lambda)</code></dd>
+    </dl>
+  </dd>
+  <dd>CDF: $ P(X\leq k) = \displaystyle\sum^{k}_{i=0}\frac{\lambda^{k} e^{-\lambda}}{k!}$</dd>
+  <dd>$\bar{X}=\mu_{X}=\lambda$</dd>
+  <dd>$\sigma^{2}_{X}=\lambda$</dd>
+</dl>
+
+    </div>
+    <script>
+      window.MathJax = {
+	  tex: {
+	      inlineMath: [['$', '$']],
+	      displayMath: [['$-', '-$']],
+	      processEscapes: true
+	  },
+	  svg: {
+	      fontCache: 'global'
+	  }
+      };</script>
+    <script type="text/javascript" id="MathJax-script" async
+src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+      </script>
+  </body>
+</html>

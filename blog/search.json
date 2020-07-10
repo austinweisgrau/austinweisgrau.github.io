@@ -1,0 +1,51 @@
+[
+    
+    {
+        "title" : "Probability and Combinatorics",
+	"url" : "/blog/ds/2020/07/09/Probability.html",
+        "content" : "probability calculate probabilities identify in dependent variables calculate permutations and combinationsthe mathematics underlying inferential statistics derive from probability theory probability of a number of outcomes in a left a right cardinality of a number of outcomes in s left s right cardinality of s p a frac left a right left s right absolute and normalized measurement for model regularization left a right subseteq ell 1 text norm measurement normalized values subseteq ell k text norm measurements two events are mutually exclusive disjoint if ab emptyset two events are dependent if p a neq p a b two events are independent if p a p a b p a b c multiplication rule for independent events p a p a b implies p ab p a p b the probability of a cap b is equal to the product of p a and p b p a cup b p a p b p ab p a cup b cup c p a p b p c p ab p bc p ac p abc p bigcup a i displaystyle sum displaystyle bigcap text odd a i displaystyle sum displaystyle bigcap text even a i combinatorics and permutations cartesian cross product left p times s right left p right times left s right i j k for i in a for j in b for k in c permutations are ordered selections partial selection number of possible permutations npr frac n n r len list itertools permutations s r combinations are unordered selections ncr n text choose r c r n left r n right frac n n r r len list itertools combinations s r conditional probabilitythe probability of a given b p a text with s b p a b frac p ab p b text kolmogorov p ab p a b p b p bigcap m a i prod m p a i a n 1 dots a 1 partitions g i of s g i cap g j emptyset forall i j no overlap bigcup g i s fill completely p e sum p eg i sum left p e g i p g i right bayes p a b frac p b a cdot p a p b"
+    } ,
+    
+    {
+        "title" : "Discrete Probability Distributions",
+	"url" : "/blog/ds/2020/07/09/DiscrProb.html",
+        "content" : "discrete probability distributions discrete continuous random variable behavior probability mass functions cumulative density functions bernoulli binomial poisson geometric distributionsfor random variable x expected value e x mu sum x i p x x i variance sigma 2 sum x i mu 2 p x x i probability mass function f x x cumulative density function f x x bernoulli distribution is binary coin toss e x p x sim bernoulli p binomial distribution p k successes after n bernoulli trials for binomial variable x bin n p p x k n k p k 1 p n k reminder left r n right frac n n r r scipy stats binom pmf k k n n p p binomial cdf p x leq k displaystyle sum i 0 k n k p k 1 p n k scipy stats binom n n p p cdf k expected value e x bar x mu x np variance sigma 2 np 1 p geometric distribution time until factory failure n bernoulli trials until first success x sim text or x sim g p pmf p x k p 1 p k 1 text for 1 leq k leq infty cdf p x leq k 1 1 p k text for 1 leq k leq infty mu frac 1 p sigma 2 frac 1 p p 2 poisson distribution how many shooting stars probability of k independent events left e i right within a fixed period given rate of occurence lambda x sim text po lambda pmf p x k frac lambda k e lambda k scipy stats poisson pmf k k mu lambda cdf p x leq k displaystyle sum k i 0 frac lambda k e lambda k bar x mu x lambda sigma 2 x lambda"
+    } ,
+    
+    {
+        "title" : "Continuous Probability Distributions",
+	"url" : "/blog/ds/2020/07/09/ContProb.html",
+        "content" : "continuous probability distributions continuous random variable behavior probability density function exponential and normal distributions"
+    } ,
+    
+    {
+        "title" : "Learningmarkdown",
+	"url" : "/blog/ds/2020/07/08/learningmarkdown.html",
+        "content" : "markdown familiarization documentexploring featuresgotta include two spaces after each sentence if you want a linebreak proper bold text like this italics like so very important this is a block quote going on here twill be quite impressive each paragraph gets its own thingie gets a second indent a nested guy ordered lists definitely unordered lists for sure even this stuff nested at the command prompt type nano you can escape code also byokka my websiteyou can use backslash to escape characters like class pickle object def init self self punch syntax highlighting tiny heading works like this i rather like it stuff gets crossed bya baddabing baddaboom baddabang"
+    } ,
+    
+    {
+        "title" : "Sets and Probability Notes",
+	"url" : "/blog/ds/2020/07/08/Sets.html",
+        "content" : "sets a subseteq b iff a cap b a iff a cup b b demorgan s laws a cup b c a c b c ab c a c cup b c distributions a cup bc a cup b a cup c a b cup c ab cup ac probability mu population mean bar x sample mean bar x sample mean of random variable tilde x median m 0 mode s 2 frac 1 n 1 displaystyle sum i 1 n x i bar x 2 variance of sample sigma 2 frac 1 n displaystyle sum i 1 n x i bar x 2 variance of population sigma 2 s 2 epsilon s standard deviation of a sample sigma standard deviation of a population"
+    } ,
+    
+    {
+        "title" : "Mathjax",
+	"url" : "/blog/ds/2020/07/08/Mathjax.html",
+        "content" : "mathjax in emacs markdown jekyllfirst tries sum i 0 n i 2 frac n 2 n 2n 1 6 greekalpha alpha beta beta gamma gamma gamma delta delta delta phi phi phi omega omega omega limits lim limits x to infty frac 1 x 0 subscripts x i x 0 x miscellaneous sqrt frac a b sqrt 1 x x 2 x 3 dots x n sums displaystyle sum i i n t i int 0 infty mathrm e x mathrm d x set notation a cup b a cap b brackets dots dots dots note the double escape dots left frac x 2 y 3 right matricesthese require a triple escape left begin matrix 1 amp 0 amp 0 0 amp 1 amp 0 0 amp 0 amp 1 end matrix right"
+    } ,
+    
+    {
+        "title" : "first web post",
+	"url" : "/blog/web/2020/06/01/firstpost.html",
+        "content" : "time for a web posty all about to read this shit"
+    } ,
+    
+    {
+        "title" : "second data post",
+	"url" : "/blog/data/2007/02/20/secondpost.html",
+        "content" : "time for a data post babytryina get some"
+    } 
+    
+]
