@@ -3,7 +3,8 @@
   <head>
     <meta charset='utf-8' />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!--- Favicon <link rel="icon" type="image/x-icon" href="assets/img/favicon.svg" /> --->
+    <!--- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.png" />
     <!--- Custom CSS -->
     <link href='/blog/assets/css/styles.css' rel='stylesheet'>
     <title>Sets and Probability Notes</title>
@@ -13,15 +14,15 @@
 <meta property="og:title" content="Sets and Probability Notes" />
 <meta name="author" content="Austin Weisgrau" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Sets $A \subseteq B \iff A \cap B = A \iff A \cup B = B$" />
-<meta property="og:description" content="Sets $A \subseteq B \iff A \cap B = A \iff A \cup B = B$" />
+<meta name="description" content="Sets" />
+<meta property="og:description" content="Sets" />
 <link rel="canonical" href="http://localhost:4000/blog/ds/2020/07/08/Sets.html" />
 <meta property="og:url" content="http://localhost:4000/blog/ds/2020/07/08/Sets.html" />
 <meta property="og:site_name" content="Blog - Austin Weisgrau" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-07-08T00:00:00-07:00" />
 <script type="application/ld+json">
-{"description":"Sets $A \\subseteq B \\iff A \\cap B = A \\iff A \\cup B = B$","author":{"@type":"Person","name":"Austin Weisgrau"},"@type":"BlogPosting","url":"http://localhost:4000/blog/ds/2020/07/08/Sets.html","headline":"Sets and Probability Notes","dateModified":"2020-07-08T00:00:00-07:00","datePublished":"2020-07-08T00:00:00-07:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blog/ds/2020/07/08/Sets.html"},"@context":"https://schema.org"}</script>
+{"description":"Sets","author":{"@type":"Person","name":"Austin Weisgrau"},"@type":"BlogPosting","url":"http://localhost:4000/blog/ds/2020/07/08/Sets.html","headline":"Sets and Probability Notes","dateModified":"2020-07-08T00:00:00-07:00","datePublished":"2020-07-08T00:00:00-07:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blog/ds/2020/07/08/Sets.html"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
   </head>
@@ -65,46 +66,59 @@
 
     <div id='content' class='main'>
       <h2 id="sets">Sets</h2>
-<p>$A \subseteq B \iff A \cap B = A \iff A \cup B = B$</p>
+<p><script type="math/tex">A \subseteq B \iff A \cap B = A \iff A \cup B = B</script></p>
 
 <dl>
   <dt>DeMorgan’s Laws:</dt>
-  <dd>$(A \cup B )^{c} = A^{c}B^{c}$</dd>
-  <dd>$( AB )^{c} = A^{c} \cup B^{c}$</dd>
+  <dd>
+    <script type="math/tex; mode=display">(A \cup B )^{c} = A^{c}B^{c}</script>
+  </dd>
+  <dd>
+    <script type="math/tex; mode=display">( AB )^{c} = A^{c} \cup B^{c}</script>
+  </dd>
   <dt><br /></dt>
   <dt>Distributions:</dt>
-  <dd>$A \cup (BC) = (A \cup B)(A \cup C)$</dd>
-  <dd>$A(B \cup C) = (AB) \cup (AC)$</dd>
+  <dd>
+    <script type="math/tex; mode=display">A \cup (BC) = (A \cup B)(A \cup C)</script>
+  </dd>
+  <dd>
+    <script type="math/tex; mode=display">A(B \cup C) = (AB) \cup (AC)</script>
+  </dd>
 </dl>
 
 <h2 id="probability">Probability</h2>
-<p>$\mu$: population mean<br />
-$\bar{x}$: sample mean<br />
-$\bar{X}$: sample mean of random variable</p>
+<p><script type="math/tex">\mu</script>: population mean<br />
+<script type="math/tex">\bar{x}</script>: sample mean<br />
+<script type="math/tex">\bar{X}</script>: sample mean of random variable</p>
 
-<p>$\tilde{x}$: median<br />
-$M_0$: mode</p>
+<p><script type="math/tex">\tilde{x}</script>: median<br />
+<script type="math/tex">M_0</script>: mode</p>
 
-<p>$s^2 = \frac{1}{n-1}\displaystyle\sum_{i=1}^{n}(x_{i}-\bar{x})^2$ variance of sample<br />
-$\sigma^2 = \frac{1}{n}\displaystyle\sum_{i=1}^{n}(x_{i}-\bar{x})^2$ variance of population<br />
-$\sigma^2 = s^2 + \epsilon$<br />
-$s$: standard deviation of a sample<br />
-$\sigma$: standard deviation of a population</p>
+<p><script type="math/tex">s^2 = \frac{1}{n-1}\displaystyle\sum_{i=1}^{n}(x_{i}-\bar{x})^2</script> variance of sample<br />
+<script type="math/tex">\sigma^2 = \frac{1}{n}\displaystyle\sum_{i=1}^{n}(x_{i}-\bar{x})^2</script> variance of population<br />
+<script type="math/tex">\sigma^2 = s^2 + \epsilon</script><br />
+<script type="math/tex">s</script>: standard deviation of a sample<br />
+<script type="math/tex">\sigma</script>: standard deviation of a population</p>
 
     </div>
-    <script>
-      window.MathJax = {
-	  tex: {
-	      inlineMath: [['$', '$']],
-	      displayMath: [['$-', '-$']],
-	      processEscapes: true
-	  },
-	  svg: {
-	      fontCache: 'global'
-	  }
-      };</script>
-    <script type="text/javascript" id="MathJax-script" async
-src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-      </script>
+    <script type='text/x-mathjax-config'>
+      MathJax.Hub.Config({
+      extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+      ],
+      jax: ["input/TeX", "output/CommonHTML"],
+      Tex: {
+      extensions: [
+      "AMSmath.js",
+      "AMSsymbols.js",
+      "noErrors.js",
+      "noUndefined.js"
+      ]
+      }
+      });</script> 
+      <script type='text/javascript' async src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
   </body>
 </html>

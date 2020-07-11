@@ -3,7 +3,8 @@
   <head>
     <meta charset='utf-8' />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!--- Favicon <link rel="icon" type="image/x-icon" href="assets/img/favicon.svg" /> --->
+    <!--- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.png" />
     <!--- Custom CSS -->
     <link href='/blog/assets/css/styles.css' rel='stylesheet'>
     <title>Continuous Probability Distributions</title>
@@ -71,20 +72,57 @@
   <li>Exponential and Normal Distributions</li>
 </ul>
 
+<dl>
+  <dt><script type="math/tex">E(X) = \displaystyle\int _{ X_{a} } ^{ X_{b} } x f(x) dx \;\text{ for PDF $f_{X}(x)$}</script></dt>
+  <dd><code class="highlighter-rouge">scipy.integrate.quad(lambda x: f(x), a, b)</code></dd>
+</dl>
+
+<p><script type="math/tex">\sigma^2 = E(X^2) - (E(X))^2</script><br />
+<script type="math/tex">= \displaystyle \int _{X_{a}} ^{X_{b}} x^2 * f_{X}(x) dx - (E(X))^2</script></p>
+
+<dl>
+  <dt>Probability Distribution Function <script type="math/tex">f_X (x)</script></dt>
+  <dd><script type="math/tex">P(a \leq X \leq b) = \displaystyle \int _a ^b f_{X} (x) dx = 1</script></dd>
+  <dt><br /></dt>
+  <dt>Cumulative Distribution Function <script type="math/tex">F_X (x)</script></dt>
+  <dd><script type="math/tex">F_X (x) =  P(X \leq b ) = \displaystyle \int _a ^b f_{X}(x) dx</script></dd>
+  <dt><br /></dt>
+  <dt><strong>Normal/Gaussian Distribution</strong></dt>
+  <dd><script type="math/tex">X \sim N(\mu, \sigma)</script></dd>
+  <dd>Standardized: <script type="math/tex">N(\mu=0, \sigma=1)</script></dd>
+  <dd>z-score <script type="math/tex">Z = \frac{X-\mu}{\sigma}</script></dd>
+  <dd><script type="math/tex">CDF( P(X \leq x) ) = \text{z-table}(Z)</script></dd>
+  <dd>CDF: <code class="highlighter-rouge">scipy.stats.norm.cdf(X, loc=mean=0, scale=sigma=1)</code> or <code class="highlighter-rouge">norm.cdf(Z)</code></dd>
+  <dt><br /></dt>
+  <dt><strong>Exponential Distribution</strong> (Poisson Process, waiting, memoryless)</dt>
+  <dd><script type="math/tex">X \sim Exp(\lambda)</script> for event rate <script type="math/tex">\lambda</script></dd>
+  <dd>PDF: <script type="math/tex">f_{X}(x) = \lambda e^{-\lambda x}</script> for <script type="math/tex">x \geq 0</script></dd>
+  <dd><script type="math/tex">\mu = \frac{1}{\lambda}</script></dd>
+  <dd><script type="math/tex">\sigma^2 = \frac{1}{\lambda^2}</script></dd>
+  <dd><script type="math/tex">\sigma = \frac{1}{\lambda}</script></dd>
+  <dd>CDF: <script type="math/tex">F_X (x) = 1 - e^{ -\lambda x }</script> for <script type="math/tex">x \geq 0</script></dd>
+</dl>
+
+
     </div>
-    <script>
-      window.MathJax = {
-	  tex: {
-	      inlineMath: [['$', '$']],
-	      displayMath: [['$-', '-$']],
-	      processEscapes: true
-	  },
-	  svg: {
-	      fontCache: 'global'
-	  }
-      };</script>
-    <script type="text/javascript" id="MathJax-script" async
-src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-      </script>
+    <script type='text/x-mathjax-config'>
+      MathJax.Hub.Config({
+      extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+      ],
+      jax: ["input/TeX", "output/CommonHTML"],
+      Tex: {
+      extensions: [
+      "AMSmath.js",
+      "AMSsymbols.js",
+      "noErrors.js",
+      "noUndefined.js"
+      ]
+      }
+      });</script> 
+      <script type='text/javascript' async src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
   </body>
 </html>

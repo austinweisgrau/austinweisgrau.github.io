@@ -3,7 +3,8 @@
   <head>
     <meta charset='utf-8' />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!--- Favicon <link rel="icon" type="image/x-icon" href="assets/img/favicon.svg" /> --->
+    <!--- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.png" />
     <!--- Custom CSS -->
     <link href='/blog/assets/css/styles.css' rel='stylesheet'>
     <title>Discrete Probability Distributions</title>
@@ -72,74 +73,79 @@
   <li>Bernoulli/Binomial/Poisson/Geometric Distributions</li>
 </ul>
 
-<p>For random variable $X$:<br />
-Expected value: $E(X) = \mu = \sum{x_{i}*P(X==x_{i})}$<br />
-Variance: $\sigma^2 = \sum (x_{i}-\mu)^2 * P(X==x_{i})$</p>
+<p>For random variable <script type="math/tex">X</script>:<br />
+Expected value: <script type="math/tex">E(X) = \mu = \sum{x_{i}*P(X==x_{i})}</script><br />
+Variance: <script type="math/tex">\sigma^2 = \sum (x_{i}-\mu)^2 * P(X==x_{i})</script></p>
 
-<p>Probability Mass Function: $f_{X} x$<br />
-Cumulative Density Function: $F_{X} x$</p>
+<p>Probability Mass Function: <script type="math/tex">f_{X} x</script><br />
+Cumulative Density Function: <script type="math/tex">F_{X} x</script></p>
 
 <dl>
   <dt><strong>Bernoulli Distribution</strong> is binary (coin toss):</dt>
-  <dd>$E(x) = p$</dd>
-  <dd>$X \sim Bernoulli(p) $</dd>
+  <dd><script type="math/tex">E(x) = p</script></dd>
+  <dd><script type="math/tex">X \sim Bernoulli(p)</script></dd>
   <dt><br /></dt>
   <dt><strong>Binomial Distribution</strong></dt>
-  <dd>$P ($ $k$ successes after $n$ Bernoulli trials $)$</dd>
-  <dd>for binomial variable $X \; Bin(n, p)$</dd>
+  <dd><script type="math/tex">P( \; k</script> successes after <script type="math/tex">n</script> Bernoulli trials <script type="math/tex">)</script></dd>
+  <dd>for binomial variable <script type="math/tex">X \; Bin(n, p)</script></dd>
   <dd>
     <dl>
-      <dt>$P(X==k) = (^{n}_{k})p^{k}(1-p)^{n-k}$</dt>
-      <dd>Reminder: $\left( _{r}^{n} \right) = \frac{n!}{(n-r)!r!}$</dd>
+      <dt><script type="math/tex">P(X==k) = (^{n}_{k})p^{k}(1-p)^{n-k}</script></dt>
+      <dd>Reminder: <script type="math/tex">\left( _{r}^{n} \right) = \frac{n!}{(n-r)!r!}</script></dd>
       <dd><code class="highlighter-rouge">scipy.stats.binom.pmf(k=k, n=n, p=p)</code></dd>
     </dl>
   </dd>
   <dd>
     <dl>
       <dt>Binomial CDF:</dt>
-      <dd>$ P(X \leq k) = \displaystyle\sum_{i=0}^{k}(^{n}_{k})p^{k}(1-p)^{n-k} $</dd>
+      <dd><script type="math/tex">P(X \leq k) = \displaystyle\sum_{i=0}^{k}(^{n}_{k})p^{k}(1-p)^{n-k}</script></dd>
       <dd><code class="highlighter-rouge">scipy.stats.binom(n=n, p=p).cdf(k))</code></dd>
     </dl>
   </dd>
-  <dd>Expected value: $E(X) = \bar{X} = \mu_{X} = np$</dd>
-  <dd>Variance: $\sigma^2 = np(1-p)$</dd>
+  <dd>Expected value: <script type="math/tex">E(X) = \bar{X} = \mu_{X} = np</script></dd>
+  <dd>Variance: <script type="math/tex">\sigma^2 = np(1-p)</script></dd>
   <dt><br /></dt>
   <dt><strong>Geometric Distribution</strong> (time until factory failure)</dt>
-  <dd>$n$ Bernoulli trials until first success</dd>
-  <dd>$X \sim \text{ or } X \sim G(p)$</dd>
-  <dd>PMF: $ P(X==k) = p(1-p)^{k-1} \text{ for } 1\leq k \leq \infty $</dd>
-  <dd>CDF: $ P(X \leq k) = 1 - (1-p)^{k} \text{ for } 1\leq k\leq \infty $</dd>
-  <dd>$\mu=\frac{1}{p}$</dd>
-  <dd>$\sigma^{2}=\frac{1-p}{p^2}$</dd>
+  <dd><script type="math/tex">n</script> Bernoulli trials until first success</dd>
+  <dd><script type="math/tex">X \sim G(p)</script></dd>
+  <dd>PMF: <script type="math/tex">P(X==k) = p(1-p)^{k-1} \text{ for } 1\leq k \leq \infty</script></dd>
+  <dd>CDF: <script type="math/tex">P(X \leq k) = 1 - (1-p)^{k} \text{ for } 1\leq k\leq \infty</script></dd>
+  <dd><script type="math/tex">\mu=\frac{1}{p}</script></dd>
+  <dd><script type="math/tex">\sigma^{2}=\frac{1-p}{p^2}</script></dd>
   <dt><br /></dt>
   <dt><strong>Poisson Distribution</strong> (how many shooting stars)</dt>
-  <dd>Probability of $k$ (# independent events $\left|\{E_{i}\}\right|$) within a fixed period given rate of occurence $\lambda$.</dd>
-  <dd>$ X \sim \text{Po}(\lambda)$</dd>
+  <dd>Probability of <script type="math/tex">k</script> (# independent events <script type="math/tex">\lVert E_{i} \rVert</script>) within a fixed period given rate of occurence <script type="math/tex">\lambda</script>.</dd>
+  <dd><script type="math/tex">X \sim \text{Po}(\lambda)</script></dd>
   <dd>
     <dl>
-      <dt>PMF: $ P(X==k) = \frac{\lambda^{k} e^{-\lambda}}{k!} $</dt>
+      <dt>PMF: <script type="math/tex">P(X==k) = \frac{\lambda^{k} e^{-\lambda}}{k!}</script></dt>
       <dd><code class="highlighter-rouge">scipy.stats.poisson.pmf(k=k, mu=lambda)</code></dd>
     </dl>
   </dd>
-  <dd>CDF: $ P(X\leq k) = \displaystyle\sum^{k}_{i=0}\frac{\lambda^{k} e^{-\lambda}}{k!}$</dd>
-  <dd>$\bar{X}=\mu_{X}=\lambda$</dd>
-  <dd>$\sigma^{2}_{X}=\lambda$</dd>
+  <dd>CDF: <script type="math/tex">P(X\leq k) = \displaystyle\sum^{k}_{i=0}\frac{\lambda^{k} e^{-\lambda}}{k!}</script></dd>
+  <dd><script type="math/tex">\bar{X}=\mu_{X}=\lambda</script></dd>
+  <dd><script type="math/tex">\sigma^{2}_{X}=\lambda</script></dd>
 </dl>
 
     </div>
-    <script>
-      window.MathJax = {
-	  tex: {
-	      inlineMath: [['$', '$']],
-	      displayMath: [['$-', '-$']],
-	      processEscapes: true
-	  },
-	  svg: {
-	      fontCache: 'global'
-	  }
-      };</script>
-    <script type="text/javascript" id="MathJax-script" async
-src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-      </script>
+    <script type='text/x-mathjax-config'>
+      MathJax.Hub.Config({
+      extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+      ],
+      jax: ["input/TeX", "output/CommonHTML"],
+      Tex: {
+      extensions: [
+      "AMSmath.js",
+      "AMSsymbols.js",
+      "noErrors.js",
+      "noUndefined.js"
+      ]
+      }
+      });</script> 
+      <script type='text/javascript' async src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
   </body>
 </html>
