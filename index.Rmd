@@ -13,6 +13,4 @@ output:
 site: distill::distill_website
 ---
  
-I am a classically trained data scientist living in the San Francisco Bay Area. 
-Currently I work on the Oculus team at Facebook. I love talking about baseball, 
-true crime podcasts, and causal inference.
+I am a software developer for Movement Labs and a data science student at the Bren School at UC Santa Barbara. I build automations & data pipelines for progressive organizations to get more done.
