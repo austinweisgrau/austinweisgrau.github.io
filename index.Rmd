@@ -1,8 +1,18 @@
 ---
 title: "Austin Weisgrau"
-description: 
+image: "austin.jpeg"
+links:
+  - label: LinkedIn
+    url: "https://www.linkedin.com/in/austin-weisgrau-a784b042/"
+  - label: GitHub
+    url: "https://github.com/austinweisgrau"
+  - label: Email
+    url: "mailto:austinweisgrau@gmail.com"
+output:
+  postcards::jolla
 site: distill::distill_website
 ---
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
+ 
+I am a classically trained data scientist living in the San Francisco Bay Area. 
+Currently I work on the Oculus team at Facebook. I love talking about baseball, 
+true crime podcasts, and causal inference.
