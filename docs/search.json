@@ -1,0 +1,27 @@
+{
+  "articles": [
+    {
+      "path": "about.html",
+      "title": "About this site",
+      "description": "Some additional details about the website",
+      "author": [],
+      "contents": "\n\n\n\n",
+      "last_modified": "2021-08-06T10:37:19-07:00"
+    },
+    {
+      "path": "index.html",
+      "title": "Austin Weisgrau",
+      "author": [],
+      "contents": "\n\n\n\n\n\n\n",
+      "last_modified": "2021-08-06T10:37:19-07:00"
+    },
+    {
+      "path": "projects.html",
+      "title": "Projects",
+      "author": [],
+      "contents": "\n\n\n\n",
+      "last_modified": "2021-08-06T10:37:19-07:00"
+    }
+  ],
+  "collections": []
+}
