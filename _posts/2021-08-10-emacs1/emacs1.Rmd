@@ -1,0 +1,99 @@
+---
+title: "Emacs for Data Science: Part 1"
+description: "Setting up an R development environment"
+author:
+  - name: Austin Weisgrau
+date: 08-10-2021
+output:
+  distill::distill_article:
+    self_contained: false
+preview: emacslogo.png
+---
+
+RStudio is the best IDE for any kind of R development. It works great out of the box, has a ton of useful features, basically everything you could need.
+
+I prefer to tinker, though, and RStudio doesn't need much tinkering to work. And it's hard to learn the deeper levels of computer magic when everything works. And that's why I love emacs!
+
+Emacs is a highly customizable free and open source text editor written in lisp. There are a ton of packages that have been developed to extend Emacs functionality, and they often need a little troubleshooting to get set up correctly. You learn a lot along the way.
+
+This is the section of my emacs initialization setup (`~/.emacs.d/init.el`) related specifically to R development. There's plenty of other useful packages that support my use of Emacs, but I'll go over those another time. This section is specific to getting Emacs up and running with more or less comparable functionality to RStudio as an IDE.
+
+I'm working in emacs 27.1
+
+```{el}
+;; R development
+(use-package poly-markdown
+  :ensure t)
+(use-package poly-R
+  :ensure t)
+(use-package ess
+  :ensure t
+  :bind (("C-c l" . my-r-clear-buffer)))
+(use-package company
+  :ensure t
+  :init (add-hook 'after-init-hook 'global-company-mode))
+(use-package ess-view-data
+  :ensure t
+  :bind (("C-c M-v" . ess-view-data-print)))
+(add-to-list 'auto-mode-alist '("\\.Rmd" . rmd-mode))
+(defun rmd-mode ()
+  "ESS Markdown mode for rmd files."
+  (interactive)
+  (require 'poly-R)
+  (require 'poly-markdown)
+  (poly-markdown+r-mode)
+  (setq indent-tabs-mode nil))
+(defun my-r-clear-buffer ()
+  (interactive)
+  (pop-to-buffer (ess-get-process-buffer) '((display-buffer-reuse-window
+                                             display-buffer-same-window)))
+  (comint-clear-buffer))
+(defun insert-r-code-block ()
+  "Insert RMarkdown code block."
+  (interactive)
+  (insert "```{r}")
+  (newline 3)
+  (insert "```")
+  (forward-line -2))
+(defun then_R_operator ()
+  "R - %>% operator or 'then' pipe operator"
+  (interactive)
+  (just-one-space 1)
+  (insert "%>%")
+  (reindent-then-newline-and-indent))
+(define-key ess-mode-map (kbd "C-%") 'then_R_operator)
+(define-key inferior-ess-mode-map (kbd "C-%") 'then_R_operator)
+(global-set-key (kbd "M-n `") 'insert-r-code-block)
+(defun rmd-template ()
+  "Insert .Rmd template."
+  (interactive)
+  (insert "---")
+  (newline)(insert "title: \"\"")
+  (newline)(insert "author: \"Austin Weisgrau\"")
+  (newline)(insert "date: \"\"")
+  (newline)(insert "output:")
+  (newline)(tab-to-tab-stop)(insert "html_document:")
+  (newline)(tab-to-tab-stop)(tab-to-tab-stop)(insert "theme: flatly")
+  (newline)(tab-to-tab-stop)(tab-to-tab-stop)(insert "toc: true")
+  (newline)(tab-to-tab-stop)(tab-to-tab-stop)(insert "toc_float: true")
+  (newline)(tab-to-tab-stop)(tab-to-tab-stop)(insert "number_sections: true")
+  (newline)(tab-to-tab-stop)(tab-to-tab-stop)(insert "code_folding: hide")
+  (newline)(insert "---")(newline)
+  (insert-r-code-block)(backward-char)(beginning-of-line)(forward-char 3)(delete-char 3)
+  (insert "{r setup, include=FALSE}")(forward-line)
+  (insert "knitr::opts_chunk$set(echo=TRUE)")(delete-char 1)
+  (forward-line 2)(newline))
+(defun rmd-template-webpage ()
+  "Insert .Rmd template."
+  (interactive)
+  (insert "---")
+  (newline)(insert "title: \"\"")
+  (newline)(insert "description: \"\"")
+  (newline)(insert "site: distill::distill_website")
+  (newline)(insert "---")(newline)
+  (insert-r-code-block)(backward-char)(beginning-of-line)(forward-char 3)(delete-char 3)
+  (insert "{r setup, include=FALSE}")(forward-line)
+  (insert "knitr::opts_chunk$set(echo=FALSE)")(delete-char 1)
+  (forward-line 2)(newline))
+```
+
