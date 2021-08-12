@@ -13,4 +13,4 @@ output:
 site: distill::distill_website
 ---
  
-I am a software developer for <img src="https://rlabs-public.s3.us-east-2.amazonaws.com/rlabs.png" width="30" alt="Movement Labs" />[Movement Labs](https://movementlabs.com) and a data science student at the Bren School at UC Santa Barbara. I build automations & data pipelines for progressive organizations to get more done.
+I am a software developer for <img src="https://rlabs-public.s3.us-east-2.amazonaws.com/rlabs.png" width="30" alt="Movement Labs" />[Movement Labs](https://movementlabs.com) and a data science student at the UCSB Bren School of Environmental Science & Management. I build automations & data pipelines for progressive political organizations to help them get more done, work smarter, and make better use of their data.
