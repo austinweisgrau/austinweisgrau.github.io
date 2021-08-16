@@ -1,9 +1,0 @@
----
-title: "Austin Weisgrau"
----
-
-I am a software developer for Movement Labs and a data science student at the UCSB Bren School of Environmental Science & Management. I hold a bachelor's degree in Economics from Reed College, where I studied environmental and natural resource economics with a focus on climate change.
-
-I believe we need powerful social movements to win transformative environmental legislation. I worked for 4 years as a community organizer building power for economic and environmental justice in the San Francisco Bay Area.
-
-Once the pandemic hit, I worked online with Movement Labs to help send 50 million voter registration and turnout texts in the lead up to the 2020 election. I learned that tech tools can support the frontline organizers building people power. Now I build automations & data pipelines for progressive political organizations to help them get more done, work smarter, and make better use of their data.
