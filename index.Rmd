@@ -14,7 +14,7 @@ site: distill::distill_website
 ---
  
 ## Bio
-I am a software developer for <img src="https://rlabs-public.s3.us-east-2.amazonaws.com/rlabs.png" width="30" alt="Movement Labs" />[Movement Labs](https://movementlabs.com) and a data science student at the UCSB Bren School of Environmental Science & Management. I hold a bachelor's degree in Economics from Reed College, where I studied environmental and natural resource economics with a focus on climate change.
+I am a software developer for <img src="https://rlabs-public.s3.us-east-2.amazonaws.com/rlabs.png" width="30" alt="Movement Labs" />[Movement Labs](https://movementlabs.com) and a masters student in data science at the UCSB Bren School of Environmental Science & Management. I hold a bachelor's degree in Economics from Reed College, where I studied environmental and natural resource economics with a focus on climate change.
 
 I believe we need powerful social movements to win transformative environmental legislation. I worked for 4 years as a community organizer building power for economic and environmental justice in the San Francisco Bay Area.
 
@@ -34,4 +34,4 @@ Once the pandemic hit and much community organizing work transitioned online, I 
 
 **Jewish Youth for Community Action** | Program Coordinator | September 2018 - February 2020
 
-**Service Employees International Union**, Local #1021 | Organizer | October 2016 - August 2018
+**Service Employees International Union**, Local 1021 | Organizer | October 2016 - August 2018
