@@ -2,9 +2,10 @@ AUTHOR = "Austin Weisgrau"
 SITENAME = "Data Engineering the Left"
 SITEURL = ""
 
+OUTPUT_PATH = "docs"
 PATH = "content"
 
-TIMEZONE = "Europe/Rome"
+TIMEZONE = "America/Los_Angeles"
 
 DEFAULT_LANG = "en"
 
@@ -16,25 +17,24 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (
-    ("Pelican", "https://getpelican.com/"),
-    ("Python.org", "https://www.python.org/"),
-    ("Jinja2", "https://palletsprojects.com/p/jinja/"),
-    ("You can modify those links in your config file", "#"),
-)
+LINKS = ()
 
 # Social widget
 SOCIAL = (
-    ("You can add links in your config file", "#"),
-    ("Another social link", "#"),
+    ("LinkedIn", "https://www.linkedin.com/in/austin-weisgrau-a784b042/"),
+    ("GitHub", "https://github.com/austinweisgrau"),
 )
 
 DEFAULT_PAGINATION = 10
 
+# TEMPLATE_PAGES = {"src/index.html": "output/index.html"}
+DIRECT_TEMPLATES = ["index", "archives"]
+
+DISPLAY_PAGES_ON_MENU = True
+DISPLAY_CATEGORIES_ON_MENU = False
+TYPOGRIFY = True
+
+THEME = "/home/aradox/pelican-themes/octopress"
+
 # Uncomment following line if you want document-relative URLs when developing
 # RELATIVE_URLS = True
-
-
-# THEME = "themes/bootstrap2"
-OUTPUT_PATH = "output"
-PATH = "content"
