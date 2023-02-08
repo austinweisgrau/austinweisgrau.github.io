@@ -1,0 +1,51 @@
+[
+    
+    {
+        "title" : "Probability and Combinatorics",
+	"url" : "/blog/ds/2020/07/09/Probability.html",
+        "content" : "probability calculate probabilities identify in dependent variables calculate permutations and combinationsthe mathematics underlying inferential statistics derive from probability theory probability of number of outcomes in cardinality of number of outcomes in cardinality of absolute and normalized measurement for model regularization measurement normalized values measurements two events are mutually exclusive disjoint if two events are dependent if two events are independent if multiplication rule for independent events the probability of is equal to the product of and combinatorics and permutations cartesian cross product i j k for i in a for j in b for k in c permutations are ordered selections partial selection number of possible permutations len list itertools permutations s r combinations are unordered selections scipy special comb n r exact false len list itertools combinations s r conditional probabilitythe probability of a given b partitions of s no overlap fill completely bayes"
+    } ,
+    
+    {
+        "title" : "Discrete Probability Distributions",
+	"url" : "/blog/ds/2020/07/09/DiscrProb.html",
+        "content" : "discrete probability distributions discrete continuous random variable behavior probability mass functions cumulative density functions bernoulli binomial poisson geometric distributionsfor random variable expected value variance probability mass function cumulative density function bernoulli distribution is binary coin toss binomial distribution successes after bernoulli trials for binomial variable reminder scipy stats binom pmf k k n n p p binomial cdf scipy stats binom n n p p cdf k expected value variance geometric distribution time until factory failure bernoulli trials until first success pmf cdf poisson distribution how many shooting stars probability of independent events within a fixed period given rate of occurence pmf scipy stats poisson pmf k k mu lambda cdf"
+    } ,
+    
+    {
+        "title" : "Continuous Probability Distributions",
+	"url" : "/blog/ds/2020/07/09/ContProb.html",
+        "content" : "continuous probability distributions continuous random variable behavior probability density function exponential and normal distributions scipy integrate quad lambda x f x a b probability distribution function cumulative distribution function normal gaussian distribution standardized z score cdf scipy stats norm cdf x loc mean 0 scale sigma 1 or norm cdf z exponential distribution poisson process waiting memoryless for event rate pdf for cdf for"
+    } ,
+    
+    {
+        "title" : "Learningmarkdown",
+	"url" : "/blog/ds/2020/07/08/learningmarkdown.html",
+        "content" : "markdown familiarization documentexploring featuresgotta include two spaces after each sentence if you want a linebreak proper bold text like this italics like so very important this is a block quote going on here twill be quite impressive each paragraph gets its own thingie gets a second indent a nested guy ordered lists definitely unordered lists for sure even this stuff nested at the command prompt type nano you can escape code also byokka my websiteyou can use backslash to escape characters like class pickle object def init self self punch syntax highlighting tiny heading works like this i rather like it stuff gets crossed bya baddabing baddaboom baddabang"
+    } ,
+    
+    {
+        "title" : "Sets and Probability Notes",
+	"url" : "/blog/ds/2020/07/08/Sets.html",
+        "content" : "sets demorgan s laws distributions probability population mean sample mean sample mean of random variable median mode variance of sample variance of population standard deviation of a sample standard deviation of a population"
+    } ,
+    
+    {
+        "title" : "Mathjax",
+	"url" : "/blog/ds/2020/07/08/Mathjax.html",
+        "content" : "mathjax in emacs markdown jekyllfirst triesgreekalpha beta gamma delta phi omega limitssubscripts miscellaneoussumsset notationbracketsmatrices"
+    } ,
+    
+    {
+        "title" : "first web post",
+	"url" : "/blog/web/2020/06/01/firstpost.html",
+        "content" : "time for a web posty all about to read this shit"
+    } ,
+    
+    {
+        "title" : "second data post",
+	"url" : "/blog/data/2007/02/20/secondpost.html",
+        "content" : "time for a data post babytryina get some"
+    } 
+    
+]
