@@ -4,16 +4,17 @@ date: 2023-03-02
 # Migrating to Prefect, Part 3: Rate limiting API calls
 
 *This post is the third in a series about migrating off of Civis and
-onto Prefect as our orchestration tool. The [first post here]() is
-about the limitations of Civis, and the [second post here]() is about
-setting up Prefect with AWS ECS.*
+onto Prefect as our orchestration tool. The [first post]() is about the
+limitations of Civis, and the [second post]() is about setting up Prefect
+with AWS ECS.*
 
 A common, basic workflow in a data pipeline is to make concurrent,
 rate-limited API calls to fetch or post data to a service.
 One obstacle I hit early on when attempting to move our data pipelines
 into Prefect was around setting up rate-limited API calls.
 
-[Skip to solution](#solution)
+[Skip to solution](#solution) or see [a working example in my prefect template
+repository](https://github.com/austinweisgrau/prefect-ecs-template/blob/main/flows/api_call_demonstration/api_call_flow.py)
 
 ## Implementing rate-limited API calls in standard python
 

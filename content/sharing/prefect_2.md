@@ -122,5 +122,5 @@ updated. Our flow deployments do not include a storage block.
 
 See our [deployment Github Actions script here](https://github.com/austinweisgrau/prefect-ecs-template/blob/main/.github/workflows/main.yaml).
 
-The next post in this series explore some [useful utilities for working
-in Prefect]().
+The next posts in this series explore some [useful utilities for working
+in Prefect](): rate-limiting API calls.
