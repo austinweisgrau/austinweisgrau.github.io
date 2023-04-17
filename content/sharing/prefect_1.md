@@ -1,10 +1,12 @@
-title: Migration to Prefect. Part 1: Civis Woes
+title: Migrating to Prefect. Part 1: Civis Woes
 date: 2023-02-22
 
-This is the first post in a series of blog posts about our migration
+# Migrating to Prefect, Part 1: Civis Woes
+
+*This is the first post in a series of blog posts about our migration
 to Prefect at Working Families Party. I'll start by describing our
 current orchestration and execution platform, Civis, and its many
-limitations.
+limitations.*
 
 [Civis](https://civisanalytics.com) is a widely used platform across the progressive space. This is
 largely because access to Civis is included with membership in [The
@@ -129,6 +131,21 @@ same version-controlled code repository that the code itself lives
 in.
 
 ## Conclusion
+
+Civis is a tool designed for ease of use. It abstracts away most of
+the data engineering otherwise required for analytics work so that
+data teams can get up and running quickly and easily with minimal
+technical hurdles. This is essential for small, short-lived,
+fast-moving campaigns common across the political space.
+
+This design comes with a fatal flaw, which is that technical staff
+using Civis ultimately are "protected" from ever needing to learn data
+engineering practices. Data staff in the progressive political space
+can go years, from team to team, working exclusively in Civis and
+never learn data engineering best practices or even fundamental data
+engineering concepts. Ultimately, the technical capacity of the
+progressive movement depends on technical staff working closer to and
+more directly with their data infrastructure.
 
 Hopefully this blog post illustrates some of the important limitations
 on using Civis as a production platform for a data or engineering
