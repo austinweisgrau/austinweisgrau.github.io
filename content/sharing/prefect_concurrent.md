@@ -37,7 +37,7 @@ number of active threads.
 A standard implementation of concurrent rate-limited API calls in
 python can look like this:
 
-```
+```python
 from concurrent.futures import ThreadPoolExecutor
 import requests
 
@@ -58,7 +58,7 @@ calls will take about 10 seconds to complete.
 This represents a speed increase of 3x over using a for loop, which
 would take a full 30 seconds to complete. 
 
-```
+```python
 responses = []
 
 for payload in payloads:
@@ -85,7 +85,7 @@ default task runner is a ConcurrentTaskRunner.
 Tasks submitted to a concurrent runner will all execute as soon as
 they are not waiting for any upstream values.
 
-```
+```python
 import requests
 from prefect import flow, task
 
@@ -118,14 +118,14 @@ Prefect offers a native solution for limiting concurrency on tasks:
 simply enough, a [task run concurreny limit](https://docs.prefect.io/concepts/tasks/#task-run-concurrency-limits). It is simple to set up and
 use. Concurrency limit values must be deployed to the server with
 
-```
+```bash
 $ prefect concurrency-limit create limit_concurrency_10 10
 ```
 
 And then prefect tasks can be rate limited by tagging them with the
 name of the concurrency limit:
 
-```
+```python
 @task(tag="limit_concurrency_10")
 def make_api_call(payload: dict):
    pass
@@ -175,7 +175,7 @@ My implementation of the prefect-compatible semaphore-based
 concurrency rate limiting can be found below or in my template
 repository [here](https://github.com/austinweisgrau/prefect-ecs-template/blob/main/utilities/concurrency.py), and its use ends up being very simple:
 
-```
+```python
 import requests
 from prefect import flow, task
 from utilities.concurrency import limit_concurrency
@@ -198,7 +198,7 @@ seconds with this implementation.
 
 ## My concurrency limiting task decorator
 
-```
+```python
 from functools import wraps
 from threading import Semaphore
 from typing import Callable
