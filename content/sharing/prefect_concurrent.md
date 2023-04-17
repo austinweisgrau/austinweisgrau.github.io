@@ -43,7 +43,7 @@ import requests
 
 def make_api_call(payload: dict) -> requests.models.Response:
     response = requests.post(api_url_endpoint, json=payload)
-	return response
+    return response
 
 with ThreadPoolExecutor(max_workers=3) as executor:
     payloads: list[dict] = ...
@@ -63,7 +63,7 @@ responses = []
 
 for payload in payloads:
     response = make_api_call(payload)
-	responses.append(response)
+    responses.append(response)
 ```
 
 ## Implementing concurrency in Prefect
@@ -92,12 +92,12 @@ from prefect import flow, task
 @task
 def make_api_call(payload: dict) -> requests.models.Response:
     response = requests.post(api_url_endpoint, payload)
-	return response
+    return response
 	
 @flow
 def my_flow():
     payloads = ...
-	responses = make_api_call.map(payloads)
+    responses = make_api_call.map(payloads)
 ```
 
 Using prefect makes concurrent execution of python code wonderfully
@@ -184,12 +184,12 @@ from utilities.concurrency import limit_concurrency
 @limit_concurrency(max_workers=3)
 def make_api_call(payload: dict) -> requests.models.Response:
     response = requests.post(api_url_endpoint, payload)
-	return response
+    return response
 	
 @flow
 def my_flow():
     payloads = ...
-	responses = make_api_call.map(payloads)
+    responses = make_api_call.map(payloads)
 ```
 
 Identical to the implementation with `ThreadPoolExecutor` above,
