@@ -1,34 +1,43 @@
 title: Migrating to Prefect. Part 1: Civis Woes
 date: 2023-02-22
 
-# Migrating to Prefect, Part 1: Civis Woes
-
 *This is the first post in a series of blog posts about our migration
 to Prefect at Working Families Party. I'll start by describing our
 current orchestration and execution platform, Civis, and its many
 limitations.*
 
-[Civis](https://civisanalytics.com) is a widely used platform across the progressive space. This is
-largely because access to Civis is included with membership in [The
-Movement Cooperative](https://movementcooperative.org/), and is an afforadable and accessible platform
-for writing and running SQL and python in a cloud environment. 
+In a data context, "orchestration" refers to the work of coordinating,
+scheduling, and automating the movement and transformation of data
+from its raw sources to everywhere it is needed in an
+organization. This work is often conceptualized in terms of a series
+of "data pipelines", which extract data from sources, load it to
+destinations, and transform it along the way.
 
-The Civis web app is intended to be easy to use for staff who aren't
-necessarily engineers. There are many integrations that make Civis
-especially simple to use in some cases, for example running a SQL
-query and loading new rows to a Google Sheet. Civis has a lot going
-for it and there are good reasons it is popular.
+[Civis](https://civisanalytics.com) is a widely used orchestration platform across the progressive
+space. One reason for this is that access to Civis is included with
+membership in [The Movement Cooperative](https://movementcooperative.org/), and is an afforadable and
+accessible platform for writing and running SQL and python in a cloud
+environment.
 
-However, Civis is not really an appropriate production tool for a
-mature data or engineering team. Civis has many limitations, and many
-of its design choices in favor of ease-of-use end up as liabilities in
-the long term. For any team that is regularly running SQL and python
+Civis is an all-inclusive data platform that allows campaigns nd
+organizations to manipulate data in their Redshift warehouse, automate
+SQL and Python jobs, run scripts on containers, and more. They also
+have an intuitive SQL to G Sheet export functionality that tend be the
+bread and butter for a lot of political organizing. Civis is very user
+friendly and does not require any engineering or "devops" experience
+to get up and running. Civis has a lot going for it and there are good
+reasons it is popular.
+
+However, Civis is not an appropriate production tool for mature data
+or engineering teams. Civis has many limitations, and many of its
+design choices in favor of ease-of-use end up as liabilities in the
+long term. For any team that is regularly running SQL and python
 scripts with nontrivial logic, it is important to explore issues with
-Civis as a production tool.
+Civis as a production tool. 
 
 ## Version control
 
-Version control is a critically important tool for engineering at
+Version control is a critical tool for engineering at
 every level. It enables collaboration, oversight, institutional
 memory, an additional form of documentation, and more. There are tons
 of resources online expounding the benefits and necessities of version
@@ -77,12 +86,17 @@ critical element of keeping a team functioning in the long term.
 
 ## Permissions and visibility
 
-Civis lacks an effective way to administer permissions and access to
-resources between users. No user can be granted access to everything
-in Civis. Instead, each individual user must manually share their
-assets with other users. If a user doesn't have access to an asset in
-Civis, Civis will report that the asset does not exist, rather than
-identifying the permissions issue.
+Limitations on permissions and visibility apply specifically to
+federated Civis users, such as those whose access to Civis comes
+through The Movement Cooperative and aren't intrinsic to Civis
+itself.
+
+Civis through TMC lacks an effective way to administer permissions and
+access to resources between users. No user can be granted access to
+everything in Civis. Instead, each individual user must manually share
+their assets with other users. If a user doesn't have access to an
+asset in Civis, Civis will report that the asset does not exist, rather
+than identifying the permissions issue.
 
 This is problematic because it means team members can create scripts
 that run on production services without that activity being visible to
@@ -146,9 +160,3 @@ never learn data engineering best practices or even fundamental data
 engineering concepts. Ultimately, the technical capacity of the
 progressive movement depends on technical staff working closer to and
 more directly with their data infrastructure.
-
-Hopefully this blog post illustrates some of the important limitations
-on using Civis as a production platform for a data or engineering
-team. Civis has its benefits that are appropriate in certain
-circumstances, but a team of any maturity should be careful to avoid
-leaning on Civis for any critical workflows.

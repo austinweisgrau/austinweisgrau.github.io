@@ -1,11 +1,9 @@
-title: Limiting Task Concurrency in Prefect
+title: Migrating to Prefect, Part 3: Rate limiting API calls
 date: 2023-03-02
 
-# Migrating to Prefect, Part 3: Rate limiting API calls
-
 *This post is the third in a series about migrating off of Civis and
-onto Prefect as our orchestration tool. The [first post]() is about the
-limitations of Civis, and the [second post]() is about setting up Prefect
+onto Prefect as our orchestration tool. The [first post]({filename}/sharing/prefect_1.md) is about the
+limitations of Civis, and the [second post]({filename}/sharing/prefect_2.md) is about setting up Prefect
 with AWS ECS.*
 
 A common, basic workflow in a data pipeline is to make concurrent,
@@ -75,10 +73,10 @@ Prefect is built on top of an asyncio implementation called AnyIO and
 can seamlessly work with python scripts written using asyncio. For
 reasons described above, I don't want to use asyncio.
 
-Prefect tasks are main building block of flows in Prefect, and are
+Prefect tasks are the main building block of flows in Prefect, and are
 also the main mechanism for orchestrating concurrency. Prefect tasks
 called with `task.submit()` or `task.map()` are sent to a [Task Runner](https://docs.prefect.io/concepts/task-runners/)
-for (potentially) concurrenct execution. Sequential, concurrent or parallel
+for (potentially) concurrent execution. Sequential, concurrent or parallel
 execution will occur depending on which task runner is used. The
 default task runner is a ConcurrentTaskRunner.
 
@@ -115,7 +113,7 @@ payloads simultaneously. This will generally get your API calls
 temporarily or permanently blocked.
 
 Prefect offers a native solution for limiting concurrency on tasks:
-simply enough, a [task run concurreny limit](https://docs.prefect.io/concepts/tasks/#task-run-concurrency-limits). It is simple to set up and
+simply enough, a [task run concurrency limit](https://docs.prefect.io/concepts/tasks/#task-run-concurrency-limits). It is simple to set up and
 use. Concurrency limit values must be deployed to the server with
 
 ```bash
@@ -155,8 +153,7 @@ One simple solution would be to use normal python mulithreading code
 within a prefect task. In Prefect, however, a Prefect task is intended
 to be the smallest unit of concurrency. It breaks intended Prefect
 patterns to use multithreading from within a prefect task. Some Prefect
-utilities are incompatible with multithreaded task code. [*See
-discussion here.*](https://github.com/PrefectHQ/prefect/issues/8652)
+utilities are incompatible with multithreaded task code. [*See discussion here.*](https://github.com/PrefectHQ/prefect/issues/8652)
 
 In the end, the approach I settled on with some help from the Prefect
 development team involved using a python [`threading.Semaphore`](https://superfastpython.com/thread-semaphore/). A
@@ -196,7 +193,7 @@ Identical to the implementation with `ThreadPoolExecutor` above,
 executing 30 API calls that take 1 second each will take about 10
 seconds with this implementation.
 
-## My concurrency limiting task decorator
+## <a id="solution"></a>My concurrency limiting task decorator 
 
 ```python
 from functools import wraps

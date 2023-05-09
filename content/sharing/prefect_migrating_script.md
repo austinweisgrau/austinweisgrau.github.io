@@ -1,11 +1,9 @@
-title: Migrating a Script from Civis to Prefect
+title: Migrating to Prefect, Part 4: Moving a Script from Civis to Prefect
 date: 2023-03-27
 
-# Migrating to Prefect, Part 4: Moving a Script from Civis to Prefect
-
 *This post is the fourth in a series about migrating off of Civis and
-onto Prefect as our orchestration tool. The [first post]() is about
-the limitations of Civis, and the [second]() and [third]() posts are about
+onto Prefect as our orchestration tool. The [first post]({filename}/sharing/prefect_1.md) is about
+the limitations of Civis, and the [second]({filename}/sharing/prefect_2.md) and [third]({filename}/sharing/prefect_concurrent.md) posts are about
 setting up and using Prefect.*
 
 Once Prefect was adequately set up, we were ready to start moving our
@@ -34,7 +32,8 @@ Bonus steps:
 
 We can use the following Civis script as an example to work with.
 
-This script pulls a list of VAN IDs from a Redshift table and updates these VAN IDs in EveryAction with an origin source code.
+This script pulls a list of VAN IDs from a Redshift table and updates
+these VAN IDs in EveryAction with an origin source code. 
 
 ```
 import os
@@ -58,7 +57,7 @@ print("Finished applying source codes.")
 Prefect is intended to be simple to implement with existing code. The
 minimum change necessary to make a Prefect flow out of existing code
 is to encapsulate the code within a method that has the
-`prefect.flow()` decorator applied.
+`@flow()` decorator applied.
 
 ```
 import os
@@ -132,7 +131,10 @@ def update_van_source_codes():
    
 ```
 
-Alternatively, you can use the prefect logger.
+You can set print logging globally with the Prefect config variable
+`PREFECT_LOGGING_LOG_PRINTS=True`
+
+You can also alternatively use the prefect logger.
 
 ```
 from prefect import flow, task, get_run_logger
@@ -147,41 +149,11 @@ def update_van_source_codes():
     get_run_logger().info("Finished apply source codes.")
 ```
 
-The prefect run logger has issues working in a test environment, so I
-prefer to use an intermediate method which can return a fallback
-logger if the run logger is not available. This module is included in
-my prefect template [here](https://github.com/austinweisgrau/prefect-ecs-template/blob/main/utilities/logging.py).
-
-```
-import logging
-
-from prefect import get_run_logger
-from prefect.exceptions import MissingContextError
-
-# Configure fallback prefect logger
-# Note that this logger should only be used in development
-logger = logging.getLogger("prefect-development")
-logger.setLevel(logging.DEBUG)
-
-
-def get_logger() -> logging.Logger:
-    """Returns prefect.get_run_logger() except in a test environment
-
-    prefect.get_run_logger() is incompatible with testing task functions
-    outside of a flow context. See
-    https://github.com/PrefectHQ/prefect/issues/8568"""
-    try:
-        result = prefect.get_run_logger()
-    except MissingContextError:
-        result = logging.getLogger("prefect-development")
-    return result
-
-```
 
 ## Swap out credential fetching methods
 
 Now that we're out of Prefect, we're not bound to using environment
-variables with those pesky mandatory`_PASSWORD` suffixes!
+variables with those pesky mandatory `_PASSWORD` suffixes!
 
 You can fetch credentials using any implementation that makes sense
 for your team and Prefect stack. You can add environment variables
