@@ -95,8 +95,7 @@ setting up the ECS Task and its networking infrastructure. I modified
 that script using [this template](https://gist.github.com/jbesw/f9401b4c52a7446ef1bb71ceea8cc3e8) to enable the use of an "elastic IP"
 address in AWS for our ECS tasks. I also needed to modify the
 `prefect_aws.ECSTask` block stored in our Prefect Cloud instance to
-always use the correct (private) VPC subnets (see our [full
-configuration script for CloudFormation here](https://github.com/austinweisgrau/prefect-ecs-template/blob/main/infrastructure/ecs_cluster_prefect_agent.yml)). 
+always use the correct (private) VPC subnets (see our [full configuration script for CloudFormation here](https://github.com/austinweisgrau/prefect-ecs-template/blob/main/infrastructure/ecs_cluster_prefect_agent.yml)). 
 
 
 ## Deploying Changes

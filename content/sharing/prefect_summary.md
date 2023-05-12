@@ -46,7 +46,7 @@ started.
 Another advantage of Prefect over Airflow is that migrating existing
 Python code to Prefect is much simpler than migrating to
 Airflow. Airflow has an idiosyncratic implementation in Python, but
-existing Python code can be turned into working a Prefect flow by
+existing Python code can be turned into a working Prefect flow by
 simply wrapping it in a decorator.
 
 Overall, what Prefect offered us was the opportunity to implement many

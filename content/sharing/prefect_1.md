@@ -17,7 +17,7 @@ destinations, and transform it along the way.
 political space. Civis is an afforadable and accessible platform for
 writing and running SQL and python in a cloud environment.
 
-Civis is an all-inclusive data platform that allows campaigns nd
+Civis is an all-inclusive data platform that allows campaigns and
 organizations to manipulate data in their Redshift warehouse, automate
 SQL and Python jobs, run scripts on containers, and more. They also
 have an intuitive SQL to G Sheet export functionality that tend be the

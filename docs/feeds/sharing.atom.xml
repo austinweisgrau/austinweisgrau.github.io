@@ -40,7 +40,7 @@ expensive. Prefect offers a lower infrastructural lift for getting&amp;nbsp;star
 &lt;p&gt;Another advantage of Prefect over Airflow is that migrating existing
 Python code to Prefect is much simpler than migrating to
 Airflow. Airflow has an idiosyncratic implementation in Python, but
-existing Python code can be turned into working a Prefect flow by
+existing Python code can be turned into a working Prefect flow by
 simply wrapping it in a&amp;nbsp;decorator.&lt;/p&gt;
 &lt;p&gt;Overall, what Prefect offered us was the opportunity to implement many
 data-engineering best practices that were difficult or impossible to
@@ -362,8 +362,7 @@ setting up the &lt;span class="caps"&gt;ECS&lt;/span&gt; Task and its networking
 that script using &lt;a href="https://gist.github.com/jbesw/f9401b4c52a7446ef1bb71ceea8cc3e8"&gt;this template&lt;/a&gt; to enable the use of an &amp;#8220;elastic &lt;span class="caps"&gt;IP&lt;/span&gt;&amp;#8221;
 address in &lt;span class="caps"&gt;AWS&lt;/span&gt; for our &lt;span class="caps"&gt;ECS&lt;/span&gt; tasks. I also needed to modify the
 &lt;code&gt;prefect_aws.ECSTask&lt;/code&gt; block stored in our Prefect Cloud instance to
-always use the correct (private) &lt;span class="caps"&gt;VPC&lt;/span&gt; subnets (see our &lt;a href="https://github.com/austinweisgrau/prefect-ecs-template/blob/main/infrastructure/ecs_cluster_prefect_agent.yml"&gt;full
-configuration script for CloudFormation here&lt;/a&gt;). &lt;/p&gt;
+always use the correct (private) &lt;span class="caps"&gt;VPC&lt;/span&gt; subnets (see our &lt;a href="https://github.com/austinweisgrau/prefect-ecs-template/blob/main/infrastructure/ecs_cluster_prefect_agent.yml"&gt;full configuration script for CloudFormation here&lt;/a&gt;). &lt;/p&gt;
 &lt;h2&gt;Deploying&amp;nbsp;Changes&lt;/h2&gt;
 &lt;p&gt;There are two different ways a Prefect flow can be deployed which
 determine how the code is passed to the Prefect agent and&amp;nbsp;executed.&lt;/p&gt;
@@ -594,7 +593,7 @@ destinations, and transform it along the&amp;nbsp;way.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://civisanalytics.com"&gt;Civis&lt;/a&gt; is a widely used orchestration platform across the progressive
 political space. Civis is an afforadable and accessible platform for
 writing and running &lt;span class="caps"&gt;SQL&lt;/span&gt; and python in a cloud&amp;nbsp;environment.&lt;/p&gt;
-&lt;p&gt;Civis is an all-inclusive data platform that allows campaigns nd
+&lt;p&gt;Civis is an all-inclusive data platform that allows campaigns and
 organizations to manipulate data in their Redshift warehouse, automate
 &lt;span class="caps"&gt;SQL&lt;/span&gt; and Python jobs, run scripts on containers, and more. They also
 have an intuitive &lt;span class="caps"&gt;SQL&lt;/span&gt; to G Sheet export functionality that tend be the
