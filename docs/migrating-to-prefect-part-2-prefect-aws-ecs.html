@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Migrating to Prefect, Part 2: Prefect & AWS ECS &mdash; Data Engineering the Left</title>
+  <meta name="author" content="Austin Weisgrau">
+
+
+
+
+
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link href="https://austinweisgrau.github.io/favicon.png" rel="icon">
+
+  <link href="https://austinweisgrau.github.io/theme/css/main.css" media="screen, projection"
+        rel="stylesheet" type="text/css">
+
+  <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <header role="banner"><hgroup>
+  <h1><a href="https://austinweisgrau.github.io/">Data Engineering the Left</a></h1>
+</hgroup></header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+</ul>
+
+
+<ul class="main-navigation">
+</ul></nav>
+  <div id="main">
+    <div id="content">
+<div>
+  <article class="hentry" role="article">
+<header>
+      <h1 class="entry-title">Migrating to Prefect, Part 2: Prefect & AWS ECS</h1>
+    <p class="meta">
+<time datetime="2023-03-07T00:00:00-08:00" pubdate>Tue 07 March 2023</time>    </p>
+</header>
+
+  <div class="entry-content"><p><em>In my <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html">previous blog post</a>, I explained the limitations with Civis
+as a production tool for a data/engineering team. These limitations
+led our data team at Working Families Party to choose to move our
+orchestration tooling off of Civis and into another tool. After
+evaluating a few tools, we were excited to begin our migration to&nbsp;Prefect.</em></p>
+<p>This post will explain how we set up Prefect and some of the choices
+we made along the way. You can follow along with the full set up as a
+template repository <a href="https://github.com/austinweisgrau/prefect-ecs-template">here</a>.</p>
+<p>First, just one vocabulary word that will make the rest of this post
+more&nbsp;readable:</p>
+<ul>
+<li>Prefect &#8220;Flow&#8221;: this is more generically called a script or data
+  pipeline. Prefect is fundamentally about the orchestration,
+  execution, and observability of&nbsp;flows.</li>
+</ul>
+<h2>Orchestration and Execution in&nbsp;Prefect</h2>
+<p>Orchestration tools handle the separation of orchestration and
+execution differently. Some tools, like Civis and Airflow, handle both
+of these in the same layer. The same platform that schedules and
+triggers workflows is also responsible for executing them, often in
+the same compute&nbsp;environment.</p>
+<p>Prefect handles this differently and fully separates the
+orchestration and compute layers. The orchestration layer is run in a
+cloud server instance running an <span class="caps">API</span>-first web application with a <span class="caps">UI</span> for
+viewing and interacting with Prefect assets. Prefect offers a managed,
+hosted version of the server called the Prefect Cloud, with a
+generous free tier. (More documentation about Prefect&#8217;s design <a href="https://www.prefect.io/why-prefect/hybrid-model/">here</a>).</p>
+<p>The Prefect execution layer happens separately, and there is currently
+no managed option (although one is slated for release in the coming
+months). A Prefect &#8220;agent&#8221; or &#8220;worker&#8221; is a program that runs in
+the execution environment, frequently polls the Prefect orchestration
+server, and executes any flows that have been triggered by the
+server. Prefect users are responsible for setting up the environment
+for a Prefect agent or worker to&nbsp;run.</p>
+<h2>Cloud execution&nbsp;options</h2>
+<p>While it is possible to run Prefect flows locally, for example on the
+laptops of your team&#8217;s staff, a more robust solution is to run a
+Prefect agent in a cloud computing environment. There are many
+different ways to accomplish&nbsp;this.</p>
+<p>A common method is to use cloud &#8220;serverless&#8221; compute infrastructure to
+run the Prefect agent. Some popular options include <span class="caps">AWS</span> <span class="caps">EC2</span>, <span class="caps">AWS</span> <span class="caps">ECS</span>,
+Azure Container Apps, or Google Cloud&nbsp;Run.</p>
+<p>Some organizations with more resources might even choose to run their
+execution layer in a cloud-hosted Kubernetes cluster. Kubernetes is
+very configurable and scalable, but has a steeper and more complicated
+learning&nbsp;curve.</p>
+<h2>Tutorials and&nbsp;templates</h2>
+<p>One of the limitations of using Prefect is that the tool is newer,
+the community is smaller, and there are not as many resources
+available yet (compared to more mature tools like Airflow)
+demonstrating how to accomplish various set-ups. However, there are a
+few excellent templates and tutorials for getting the Prefect execution
+layer set up in various cloud&nbsp;environments.</p>
+<p>We used the &#8220;dataflow-ops&#8221; <a href="https://towardsdatascience.com/prefect-aws-ecs-fargate-github-actions-make-serverless-dataflows-as-easy-as-py-f6025335effc">tutorial</a> and <a href="https://github.com/anna-geller/dataflow-ops">template</a> to get our set up
+started in <span class="caps">AWS</span> <span class="caps">ECS</span>. We chose to use <span class="caps">AWS</span> <span class="caps">ECS</span> largely because we use <span class="caps">AWS</span>
+Redshift and <span class="caps">AWS</span> S3 as our primary database and data storage layers,
+and there are significant performance benefits to using <span class="caps">AWS</span> services&nbsp;together.</p>
+<p>Alternatively, <a href="https://medium.com/@nwosupaul141/serverless-deployment-of-a-prefect-data-pipeline-on-google-cloud-run-8c48765f2480">this tutorial</a> looks useful for getting started in Google
+Cloud Run. We may switch to this implementation if we end up moving
+off of Redshift and into Google Biguery at some&nbsp;point.</p>
+<h2>Needing a dedicated <span class="caps">IP</span> for access to&nbsp;redshift</h2>
+<p>The Movement Cooperative (<span class="caps">TMC</span>) is a cooperatively run organization
+that supports progressive organizations run their tech stacks. <span class="caps">TMC</span>
+manages our organization&#8217;s data warehouse in&nbsp;Redshift.</p>
+<p>We needed to enable a dedicated <span class="caps">IP</span> address for our execution
+layer so that we could have our <span class="caps">IP</span> address whitelisted by <span class="caps">TMC</span> in order
+to access the Redshift instance. Setting up a dedicated <span class="caps">IP</span> address for
+an <span class="caps">ECS</span> Task involved an understanding of some networking concepts and
+tools in <span class="caps">AWS</span>. Some new vocab words for me: &#8220;<span class="caps">VPC</span>&#8221;, &#8220;subnet&#8221;, &#8220;<span class="caps">NAT</span>&nbsp;gateway&#8221;.</p>
+<p>The dataflow-ops template included an <a href="https://github.com/anna-geller/dataflow-ops/blob/main/infrastructure/ecs_cluster_prefect_agent.yml"><span class="caps">AWS</span> CloudFormation Script</a> for
+setting up the <span class="caps">ECS</span> Task and its networking infrastructure. I modified
+that script using <a href="https://gist.github.com/jbesw/f9401b4c52a7446ef1bb71ceea8cc3e8">this template</a> to enable the use of an &#8220;elastic <span class="caps">IP</span>&#8221;
+address in <span class="caps">AWS</span> for our <span class="caps">ECS</span> tasks. I also needed to modify the
+<code>prefect_aws.ECSTask</code> block stored in our Prefect Cloud instance to
+always use the correct (private) <span class="caps">VPC</span> subnets (see our <a href="https://github.com/austinweisgrau/prefect-ecs-template/blob/main/infrastructure/ecs_cluster_prefect_agent.yml">full
+configuration script for CloudFormation here</a>). </p>
+<h2>Deploying&nbsp;Changes</h2>
+<p>There are two different ways a Prefect flow can be deployed which
+determine how the code is passed to the Prefect agent and&nbsp;executed.</p>
+<ol>
+<li>The Prefect agent and/or ECSTask can run on a docker image that
+   contains the flow&nbsp;code</li>
+<li>The <a href="https://docs.prefect.io/concepts/deployments/#deployment-build-options">flow deployment can be built</a> with a <a href="https://docs.prefect.io/concepts/deployments/#block-identifiers">cloud &#8220;storage block&#8221;</a> (for
+   example, S3), where the flow code will be uploaded on deployment
+   and downloaded when the flow is triggered by the agent to&nbsp;run.</li>
+</ol>
+<p>When changes are made to flow code, the updates can be pushed into
+production either by recreating and reuploading the docker image
+(strategy 1), or by rebuilding the flow deployment using a storage
+block (strategy 2), which uploads the new code to the storage&nbsp;block.</p>
+<p>I found the docker strategy to be somewhat simpler, so I modified the
+Github Actions deployment script included in the <a href="https://github.com/anna-geller/dataflow-ops/blob/main/.github/workflows/main.yaml">dataflow-ops template</a>
+to rebuild and reupload the docker image anytime the code is
+updated. Our flow deployments do not include a storage&nbsp;block.</p>
+<p>See our <a href="https://github.com/austinweisgrau/Prefect-ecs-template/blob/main/.github/workflows/main.yaml">deployment Github Actions script here</a>.</p>
+<p>The next post in this series explores a <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html">useful utility for working in Prefect</a>: rate-limiting <span class="caps">API</span>&nbsp;calls. </p></div>
+    <footer>
+<p class="meta">
+  <span class="byline author vcard">
+    Posted by <span class="fn">
+        Austin Weisgrau
+    </span>
+  </span>
+<time datetime="2023-03-07T00:00:00-08:00" pubdate>Tue 07 March 2023</time>  <span class="categories">
+    <a class='category' href='https://austinweisgrau.github.io/category/sharing.html'>sharing</a>
+  </span>
+</p><div class="sharing">
+</div>    </footer>
+  </article>
+
+</div>
+<aside class="sidebar">
+  <section>
+    <h1>Recent Posts</h1>
+    <ul id="recent_posts">
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-from-civis-to-prefect.html">Migrating from Civis to Prefect</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-4-moving-a-script-from-civis-to-prefect.html">Migrating to Prefect, Part 4: Moving a Script from Civis to Prefect</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html">Migrating to Prefect, Part 2: Prefect & AWS ECS</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html">Migrating to Prefect, Part 3: Rate limiting API calls</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html">Migrating to Prefect. Part 1: Civis Woes</a>
+      </li>
+    </ul>
+  </section>
+  <section>
+      
+    <h1>Categories</h1>
+    <ul id="recent_posts">
+        <li><a href="https://austinweisgrau.github.io/category/learning.html">learning</a></li>
+        <li><a href="https://austinweisgrau.github.io/category/sharing.html">sharing</a></li>
+    </ul>
+  </section>
+ 
+
+  <section>
+  <h1>Tags</h1>
+  </section>
+
+
+    <section>
+        <h1>Social</h1>
+        <ul>
+            <li><a href="https://www.linkedin.com/in/austin-weisgrau-a784b042/" target="_blank">LinkedIn</a></li>
+            <li><a href="https://github.com/austinweisgrau" target="_blank">GitHub</a></li>
+        </ul>
+    </section>
+
+</aside>    </div>
+  </div>
+  <footer role="contentinfo"><p>
+    Copyright &copy;  2023  Austin Weisgrau &mdash;
+  <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
+</p></footer>
+  <script src="https://austinweisgrau.github.io/theme/js/modernizr-2.0.js"></script>
+  <script src="https://austinweisgrau.github.io/theme/js/ender.js"></script>
+  <script src="https://austinweisgrau.github.io/theme/js/octopress.js" type="text/javascript"></script>
+</body>
+</html>

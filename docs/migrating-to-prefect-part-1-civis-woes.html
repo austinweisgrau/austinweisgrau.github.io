@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Migrating to Prefect. Part 1: Civis Woes &mdash; Data Engineering the Left</title>
+  <meta name="author" content="Austin Weisgrau">
+
+
+
+
+
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link href="https://austinweisgrau.github.io/favicon.png" rel="icon">
+
+  <link href="https://austinweisgrau.github.io/theme/css/main.css" media="screen, projection"
+        rel="stylesheet" type="text/css">
+
+  <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <header role="banner"><hgroup>
+  <h1><a href="https://austinweisgrau.github.io/">Data Engineering the Left</a></h1>
+</hgroup></header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+</ul>
+
+
+<ul class="main-navigation">
+</ul></nav>
+  <div id="main">
+    <div id="content">
+<div>
+  <article class="hentry" role="article">
+<header>
+      <h1 class="entry-title">Migrating to Prefect. Part 1: Civis Woes</h1>
+    <p class="meta">
+<time datetime="2023-02-22T00:00:00-08:00" pubdate>Wed 22 February 2023</time>    </p>
+</header>
+
+  <div class="entry-content"><p><em>This is the first post in a series of blog posts about our migration
+to Prefect at Working Families Party. I&#8217;ll start by describing our
+current orchestration and execution platform, Civis, and its many&nbsp;limitations.</em></p>
+<p>In a data context, &#8220;orchestration&#8221; refers to the work of coordinating,
+scheduling, and automating the movement and transformation of data
+from its raw sources to everywhere it is needed in an
+organization. This work is often conceptualized in terms of a series
+of &#8220;data pipelines&#8221;, which extract data from sources, load it to
+destinations, and transform it along the&nbsp;way.</p>
+<p><a href="https://civisanalytics.com">Civis</a> is a widely used orchestration platform across the progressive
+political space. Civis is an afforadable and accessible platform for
+writing and running <span class="caps">SQL</span> and python in a cloud&nbsp;environment.</p>
+<p>Civis is an all-inclusive data platform that allows campaigns nd
+organizations to manipulate data in their Redshift warehouse, automate
+<span class="caps">SQL</span> and Python jobs, run scripts on containers, and more. They also
+have an intuitive <span class="caps">SQL</span> to G Sheet export functionality that tend be the
+bread and butter for a lot of political organizing. Civis is very user
+friendly and does not require any engineering or &#8220;devops&#8221; experience
+to get up and running. Civis has a lot going for it and there are good
+reasons it is&nbsp;popular.</p>
+<p>However, Civis is not an appropriate production tool for mature data
+or engineering teams. Civis has many limitations, and many of its
+design choices in favor of ease-of-use end up as liabilities in the
+long term. For any team that is regularly running <span class="caps">SQL</span> and python
+scripts with nontrivial logic, it is important to explore issues with
+Civis as a production&nbsp;tool. </p>
+<h2>Version&nbsp;control</h2>
+<p>Version control is a critical tool for engineering at
+every level. It enables collaboration, oversight, institutional
+memory, an additional form of documentation, and more. There are tons
+of resources online expounding the benefits and necessities of version&nbsp;control.</p>
+<p>Using Civis as a production environment severely limits the extent to
+which version controlling is possible. This problem alone is
+significant enough to make Civis a bad choice, even if there were no
+other&nbsp;issues. </p>
+<p>Scripts that are stored in Civis are not version controlled. It is
+possible to exclusively use Civis container scripts to run scripts
+that are version controlled through Civis. But even in that scenario,
+none of the configuration parameters, automated scheduling, workflow
+dependencies, or credentials are version&nbsp;controlled. </p>
+<p>Much more common is to have a large proliferation of production and
+development scripts stored, shared and run exclusively in&nbsp;Civis.</p>
+<p>As an example to demonstrate why this is problematic, imagine
+that a team member accidentally deletes a single character from a <span class="caps">SQL</span>
+script while they are reading the script one day, causing the output
+of the <span class="caps">SQL</span> script to change slightly in a problematic way that isn&#8217;t
+obvious. Next week, another team notices that there are issues in a
+database table that didn&#8217;t previously exist. Your job is to determine
+why this table isn&#8217;t populating correctly, even though officially no
+one has touched any of the relevant code in many&nbsp;months.</p>
+<p>If the pipeline is complicated in any way, you will have to pull up
+each individual script in Civis and check to see if the file was
+updated recently. You find that this <span class="caps">SQL</span> script was updated last week,
+but you can&#8217;t see what the change was. You have to parse and test the
+entire <span class="caps">SQL</span> script manually to determine why the results aren&#8217;t correct,
+and invent a new solution that hopefully restores the original intended&nbsp;behavior. </p>
+<p>If version control was in place, your first step would be to check the
+logs, and see that a small change was made last week that wasn&#8217;t
+intended, and to revert the change. More realistically, the change
+would never have been made, because your team member would have had to
+commit the change, issue a <span class="caps">PR</span>, have the <span class="caps">PR</span> approved, and merge the
+change before it showed up in the production environment at&nbsp;all.</p>
+<p>There are many, many other scenarios where version control is a
+critical element of keeping a team functioning in the long&nbsp;term.</p>
+<h2>Environment&nbsp;variables</h2>
+<p>A Civis container can run a python script fetched from a github repo
+on a Docker container of your choosing. A common pattern for fetching
+credentials in python is to fetch them from environment variables
+that aren&#8217;t directly stored in the code. Environment variables can be
+set in Civis container scripts as &#8220;Parameters.&#8221; Parameters can be set
+to credentials that are saved separately at a User level in&nbsp;Civis.</p>
+<p>Credentials saved in Civis can <span class="caps">ONLY</span> be made availabe in the
+environment using a <code>_USERNAME</code> and <code>_PASSWORD</code> suffix. That is, if
+your credential is named <code>SLACK_API_KEY</code>, Civis forces you to make
+secret values available in the environment using keys
+<code>SLACK_API_KEY_USERNAME</code> and <code>SLACK_API_KEY_PASSWORD</code>. This choice clearly
+doesn&#8217;t always make sense and requires a workaround for every
+credential that does not fit this&nbsp;pattern.</p>
+<p>Setting up civis scripts with parameters and credentials is a somewhat
+tedious manual process. The Civis <span class="caps">API</span> does make some, but not all, of
+this process&nbsp;scriptable.</p>
+<h2>Programmatic configuration of&nbsp;orchestration</h2>
+<p>Often data pipelines will have some non-trivial logic for how and when
+different steps should be triggered, which steps are dependent on
+others to complete first, etc. It is possible to set up these kinds of
+dependencies and automated scheduling in Civis using the web
+app. Automated scheduling is also possible to set up using the <span class="caps">API</span>,
+however as far as I can tell, it is not possible programmatically
+configure dependent workflows outside of the <span class="caps">GUI</span>.</p>
+<p>Orchestration logic reflects important technical and business
+considerations and should not be exclusively configured in a
+web app. Having a web-app-first or web-app-exclusive interface for
+configuring orchestration means that changes to the configuration
+can happen without anyone noticing, and reverting changes can be
+difficult. Orchestration logic should be explicitly configured in the
+same version-controlled code repository that the code itself lives&nbsp;in.</p>
+<h2>Conclusion</h2>
+<p>Civis is a tool designed for ease of use. It abstracts away most of
+the data engineering otherwise required for analytics work so that
+data teams can get up and running quickly and easily with minimal
+technical hurdles. This is essential for small, short-lived,
+fast-moving campaigns common across the political&nbsp;space.</p>
+<p>This design comes with a fatal flaw, which is that technical staff
+using Civis ultimately are &#8220;protected&#8221; from ever needing to learn data
+engineering practices. Data staff in the progressive political space
+can go years, from team to team, working exclusively in Civis and
+never learn data engineering best practices or even fundamental data
+engineering concepts. Ultimately, the technical capacity of the
+progressive movement depends on technical staff working closer to and
+more directly with their data&nbsp;infrastructure.</p></div>
+    <footer>
+<p class="meta">
+  <span class="byline author vcard">
+    Posted by <span class="fn">
+        Austin Weisgrau
+    </span>
+  </span>
+<time datetime="2023-02-22T00:00:00-08:00" pubdate>Wed 22 February 2023</time>  <span class="categories">
+    <a class='category' href='https://austinweisgrau.github.io/category/sharing.html'>sharing</a>
+  </span>
+</p><div class="sharing">
+</div>    </footer>
+  </article>
+
+</div>
+<aside class="sidebar">
+  <section>
+    <h1>Recent Posts</h1>
+    <ul id="recent_posts">
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-from-civis-to-prefect.html">Migrating from Civis to Prefect</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-4-moving-a-script-from-civis-to-prefect.html">Migrating to Prefect, Part 4: Moving a Script from Civis to Prefect</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html">Migrating to Prefect, Part 2: Prefect & AWS ECS</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html">Migrating to Prefect, Part 3: Rate limiting API calls</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html">Migrating to Prefect. Part 1: Civis Woes</a>
+      </li>
+    </ul>
+  </section>
+  <section>
+      
+    <h1>Categories</h1>
+    <ul id="recent_posts">
+        <li><a href="https://austinweisgrau.github.io/category/learning.html">learning</a></li>
+        <li><a href="https://austinweisgrau.github.io/category/sharing.html">sharing</a></li>
+    </ul>
+  </section>
+ 
+
+  <section>
+  <h1>Tags</h1>
+  </section>
+
+
+    <section>
+        <h1>Social</h1>
+        <ul>
+            <li><a href="https://www.linkedin.com/in/austin-weisgrau-a784b042/" target="_blank">LinkedIn</a></li>
+            <li><a href="https://github.com/austinweisgrau" target="_blank">GitHub</a></li>
+        </ul>
+    </section>
+
+</aside>    </div>
+  </div>
+  <footer role="contentinfo"><p>
+    Copyright &copy;  2023  Austin Weisgrau &mdash;
+  <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
+</p></footer>
+  <script src="https://austinweisgrau.github.io/theme/js/modernizr-2.0.js"></script>
+  <script src="https://austinweisgrau.github.io/theme/js/ender.js"></script>
+  <script src="https://austinweisgrau.github.io/theme/js/octopress.js" type="text/javascript"></script>
+</body>
+</html>

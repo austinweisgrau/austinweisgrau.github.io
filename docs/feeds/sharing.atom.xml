@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Data Engineering the Left - sharing</title><link href="https://austinweisgrau.github.io/" rel="alternate"></link><link href="https://austinweisgrau.github.io/feeds/sharing.atom.xml" rel="self"></link><id>https://austinweisgrau.github.io/</id><updated>2023-04-17T00:00:00-07:00</updated><entry><title>Migrating from Civis to Prefect</title><link href="https://austinweisgrau.github.io/migrating-from-civis-to-prefect.html" rel="alternate"></link><published>2023-04-17T00:00:00-07:00</published><updated>2023-04-17T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-04-17:/migrating-from-civis-to-prefect.html</id><summary type="html">&lt;h2&gt;The Problem: Data Orchestration in&amp;nbsp;Civis&lt;/h2&gt;
+&lt;p&gt;Like many progressive political organizations, Working Families Party
+has worked with Civis to set up and access our data
+infrastructure. Civis is a user-friendly orchestration platform and
+web application for executing &lt;span class="caps"&gt;SQL&lt;/span&gt; and python that interacts with our
+redshift data&amp;nbsp;warehouse.&lt;/p&gt;
+&lt;p&gt;Civis is an …&lt;/p&gt;</summary><content type="html">&lt;h2&gt;The Problem: Data Orchestration in&amp;nbsp;Civis&lt;/h2&gt;
+&lt;p&gt;Like many progressive political organizations, Working Families Party
+has worked with Civis to set up and access our data
+infrastructure. Civis is a user-friendly orchestration platform and
+web application for executing &lt;span class="caps"&gt;SQL&lt;/span&gt; and python that interacts with our
+redshift data&amp;nbsp;warehouse.&lt;/p&gt;
+&lt;p&gt;Civis is an excellent tool for many progressive campaigns and
+organizations that have limited engineering resources. Civis provides a
+simple and accessible platform for analysts to easily interact with
+data without worrying about data engineering concerns. However, for
+more mature and organizations that operate beyond a single political
+cycle with sophisticated data needs, Civis has many limitations that
+make it &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html"&gt;an inappropriate tool&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Civis trades off many important data engineering best-practices in
+favor of ease-of-use. Civis&amp;#8217; design leads users to make minimal use of
+version control, offers users limited visibility over production
+resources, and is mostly incompatible with the Infrastructure-As-Code&amp;nbsp;paradigm.&lt;/p&gt;
+&lt;p&gt;As a large organization with a long term political vision, we
+determined that Working Families Party required a much more mature
+toolset for its data&amp;nbsp;stack.&lt;/p&gt;
+&lt;h2&gt;Prefect to the&amp;nbsp;Rescue&lt;/h2&gt;
+&lt;p&gt;There are a lot of orchestration tools out there, and we wanted to
+choose the best tool for the job. I had prior experience with Apache
+Airflow, which is one of the most popular and mature data
+orchestration tools on the market. Several colleagues in the
+progressive data space had been eyeing alternatives to Civis for the
+same reasons we were, and suggested Prefect as an attractive new tool
+worth&amp;nbsp;evaluating. &lt;/p&gt;
+&lt;p&gt;Prefect offers most of the features of Airflow, but was more compelling
+to us for a few reasons. Airflow can be complicated to set up, and
+managed deployments like Astronomer or &lt;span class="caps"&gt;AWS&lt;/span&gt; &lt;span class="caps"&gt;MWAA&lt;/span&gt; can end up being quite
+expensive. Prefect offers a lower infrastructural lift for getting&amp;nbsp;started.&lt;/p&gt;
+&lt;p&gt;Another advantage of Prefect over Airflow is that migrating existing
+Python code to Prefect is much simpler than migrating to
+Airflow. Airflow has an idiosyncratic implementation in Python, but
+existing Python code can be turned into working a Prefect flow by
+simply wrapping it in a&amp;nbsp;decorator.&lt;/p&gt;
+&lt;p&gt;Overall, what Prefect offered us was the opportunity to implement many
+data-engineering best practices that were difficult or impossible to
+achieve in Civis. With Prefect, all of our code, containers,
+orchestration, and deployments are configured together as code in a
+single version-controlled&amp;nbsp;repository.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html"&gt;Our execution infrastructure&lt;/a&gt; is configured declaratively using an &lt;span class="caps"&gt;AWS&lt;/span&gt;
+CodeFormation script to set up an execution layer in &lt;span class="caps"&gt;AWS&lt;/span&gt; &lt;span class="caps"&gt;ECS&lt;/span&gt;. We use
+Github Actions to automate our continuous integration &lt;span class="amp"&gt;&amp;amp;&lt;/span&gt;
+deployment. Changes to Prefect flows, orchestration, and other parts
+of our configuration are seamlessly deployed to Prefect Cloud &lt;span class="amp"&gt;&amp;amp;&lt;/span&gt; &lt;span class="caps"&gt;ECS&lt;/span&gt; on
+pushes to&amp;nbsp;main.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-4-moving-a-script-from-civis-to-prefect.html"&gt;Migrating scripts from Civis to Prefect&lt;/a&gt; involves a trivial amount of
+refactoring, but also offers opportunities to use Prefect features for
+&lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html"&gt;concurrent execution&lt;/a&gt;, integrated logging, secret management, automated
+orchestration, and&amp;nbsp;testing.&lt;/p&gt;
+&lt;p&gt;Now that we have worked in Prefect for several months, we&amp;#8217;ve seen many
+improvements to our development cycle and workflow. We have more
+complete visibility over our production resources, which is really
+important as we work to understand &lt;span class="amp"&gt;&amp;amp;&lt;/span&gt; refactor a significant amount of
+legacy&amp;nbsp;code.&lt;/p&gt;
+&lt;p&gt;With everything version-controlled, all changes are easy to coherently
+organize using version control best practices, which enables our whole
+team to better understand, track, and debug ongoing changes to our&amp;nbsp;codebase. &lt;/p&gt;
+&lt;p&gt;Version-controlled and automatically deployed orchestration
+configuration is also a welcome improvement for us. When business
+logic requires changes to the automations controlling when and how
+scripts are triggered to run, we can make those changes in our
+repository, push them, and trust that those changes will be reflected
+in production without any further&amp;nbsp;work.&lt;/p&gt;
+&lt;h2&gt;Wrapping&amp;nbsp;Up&lt;/h2&gt;
+&lt;p&gt;In conclusion, migrating from Civis to Prefect has been a major
+upgrade for the data team at Working Families Party. While Civis
+served us well in the past, its limitations became evident as our
+organization grew and our data needs became more sophisticated. Prefect
+offered us a mature and comprehensive toolset for data orchestration,
+enabling us to implement best practices and streamline our development&amp;nbsp;cycle.&lt;/p&gt;
+&lt;p&gt;Overall, Prefect has provided us with a powerful and flexible solution
+for data orchestration, empowering our organization to meet the
+demands of our long-term political vision. By embracing Prefect, we
+have set ourselves up for success in managing our data infrastructure
+and driving our progressive campaigns&amp;nbsp;forward. &lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Migrating to Prefect, Part 4: Moving a Script from Civis to Prefect</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-4-moving-a-script-from-civis-to-prefect.html" rel="alternate"></link><published>2023-03-27T00:00:00-07:00</published><updated>2023-03-27T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-03-27:/migrating-to-prefect-part-4-moving-a-script-from-civis-to-prefect.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post is the fourth in a series about migrating off of Civis and
+onto Prefect as our orchestration tool. The &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html"&gt;first post&lt;/a&gt; is about
+the limitations of Civis, and the &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html"&gt;second&lt;/a&gt; and &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html"&gt;third&lt;/a&gt; posts are about
+setting up and using&amp;nbsp;Prefect.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Once Prefect was adequately set up, we were …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;em&gt;This post is the fourth in a series about migrating off of Civis and
+onto Prefect as our orchestration tool. The &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html"&gt;first post&lt;/a&gt; is about
+the limitations of Civis, and the &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html"&gt;second&lt;/a&gt; and &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html"&gt;third&lt;/a&gt; posts are about
+setting up and using&amp;nbsp;Prefect.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Once Prefect was adequately set up, we were ready to start moving our
+scripts out of Civis and into Prefect. This process involves the
+following&amp;nbsp;steps:&lt;/p&gt;
+&lt;p&gt;Basic necessary&amp;nbsp;steps:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Copy the code and tests into a module in the Prefect&amp;nbsp;repository&lt;/li&gt;
+&lt;li&gt;Add task and flow decorators, potentially rearranging and
+   encapsulating the&amp;nbsp;code&lt;/li&gt;
+&lt;li&gt;Swap out loggers and credential fetching&amp;nbsp;methods&lt;/li&gt;
+&lt;li&gt;Add entry to scheduling&amp;nbsp;module&lt;/li&gt;
+&lt;li&gt;Run locally and ensure everything&amp;nbsp;works&lt;/li&gt;
+&lt;li&gt;Deploy and run in production and ensure everything&amp;nbsp;works&lt;/li&gt;
+&lt;li&gt;Turn off civis automation, archive script in&amp;nbsp;Civis&lt;/li&gt;
+&lt;li&gt;Update relevant team&amp;nbsp;documentation&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Bonus&amp;nbsp;steps:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Refactor control flow to take advantage of prefect orchestration
+   (concurrency, retries,&amp;nbsp;etc)&lt;/li&gt;
+&lt;li&gt;Refactor, expand tests and&amp;nbsp;documentation&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Example Civis&amp;nbsp;Script&lt;/h2&gt;
+&lt;p&gt;We can use the following Civis script as an example to work&amp;nbsp;with.&lt;/p&gt;
+&lt;p&gt;This script pulls a list of &lt;span class="caps"&gt;VAN&lt;/span&gt; IDs from a Redshift table and updates
+these &lt;span class="caps"&gt;VAN&lt;/span&gt; IDs in EveryAction with an origin source&amp;nbsp;code. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;parsons&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;
+
+&lt;span class="n"&gt;van_source_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;12345&lt;/span&gt;
+
+&lt;span class="n"&gt;van_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+&lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;select vanid from some_important_table&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished applying source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Copy the code, add task and flow decorators,&amp;nbsp;encapsulate&lt;/h2&gt;
+&lt;p&gt;Prefect is intended to be simple to implement with existing code. The
+minimum change necessary to make a Prefect flow out of existing code
+is to encapsulate the code within a method that has the
+&lt;code&gt;@flow()&lt;/code&gt; decorator&amp;nbsp;applied.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;parsons&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;prefect&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;flow&lt;/span&gt;
+
+
+&lt;span class="n"&gt;van_source_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;12345&lt;/span&gt;
+
+&lt;span class="nd"&gt;@flow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Update VAN Source Codes Sync&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;van_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+    &lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;select vanid from some_important_table&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished applying source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Better yet is to break out some of the methods within the flow as
+prefect tasks, to gain greater oversight and control over the&amp;nbsp;flow.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;parsons&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;prefect&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;flow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;task&lt;/span&gt;
+
+
+&lt;span class="n"&gt;van_source_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;12345&lt;/span&gt;
+
+&lt;span class="nd"&gt;@task&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_query_results&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;query_results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;select vanid from some_important_table&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;query_results&lt;/span&gt;
+
+&lt;span class="nd"&gt;@task&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="nd"&gt;@flow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Update VAN Source Codes Sync&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;van_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+    &lt;span class="n"&gt;query_results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fetch_query_results&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished applying source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Swap out&amp;nbsp;loggers&lt;/h2&gt;
+&lt;p&gt;Prefect is capable of capturing print statements as logs, but this
+behavior is not enabled by default. If your code uses print
+statements, you can define your flow&amp;nbsp;with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;...&lt;/span&gt;
+
+&lt;span class="nv"&gt;@flow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="ss"&gt;&amp;quot;Update VAN Source Codes Sync&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;log_prints&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You can set print logging globally with the Prefect config variable
+&lt;code&gt;PREFECT_LOGGING_LOG_PRINTS=True&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;You can also alternatively use the prefect&amp;nbsp;logger.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;prefect&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;flow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;task&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;get_run_logger&lt;/span&gt;
+
+&lt;span class="o"&gt;...&lt;/span&gt;
+
+&lt;span class="nd"&gt;@flow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Update VAN Source Codes Sync&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+
+    &lt;span class="o"&gt;...&lt;/span&gt; 
+
+    &lt;span class="n"&gt;get_run_logger&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished apply source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Swap out credential fetching&amp;nbsp;methods&lt;/h2&gt;
+&lt;p&gt;Now that we&amp;#8217;re out of Prefect, we&amp;#8217;re not bound to using environment
+variables with those pesky mandatory &lt;code&gt;_PASSWORD&lt;/code&gt; suffixes!&lt;/p&gt;
+&lt;p&gt;You can fetch credentials using any implementation that makes sense
+for your team and Prefect stack. You can add environment variables
+to your Docker image, or fetch them from a secret store like &lt;span class="caps"&gt;AWS&lt;/span&gt;
+Secrets Manager or use Prefect Blocks to store&amp;nbsp;credentials. &lt;/p&gt;
+&lt;h2&gt;Add entry to scheduling&amp;nbsp;module&lt;/h2&gt;
+&lt;p&gt;In my prefect template, automated flow scheduling is controlled by &lt;a href="https://github.com/austinweisgrau/prefect-ecs-template/blob/main/scheduling.py"&gt;a
+scheduling module&lt;/a&gt; that is run by a &lt;a href="https://github.com/austinweisgrau/prefect-ecs-template/blob/b03c2db49209ae4f76f9a1c73db39d4bf0d8634d/.github/workflows/main.yaml#L151"&gt;github actions script&lt;/a&gt; if changes are
+pushed to the main&amp;nbsp;branch.&lt;/p&gt;
+&lt;p&gt;When a new flow is created, a block needs to be added to the
+scheduling module to set up automated runs for this&amp;nbsp;flow.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;update_deployment_schedules&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;None&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;
+
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;schedule_deployment&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;update_van_source_codes&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Update VAN Source Codes Sync&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;timedelta&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;days&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Daily&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;today&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;hour&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;21&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;minute&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;second&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;At&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mo"&gt;05&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pm&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Run locally and ensure everything&amp;nbsp;works&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;python&lt;span class="w"&gt; &lt;/span&gt;flows/update_van_source_codes/update_van_source_codes_flow.py
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Deploy&lt;/h2&gt;
+&lt;p&gt;If you are using a continuous deployment script, you can push the new
+code to your main branch and let that script create the new deployment
+in the Prefect Cloud. You can also create the deployment manually by
+running a command&amp;nbsp;like&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;prefect&lt;span class="w"&gt; &lt;/span&gt;deployment&lt;span class="w"&gt; &lt;/span&gt;build&lt;span class="w"&gt; &lt;/span&gt;flows/update_van_source_codes/update_van_source_codes_flow.py:update_van_source_codes&lt;span class="w"&gt; &lt;/span&gt;-a&lt;span class="w"&gt; &lt;/span&gt;-n&lt;span class="w"&gt; &lt;/span&gt;update_van_source_codes&lt;span class="w"&gt; &lt;/span&gt;-ib&lt;span class="w"&gt; &lt;/span&gt;ecs-task/prod
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Refactor control flow to take advantage of prefect&amp;nbsp;orchestration&lt;/h2&gt;
+&lt;p&gt;Instead of the for loop for executing our &lt;span class="caps"&gt;API&lt;/span&gt; calls, we can use
+task.submit() or task.map() to take advantage of prefect&amp;nbsp;concurrency.&lt;/p&gt;
+&lt;p&gt;Using our custom &lt;a href=""&gt;task concurrency limiter&lt;/a&gt;, we can set a rate limit of
+3 as advised by the &lt;a href="https://docs.ngpvan.com/docs/throttling-guidelines"&gt;EveryAction documentation&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;utilities.concurrency&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;limit_concurrency&lt;/span&gt;
+
+&lt;span class="o"&gt;...&lt;/span&gt;
+
+&lt;span class="nd"&gt;@task&lt;/span&gt;
+&lt;span class="nd"&gt;@limit_concurrency&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_workers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="nd"&gt;@flow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Update VAN Source Codes Sync&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;van_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+    &lt;span class="n"&gt;query_results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fetch_query_results&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="n"&gt;van_ids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Await results before finishing flow&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;future&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_ids&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished applying source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Refactor, expand tests and&amp;nbsp;documentation&lt;/h2&gt;
+&lt;p&gt;Every time you are looking anew at a script is a great opportunity to
+clean up the code, notice where it is unclear, and documentation to
+clarify technical logic and business logic, and add tests to validate
+important pieces of the&amp;nbsp;code!&lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Migrating to Prefect, Part 2: Prefect &amp; AWS ECS</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html" rel="alternate"></link><published>2023-03-07T00:00:00-08:00</published><updated>2023-03-07T00:00:00-08:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-03-07:/migrating-to-prefect-part-2-prefect-aws-ecs.html</id><summary type="html">&lt;p&gt;&lt;em&gt;In my &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html"&gt;previous blog post&lt;/a&gt;, I explained the limitations with Civis
+as a production tool for a data/engineering team. These limitations
+led our data team at Working Families Party to choose to move our
+orchestration tooling off of Civis and into another tool. After
+evaluating a few tools, we …&lt;/em&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;em&gt;In my &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html"&gt;previous blog post&lt;/a&gt;, I explained the limitations with Civis
+as a production tool for a data/engineering team. These limitations
+led our data team at Working Families Party to choose to move our
+orchestration tooling off of Civis and into another tool. After
+evaluating a few tools, we were excited to begin our migration to&amp;nbsp;Prefect.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;This post will explain how we set up Prefect and some of the choices
+we made along the way. You can follow along with the full set up as a
+template repository &lt;a href="https://github.com/austinweisgrau/prefect-ecs-template"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;First, just one vocabulary word that will make the rest of this post
+more&amp;nbsp;readable:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Prefect &amp;#8220;Flow&amp;#8221;: this is more generically called a script or data
+  pipeline. Prefect is fundamentally about the orchestration,
+  execution, and observability of&amp;nbsp;flows.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Orchestration and Execution in&amp;nbsp;Prefect&lt;/h2&gt;
+&lt;p&gt;Orchestration tools handle the separation of orchestration and
+execution differently. Some tools, like Civis and Airflow, handle both
+of these in the same layer. The same platform that schedules and
+triggers workflows is also responsible for executing them, often in
+the same compute&amp;nbsp;environment.&lt;/p&gt;
+&lt;p&gt;Prefect handles this differently and fully separates the
+orchestration and compute layers. The orchestration layer is run in a
+cloud server instance running an &lt;span class="caps"&gt;API&lt;/span&gt;-first web application with a &lt;span class="caps"&gt;UI&lt;/span&gt; for
+viewing and interacting with Prefect assets. Prefect offers a managed,
+hosted version of the server called the Prefect Cloud, with a
+generous free tier. (More documentation about Prefect&amp;#8217;s design &lt;a href="https://www.prefect.io/why-prefect/hybrid-model/"&gt;here&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The Prefect execution layer happens separately, and there is currently
+no managed option (although one is slated for release in the coming
+months). A Prefect &amp;#8220;agent&amp;#8221; or &amp;#8220;worker&amp;#8221; is a program that runs in
+the execution environment, frequently polls the Prefect orchestration
+server, and executes any flows that have been triggered by the
+server. Prefect users are responsible for setting up the environment
+for a Prefect agent or worker to&amp;nbsp;run.&lt;/p&gt;
+&lt;h2&gt;Cloud execution&amp;nbsp;options&lt;/h2&gt;
+&lt;p&gt;While it is possible to run Prefect flows locally, for example on the
+laptops of your team&amp;#8217;s staff, a more robust solution is to run a
+Prefect agent in a cloud computing environment. There are many
+different ways to accomplish&amp;nbsp;this.&lt;/p&gt;
+&lt;p&gt;A common method is to use cloud &amp;#8220;serverless&amp;#8221; compute infrastructure to
+run the Prefect agent. Some popular options include &lt;span class="caps"&gt;AWS&lt;/span&gt; &lt;span class="caps"&gt;EC2&lt;/span&gt;, &lt;span class="caps"&gt;AWS&lt;/span&gt; &lt;span class="caps"&gt;ECS&lt;/span&gt;,
+Azure Container Apps, or Google Cloud&amp;nbsp;Run.&lt;/p&gt;
+&lt;p&gt;Some organizations with more resources might even choose to run their
+execution layer in a cloud-hosted Kubernetes cluster. Kubernetes is
+very configurable and scalable, but has a steeper and more complicated
+learning&amp;nbsp;curve.&lt;/p&gt;
+&lt;h2&gt;Tutorials and&amp;nbsp;templates&lt;/h2&gt;
+&lt;p&gt;One of the limitations of using Prefect is that the tool is newer,
+the community is smaller, and there are not as many resources
+available yet (compared to more mature tools like Airflow)
+demonstrating how to accomplish various set-ups. However, there are a
+few excellent templates and tutorials for getting the Prefect execution
+layer set up in various cloud&amp;nbsp;environments.&lt;/p&gt;
+&lt;p&gt;We used the &amp;#8220;dataflow-ops&amp;#8221; &lt;a href="https://towardsdatascience.com/prefect-aws-ecs-fargate-github-actions-make-serverless-dataflows-as-easy-as-py-f6025335effc"&gt;tutorial&lt;/a&gt; and &lt;a href="https://github.com/anna-geller/dataflow-ops"&gt;template&lt;/a&gt; to get our set up
+started in &lt;span class="caps"&gt;AWS&lt;/span&gt; &lt;span class="caps"&gt;ECS&lt;/span&gt;. We chose to use &lt;span class="caps"&gt;AWS&lt;/span&gt; &lt;span class="caps"&gt;ECS&lt;/span&gt; largely because we use &lt;span class="caps"&gt;AWS&lt;/span&gt;
+Redshift and &lt;span class="caps"&gt;AWS&lt;/span&gt; S3 as our primary database and data storage layers,
+and there are significant performance benefits to using &lt;span class="caps"&gt;AWS&lt;/span&gt; services&amp;nbsp;together.&lt;/p&gt;
+&lt;p&gt;Alternatively, &lt;a href="https://medium.com/@nwosupaul141/serverless-deployment-of-a-prefect-data-pipeline-on-google-cloud-run-8c48765f2480"&gt;this tutorial&lt;/a&gt; looks useful for getting started in Google
+Cloud Run. We may switch to this implementation if we end up moving
+off of Redshift and into Google Biguery at some&amp;nbsp;point.&lt;/p&gt;
+&lt;h2&gt;Needing a dedicated &lt;span class="caps"&gt;IP&lt;/span&gt; for access to&amp;nbsp;redshift&lt;/h2&gt;
+&lt;p&gt;The Movement Cooperative (&lt;span class="caps"&gt;TMC&lt;/span&gt;) is a cooperatively run organization
+that supports progressive organizations run their tech stacks. &lt;span class="caps"&gt;TMC&lt;/span&gt;
+manages our organization&amp;#8217;s data warehouse in&amp;nbsp;Redshift.&lt;/p&gt;
+&lt;p&gt;We needed to enable a dedicated &lt;span class="caps"&gt;IP&lt;/span&gt; address for our execution
+layer so that we could have our &lt;span class="caps"&gt;IP&lt;/span&gt; address whitelisted by &lt;span class="caps"&gt;TMC&lt;/span&gt; in order
+to access the Redshift instance. Setting up a dedicated &lt;span class="caps"&gt;IP&lt;/span&gt; address for
+an &lt;span class="caps"&gt;ECS&lt;/span&gt; Task involved an understanding of some networking concepts and
+tools in &lt;span class="caps"&gt;AWS&lt;/span&gt;. Some new vocab words for me: &amp;#8220;&lt;span class="caps"&gt;VPC&lt;/span&gt;&amp;#8221;, &amp;#8220;subnet&amp;#8221;, &amp;#8220;&lt;span class="caps"&gt;NAT&lt;/span&gt;&amp;nbsp;gateway&amp;#8221;.&lt;/p&gt;
+&lt;p&gt;The dataflow-ops template included an &lt;a href="https://github.com/anna-geller/dataflow-ops/blob/main/infrastructure/ecs_cluster_prefect_agent.yml"&gt;&lt;span class="caps"&gt;AWS&lt;/span&gt; CloudFormation Script&lt;/a&gt; for
+setting up the &lt;span class="caps"&gt;ECS&lt;/span&gt; Task and its networking infrastructure. I modified
+that script using &lt;a href="https://gist.github.com/jbesw/f9401b4c52a7446ef1bb71ceea8cc3e8"&gt;this template&lt;/a&gt; to enable the use of an &amp;#8220;elastic &lt;span class="caps"&gt;IP&lt;/span&gt;&amp;#8221;
+address in &lt;span class="caps"&gt;AWS&lt;/span&gt; for our &lt;span class="caps"&gt;ECS&lt;/span&gt; tasks. I also needed to modify the
+&lt;code&gt;prefect_aws.ECSTask&lt;/code&gt; block stored in our Prefect Cloud instance to
+always use the correct (private) &lt;span class="caps"&gt;VPC&lt;/span&gt; subnets (see our &lt;a href="https://github.com/austinweisgrau/prefect-ecs-template/blob/main/infrastructure/ecs_cluster_prefect_agent.yml"&gt;full
+configuration script for CloudFormation here&lt;/a&gt;). &lt;/p&gt;
+&lt;h2&gt;Deploying&amp;nbsp;Changes&lt;/h2&gt;
+&lt;p&gt;There are two different ways a Prefect flow can be deployed which
+determine how the code is passed to the Prefect agent and&amp;nbsp;executed.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The Prefect agent and/or ECSTask can run on a docker image that
+   contains the flow&amp;nbsp;code&lt;/li&gt;
+&lt;li&gt;The &lt;a href="https://docs.prefect.io/concepts/deployments/#deployment-build-options"&gt;flow deployment can be built&lt;/a&gt; with a &lt;a href="https://docs.prefect.io/concepts/deployments/#block-identifiers"&gt;cloud &amp;#8220;storage block&amp;#8221;&lt;/a&gt; (for
+   example, S3), where the flow code will be uploaded on deployment
+   and downloaded when the flow is triggered by the agent to&amp;nbsp;run.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;When changes are made to flow code, the updates can be pushed into
+production either by recreating and reuploading the docker image
+(strategy 1), or by rebuilding the flow deployment using a storage
+block (strategy 2), which uploads the new code to the storage&amp;nbsp;block.&lt;/p&gt;
+&lt;p&gt;I found the docker strategy to be somewhat simpler, so I modified the
+Github Actions deployment script included in the &lt;a href="https://github.com/anna-geller/dataflow-ops/blob/main/.github/workflows/main.yaml"&gt;dataflow-ops template&lt;/a&gt;
+to rebuild and reupload the docker image anytime the code is
+updated. Our flow deployments do not include a storage&amp;nbsp;block.&lt;/p&gt;
+&lt;p&gt;See our &lt;a href="https://github.com/austinweisgrau/Prefect-ecs-template/blob/main/.github/workflows/main.yaml"&gt;deployment Github Actions script here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The next post in this series explores a &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html"&gt;useful utility for working in Prefect&lt;/a&gt;: rate-limiting &lt;span class="caps"&gt;API&lt;/span&gt;&amp;nbsp;calls. &lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Migrating to Prefect, Part 3: Rate limiting API calls</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html" rel="alternate"></link><published>2023-03-02T00:00:00-08:00</published><updated>2023-03-02T00:00:00-08:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-03-02:/migrating-to-prefect-part-3-rate-limiting-api-calls.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post is the third in a series about migrating off of Civis and
+onto Prefect as our orchestration tool. The &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html"&gt;first post&lt;/a&gt; is about the
+limitations of Civis, and the &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html"&gt;second post&lt;/a&gt; is about setting up Prefect
+with &lt;span class="caps"&gt;AWS&lt;/span&gt; &lt;span class="caps"&gt;ECS&lt;/span&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;A common, basic workflow in a data pipeline is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;em&gt;This post is the third in a series about migrating off of Civis and
+onto Prefect as our orchestration tool. The &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html"&gt;first post&lt;/a&gt; is about the
+limitations of Civis, and the &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html"&gt;second post&lt;/a&gt; is about setting up Prefect
+with &lt;span class="caps"&gt;AWS&lt;/span&gt; &lt;span class="caps"&gt;ECS&lt;/span&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;A common, basic workflow in a data pipeline is to make concurrent,
+rate-limited &lt;span class="caps"&gt;API&lt;/span&gt; calls to fetch or post data to a service.
+One obstacle I hit early on when attempting to move our data pipelines
+into Prefect was around setting up rate-limited &lt;span class="caps"&gt;API&lt;/span&gt;&amp;nbsp;calls.&lt;/p&gt;
+&lt;p&gt;&lt;a href="#solution"&gt;Skip to solution&lt;/a&gt; or see &lt;a href="https://github.com/austinweisgrau/prefect-ecs-template/blob/main/flows/api_call_demonstration/api_call_flow.py"&gt;a working example in my prefect template&amp;nbsp;repository&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Implementing rate-limited &lt;span class="caps"&gt;API&lt;/span&gt; calls in standard&amp;nbsp;python&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://realpython.com/python-concurrency/#when-is-concurrency-useful"&gt;Python has two paradigms for executing &lt;span class="caps"&gt;IO&lt;/span&gt;-bound concurrency&lt;/a&gt;: asyncio
+and&amp;nbsp;multithreading.&lt;/p&gt;
+&lt;p&gt;asyncio is a very powerful framework, but involves a somewhat
+substantial change to python patterns. It cannot be easily added to
+existing code without rewriting the entire codebase for compatibility
+with asyncio. It also represents a technical hurdle and maintenance
+burden on smaller teams. For a simple workflow like rate-limited &lt;span class="caps"&gt;API&lt;/span&gt;
+calls, using asyncio would be significant&amp;nbsp;overkill.&lt;/p&gt;
+&lt;p&gt;Multithreading can be complicated to set up, but the python standard
+library includes a high-level &lt;span class="caps"&gt;API&lt;/span&gt; to simplify the use of
+multithreading: &lt;code&gt;concurrency.futures&lt;/code&gt;. I like to use the
+&lt;code&gt;ThreadPoolExecutor&lt;/code&gt;, which can be easily configured to limit the
+number of active&amp;nbsp;threads. &lt;/p&gt;
+&lt;p&gt;A standard implementation of concurrent rate-limited &lt;span class="caps"&gt;API&lt;/span&gt; calls in
+python can look like&amp;nbsp;this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;concurrent.futures&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ThreadPoolExecutor&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;make_api_call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Response&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;api_url_endpoint&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;
+
+&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;ThreadPoolExecutor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_workers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;executor&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;payloads&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;
+    &lt;span class="n"&gt;responses&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;executor&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;make_api_call&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;payloads&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This code will execute an &lt;span class="caps"&gt;API&lt;/span&gt; call on each payload in the list of
+payloads, with 3 threads running simultaneously, each executing one
+&lt;span class="caps"&gt;API&lt;/span&gt; call at a time. If each call takes 1 full second, executing 30
+calls will take about 10 seconds to&amp;nbsp;complete.&lt;/p&gt;
+&lt;p&gt;This represents a speed increase of 3x over using a for loop, which
+would take a full 30 seconds to&amp;nbsp;complete. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;responses&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;payload&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;payloads&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;make_api_call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;responses&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Implementing concurrency in&amp;nbsp;Prefect&lt;/h2&gt;
+&lt;p&gt;Prefect has several different configurable mechanisms for
+orchestrating concurrent execution of python&amp;nbsp;code.&lt;/p&gt;
+&lt;p&gt;Prefect is built on top of an asyncio implementation called AnyIO and
+can seamlessly work with python scripts written using asyncio. For
+reasons described above, I don&amp;#8217;t want to use&amp;nbsp;asyncio.&lt;/p&gt;
+&lt;p&gt;Prefect tasks are the main building block of flows in Prefect, and are
+also the main mechanism for orchestrating concurrency. Prefect tasks
+called with &lt;code&gt;task.submit()&lt;/code&gt; or &lt;code&gt;task.map()&lt;/code&gt; are sent to a &lt;a href="https://docs.prefect.io/concepts/task-runners/"&gt;Task Runner&lt;/a&gt;
+for (potentially) concurrent execution. Sequential, concurrent or parallel
+execution will occur depending on which task runner is used. The
+default task runner is a&amp;nbsp;ConcurrentTaskRunner.&lt;/p&gt;
+&lt;p&gt;Tasks submitted to a concurrent runner will all execute as soon as
+they are not waiting for any upstream&amp;nbsp;values.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;prefect&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;flow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;task&lt;/span&gt;
+
+&lt;span class="nd"&gt;@task&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;make_api_call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Response&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;api_url_endpoint&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;
+
+&lt;span class="nd"&gt;@flow&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_flow&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;payloads&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;
+    &lt;span class="n"&gt;responses&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;make_api_call&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;payloads&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Using prefect makes concurrent execution of python code wonderfully&amp;nbsp;simple.&lt;/p&gt;
+&lt;p&gt;In the above implementation, if each &lt;span class="caps"&gt;API&lt;/span&gt; call takes 1 second to
+complete and there are 30 total &lt;span class="caps"&gt;API&lt;/span&gt; calls, the full flow will be done
+in about 1 second, because all the calls execute&amp;nbsp;simultaneously.&lt;/p&gt;
+&lt;h2&gt;Rate limiting concurrency in&amp;nbsp;Prefect&lt;/h2&gt;
+&lt;p&gt;We still need to implement rate limiting on our &lt;span class="caps"&gt;API&lt;/span&gt; calls in
+Prefect. The code above will execute every &lt;span class="caps"&gt;API&lt;/span&gt; call across all the
+payloads simultaneously. This will generally get your &lt;span class="caps"&gt;API&lt;/span&gt; calls
+temporarily or permanently&amp;nbsp;blocked.&lt;/p&gt;
+&lt;p&gt;Prefect offers a native solution for limiting concurrency on tasks:
+simply enough, a &lt;a href="https://docs.prefect.io/concepts/tasks/#task-run-concurrency-limits"&gt;task run concurrency limit&lt;/a&gt;. It is simple to set up and
+use. Concurrency limit values must be deployed to the server&amp;nbsp;with&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;prefect&lt;span class="w"&gt; &lt;/span&gt;concurrency-limit&lt;span class="w"&gt; &lt;/span&gt;create&lt;span class="w"&gt; &lt;/span&gt;limit_concurrency_10&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And then prefect tasks can be rate limited by tagging them with the
+name of the concurrency&amp;nbsp;limit:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nd"&gt;@task&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;limit_concurrency_10&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;make_api_call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+   &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;However, rather than limiting the number of tasks that can run at any
+given moment, this mechanism limits the number of tasks that can run
+in any given 30 second block. Prefect tasks with a rate limit check
+for an open slot, and if none is available, wait 30 seconds to check
+again for an open&amp;nbsp;slot. &lt;/p&gt;
+&lt;p&gt;This is quite problematic, as it results in very significant slowdowns
+of rate-limited execution over the standard python use of
+multithreading. If you only want 3 calls at a time, you must set up a
+concurrency limit of 3. However, after those 3 calls execute, no more
+calls will begin to execute until that initial 30 second window has
+closed. If each call takes 1 full second, running 30 calls will take
+15 minutes to&amp;nbsp;complete!&lt;/p&gt;
+&lt;p&gt;The Prefect team is aware of this issue and is working on an improved
+implementation of the task-concurrency feature. See &lt;a href="https://github.com/PrefectHQ/prefect/issues/8873"&gt;this github issue&lt;/a&gt;,
+&lt;a href="https://github.com/PrefectHQ/prefect/pull/7013"&gt;this github &lt;span class="caps"&gt;PR&lt;/span&gt;&lt;/a&gt;, and this &lt;a href="https://prefect-community.slack.com/archives/C03D12VV4NN/p1677533662427229"&gt;slack discussion&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Solution&lt;/h2&gt;
+&lt;p&gt;One simple solution would be to use normal python mulithreading code
+within a prefect task. In Prefect, however, a Prefect task is intended
+to be the smallest unit of concurrency. It breaks intended Prefect
+patterns to use multithreading from within a prefect task. Some Prefect
+utilities are incompatible with multithreaded task code. &lt;a href="https://github.com/PrefectHQ/prefect/issues/8652"&gt;&lt;em&gt;See discussion&amp;nbsp;here.&lt;/em&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In the end, the approach I settled on with some help from the Prefect
+development team involved using a python &lt;a href="https://superfastpython.com/thread-semaphore/"&gt;&lt;code&gt;threading.Semaphore&lt;/code&gt;&lt;/a&gt;. A
+Semaphore is a standard approach for rate limiting multithreaded python
+code, used behind the scenes by high-level APIs like
+&lt;code&gt;concurrent.futures.ThreadPoolExecutor&lt;/code&gt;. Each thread attempts to access
+an open &amp;#8220;slot&amp;#8221; from the Semaphore, and waits until a slot is available
+to run. While it runs, it holds a slot, and releases that slot once it
+is&amp;nbsp;complete.&lt;/p&gt;
+&lt;p&gt;When Prefect tasks are submitted to a ConcurrentTaskRunner, they are
+executed in the same python process using multithreading behind the
+scenes, which means using a Semaphore is a natural&amp;nbsp;solution.&lt;/p&gt;
+&lt;p&gt;My implementation of the prefect-compatible semaphore-based
+concurrency rate limiting can be found below or in my template
+repository &lt;a href="https://github.com/austinweisgrau/prefect-ecs-template/blob/main/utilities/concurrency.py"&gt;here&lt;/a&gt;, and its use ends up being very&amp;nbsp;simple:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;prefect&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;flow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;task&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;utilities.concurrency&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;limit_concurrency&lt;/span&gt;
+
+&lt;span class="nd"&gt;@task&lt;/span&gt;
+&lt;span class="nd"&gt;@limit_concurrency&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_workers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;make_api_call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Response&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;api_url_endpoint&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;
+
+&lt;span class="nd"&gt;@flow&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_flow&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;payloads&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;
+    &lt;span class="n"&gt;responses&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;make_api_call&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;payloads&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Identical to the implementation with &lt;code&gt;ThreadPoolExecutor&lt;/code&gt; above,
+executing 30 &lt;span class="caps"&gt;API&lt;/span&gt; calls that take 1 second each will take about 10
+seconds with this&amp;nbsp;implementation.&lt;/p&gt;
+&lt;h2&gt;&lt;a id="solution"&gt;&lt;/a&gt;My concurrency limiting task&amp;nbsp;decorator&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;functools&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;wraps&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;threading&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Semaphore&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;typing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Callable&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;limit_concurrency&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_workers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Callable&lt;/span&gt;&lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="n"&gt;Callable&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;Callable&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Wraps methods to implement concurrency limit&lt;/span&gt;
+
+&lt;span class="sd"&gt;    Prefect task concurrency limits use a 30 second delay between each&lt;/span&gt;
+&lt;span class="sd"&gt;    check for an available slot. This is a more performative approach&lt;/span&gt;
+&lt;span class="sd"&gt;    using a threading.Semaphore.&lt;/span&gt;
+
+&lt;span class="sd"&gt;    Prefect must be using a &amp;quot;local&amp;quot; task runner for this to work (the&lt;/span&gt;
+&lt;span class="sd"&gt;    ConcurrentTaskRunner) and not a distributed task runner like Dask&lt;/span&gt;
+&lt;span class="sd"&gt;    or Ray.&lt;/span&gt;
+
+&lt;span class="sd"&gt;    Usage:&lt;/span&gt;
+&lt;span class="sd"&gt;      from prefect import task&lt;/span&gt;
+
+&lt;span class="sd"&gt;      @task&lt;/span&gt;
+&lt;span class="sd"&gt;      @limit_concurrency(max_workers=5)&lt;/span&gt;
+&lt;span class="sd"&gt;      def my_task():&lt;/span&gt;
+&lt;span class="sd"&gt;          pass&lt;/span&gt;
+&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+
+    &lt;span class="n"&gt;semaphore&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Semaphore&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_workers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;pseudo_decorator&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Callable&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="nd"&gt;@wraps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;limited_concurrent_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;semaphore&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;limited_concurrent_func&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;pseudo_decorator&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="sharing"></category></entry><entry><title>Migrating to Prefect. Part 1: Civis Woes</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html" rel="alternate"></link><published>2023-02-22T00:00:00-08:00</published><updated>2023-02-22T00:00:00-08:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-02-22:/migrating-to-prefect-part-1-civis-woes.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This is the first post in a series of blog posts about our migration
+to Prefect at Working Families Party. I&amp;#8217;ll start by describing our
+current orchestration and execution platform, Civis, and its many&amp;nbsp;limitations.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;In a data context, &amp;#8220;orchestration&amp;#8221; refers to the work of coordinating,
+scheduling, and automating …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;em&gt;This is the first post in a series of blog posts about our migration
+to Prefect at Working Families Party. I&amp;#8217;ll start by describing our
+current orchestration and execution platform, Civis, and its many&amp;nbsp;limitations.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;In a data context, &amp;#8220;orchestration&amp;#8221; refers to the work of coordinating,
+scheduling, and automating the movement and transformation of data
+from its raw sources to everywhere it is needed in an
+organization. This work is often conceptualized in terms of a series
+of &amp;#8220;data pipelines&amp;#8221;, which extract data from sources, load it to
+destinations, and transform it along the&amp;nbsp;way.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://civisanalytics.com"&gt;Civis&lt;/a&gt; is a widely used orchestration platform across the progressive
+political space. Civis is an afforadable and accessible platform for
+writing and running &lt;span class="caps"&gt;SQL&lt;/span&gt; and python in a cloud&amp;nbsp;environment.&lt;/p&gt;
+&lt;p&gt;Civis is an all-inclusive data platform that allows campaigns nd
+organizations to manipulate data in their Redshift warehouse, automate
+&lt;span class="caps"&gt;SQL&lt;/span&gt; and Python jobs, run scripts on containers, and more. They also
+have an intuitive &lt;span class="caps"&gt;SQL&lt;/span&gt; to G Sheet export functionality that tend be the
+bread and butter for a lot of political organizing. Civis is very user
+friendly and does not require any engineering or &amp;#8220;devops&amp;#8221; experience
+to get up and running. Civis has a lot going for it and there are good
+reasons it is&amp;nbsp;popular.&lt;/p&gt;
+&lt;p&gt;However, Civis is not an appropriate production tool for mature data
+or engineering teams. Civis has many limitations, and many of its
+design choices in favor of ease-of-use end up as liabilities in the
+long term. For any team that is regularly running &lt;span class="caps"&gt;SQL&lt;/span&gt; and python
+scripts with nontrivial logic, it is important to explore issues with
+Civis as a production&amp;nbsp;tool. &lt;/p&gt;
+&lt;h2&gt;Version&amp;nbsp;control&lt;/h2&gt;
+&lt;p&gt;Version control is a critical tool for engineering at
+every level. It enables collaboration, oversight, institutional
+memory, an additional form of documentation, and more. There are tons
+of resources online expounding the benefits and necessities of version&amp;nbsp;control.&lt;/p&gt;
+&lt;p&gt;Using Civis as a production environment severely limits the extent to
+which version controlling is possible. This problem alone is
+significant enough to make Civis a bad choice, even if there were no
+other&amp;nbsp;issues. &lt;/p&gt;
+&lt;p&gt;Scripts that are stored in Civis are not version controlled. It is
+possible to exclusively use Civis container scripts to run scripts
+that are version controlled through Civis. But even in that scenario,
+none of the configuration parameters, automated scheduling, workflow
+dependencies, or credentials are version&amp;nbsp;controlled. &lt;/p&gt;
+&lt;p&gt;Much more common is to have a large proliferation of production and
+development scripts stored, shared and run exclusively in&amp;nbsp;Civis.&lt;/p&gt;
+&lt;p&gt;As an example to demonstrate why this is problematic, imagine
+that a team member accidentally deletes a single character from a &lt;span class="caps"&gt;SQL&lt;/span&gt;
+script while they are reading the script one day, causing the output
+of the &lt;span class="caps"&gt;SQL&lt;/span&gt; script to change slightly in a problematic way that isn&amp;#8217;t
+obvious. Next week, another team notices that there are issues in a
+database table that didn&amp;#8217;t previously exist. Your job is to determine
+why this table isn&amp;#8217;t populating correctly, even though officially no
+one has touched any of the relevant code in many&amp;nbsp;months.&lt;/p&gt;
+&lt;p&gt;If the pipeline is complicated in any way, you will have to pull up
+each individual script in Civis and check to see if the file was
+updated recently. You find that this &lt;span class="caps"&gt;SQL&lt;/span&gt; script was updated last week,
+but you can&amp;#8217;t see what the change was. You have to parse and test the
+entire &lt;span class="caps"&gt;SQL&lt;/span&gt; script manually to determine why the results aren&amp;#8217;t correct,
+and invent a new solution that hopefully restores the original intended&amp;nbsp;behavior. &lt;/p&gt;
+&lt;p&gt;If version control was in place, your first step would be to check the
+logs, and see that a small change was made last week that wasn&amp;#8217;t
+intended, and to revert the change. More realistically, the change
+would never have been made, because your team member would have had to
+commit the change, issue a &lt;span class="caps"&gt;PR&lt;/span&gt;, have the &lt;span class="caps"&gt;PR&lt;/span&gt; approved, and merge the
+change before it showed up in the production environment at&amp;nbsp;all.&lt;/p&gt;
+&lt;p&gt;There are many, many other scenarios where version control is a
+critical element of keeping a team functioning in the long&amp;nbsp;term.&lt;/p&gt;
+&lt;h2&gt;Environment&amp;nbsp;variables&lt;/h2&gt;
+&lt;p&gt;A Civis container can run a python script fetched from a github repo
+on a Docker container of your choosing. A common pattern for fetching
+credentials in python is to fetch them from environment variables
+that aren&amp;#8217;t directly stored in the code. Environment variables can be
+set in Civis container scripts as &amp;#8220;Parameters.&amp;#8221; Parameters can be set
+to credentials that are saved separately at a User level in&amp;nbsp;Civis.&lt;/p&gt;
+&lt;p&gt;Credentials saved in Civis can &lt;span class="caps"&gt;ONLY&lt;/span&gt; be made availabe in the
+environment using a &lt;code&gt;_USERNAME&lt;/code&gt; and &lt;code&gt;_PASSWORD&lt;/code&gt; suffix. That is, if
+your credential is named &lt;code&gt;SLACK_API_KEY&lt;/code&gt;, Civis forces you to make
+secret values available in the environment using keys
+&lt;code&gt;SLACK_API_KEY_USERNAME&lt;/code&gt; and &lt;code&gt;SLACK_API_KEY_PASSWORD&lt;/code&gt;. This choice clearly
+doesn&amp;#8217;t always make sense and requires a workaround for every
+credential that does not fit this&amp;nbsp;pattern.&lt;/p&gt;
+&lt;p&gt;Setting up civis scripts with parameters and credentials is a somewhat
+tedious manual process. The Civis &lt;span class="caps"&gt;API&lt;/span&gt; does make some, but not all, of
+this process&amp;nbsp;scriptable.&lt;/p&gt;
+&lt;h2&gt;Programmatic configuration of&amp;nbsp;orchestration&lt;/h2&gt;
+&lt;p&gt;Often data pipelines will have some non-trivial logic for how and when
+different steps should be triggered, which steps are dependent on
+others to complete first, etc. It is possible to set up these kinds of
+dependencies and automated scheduling in Civis using the web
+app. Automated scheduling is also possible to set up using the &lt;span class="caps"&gt;API&lt;/span&gt;,
+however as far as I can tell, it is not possible programmatically
+configure dependent workflows outside of the &lt;span class="caps"&gt;GUI&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Orchestration logic reflects important technical and business
+considerations and should not be exclusively configured in a
+web app. Having a web-app-first or web-app-exclusive interface for
+configuring orchestration means that changes to the configuration
+can happen without anyone noticing, and reverting changes can be
+difficult. Orchestration logic should be explicitly configured in the
+same version-controlled code repository that the code itself lives&amp;nbsp;in.&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Civis is a tool designed for ease of use. It abstracts away most of
+the data engineering otherwise required for analytics work so that
+data teams can get up and running quickly and easily with minimal
+technical hurdles. This is essential for small, short-lived,
+fast-moving campaigns common across the political&amp;nbsp;space.&lt;/p&gt;
+&lt;p&gt;This design comes with a fatal flaw, which is that technical staff
+using Civis ultimately are &amp;#8220;protected&amp;#8221; from ever needing to learn data
+engineering practices. Data staff in the progressive political space
+can go years, from team to team, working exclusively in Civis and
+never learn data engineering best practices or even fundamental data
+engineering concepts. Ultimately, the technical capacity of the
+progressive movement depends on technical staff working closer to and
+more directly with their data&amp;nbsp;infrastructure.&lt;/p&gt;</content><category term="sharing"></category></entry></feed>

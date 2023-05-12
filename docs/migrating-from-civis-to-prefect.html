@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Migrating from Civis to Prefect &mdash; Data Engineering the Left</title>
+  <meta name="author" content="Austin Weisgrau">
+
+
+
+
+
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link href="https://austinweisgrau.github.io/favicon.png" rel="icon">
+
+  <link href="https://austinweisgrau.github.io/theme/css/main.css" media="screen, projection"
+        rel="stylesheet" type="text/css">
+
+  <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <header role="banner"><hgroup>
+  <h1><a href="https://austinweisgrau.github.io/">Data Engineering the Left</a></h1>
+</hgroup></header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+</ul>
+
+
+<ul class="main-navigation">
+</ul></nav>
+  <div id="main">
+    <div id="content">
+<div>
+  <article class="hentry" role="article">
+<header>
+      <h1 class="entry-title">Migrating from Civis to Prefect</h1>
+    <p class="meta">
+<time datetime="2023-04-17T00:00:00-07:00" pubdate>Mon 17 April 2023</time>    </p>
+</header>
+
+  <div class="entry-content"><h2>The Problem: Data Orchestration in&nbsp;Civis</h2>
+<p>Like many progressive political organizations, Working Families Party
+has worked with Civis to set up and access our data
+infrastructure. Civis is a user-friendly orchestration platform and
+web application for executing <span class="caps">SQL</span> and python that interacts with our
+redshift data&nbsp;warehouse.</p>
+<p>Civis is an excellent tool for many progressive campaigns and
+organizations that have limited engineering resources. Civis provides a
+simple and accessible platform for analysts to easily interact with
+data without worrying about data engineering concerns. However, for
+more mature and organizations that operate beyond a single political
+cycle with sophisticated data needs, Civis has many limitations that
+make it <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html">an inappropriate tool</a>.</p>
+<p>Civis trades off many important data engineering best-practices in
+favor of ease-of-use. Civis&#8217; design leads users to make minimal use of
+version control, offers users limited visibility over production
+resources, and is mostly incompatible with the Infrastructure-As-Code&nbsp;paradigm.</p>
+<p>As a large organization with a long term political vision, we
+determined that Working Families Party required a much more mature
+toolset for its data&nbsp;stack.</p>
+<h2>Prefect to the&nbsp;Rescue</h2>
+<p>There are a lot of orchestration tools out there, and we wanted to
+choose the best tool for the job. I had prior experience with Apache
+Airflow, which is one of the most popular and mature data
+orchestration tools on the market. Several colleagues in the
+progressive data space had been eyeing alternatives to Civis for the
+same reasons we were, and suggested Prefect as an attractive new tool
+worth&nbsp;evaluating. </p>
+<p>Prefect offers most of the features of Airflow, but was more compelling
+to us for a few reasons. Airflow can be complicated to set up, and
+managed deployments like Astronomer or <span class="caps">AWS</span> <span class="caps">MWAA</span> can end up being quite
+expensive. Prefect offers a lower infrastructural lift for getting&nbsp;started.</p>
+<p>Another advantage of Prefect over Airflow is that migrating existing
+Python code to Prefect is much simpler than migrating to
+Airflow. Airflow has an idiosyncratic implementation in Python, but
+existing Python code can be turned into working a Prefect flow by
+simply wrapping it in a&nbsp;decorator.</p>
+<p>Overall, what Prefect offered us was the opportunity to implement many
+data-engineering best practices that were difficult or impossible to
+achieve in Civis. With Prefect, all of our code, containers,
+orchestration, and deployments are configured together as code in a
+single version-controlled&nbsp;repository.</p>
+<p><a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html">Our execution infrastructure</a> is configured declaratively using an <span class="caps">AWS</span>
+CodeFormation script to set up an execution layer in <span class="caps">AWS</span> <span class="caps">ECS</span>. We use
+Github Actions to automate our continuous integration <span class="amp">&amp;</span>
+deployment. Changes to Prefect flows, orchestration, and other parts
+of our configuration are seamlessly deployed to Prefect Cloud <span class="amp">&amp;</span> <span class="caps">ECS</span> on
+pushes to&nbsp;main.</p>
+<p><a href="https://austinweisgrau.github.io/migrating-to-prefect-part-4-moving-a-script-from-civis-to-prefect.html">Migrating scripts from Civis to Prefect</a> involves a trivial amount of
+refactoring, but also offers opportunities to use Prefect features for
+<a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html">concurrent execution</a>, integrated logging, secret management, automated
+orchestration, and&nbsp;testing.</p>
+<p>Now that we have worked in Prefect for several months, we&#8217;ve seen many
+improvements to our development cycle and workflow. We have more
+complete visibility over our production resources, which is really
+important as we work to understand <span class="amp">&amp;</span> refactor a significant amount of
+legacy&nbsp;code.</p>
+<p>With everything version-controlled, all changes are easy to coherently
+organize using version control best practices, which enables our whole
+team to better understand, track, and debug ongoing changes to our&nbsp;codebase. </p>
+<p>Version-controlled and automatically deployed orchestration
+configuration is also a welcome improvement for us. When business
+logic requires changes to the automations controlling when and how
+scripts are triggered to run, we can make those changes in our
+repository, push them, and trust that those changes will be reflected
+in production without any further&nbsp;work.</p>
+<h2>Wrapping&nbsp;Up</h2>
+<p>In conclusion, migrating from Civis to Prefect has been a major
+upgrade for the data team at Working Families Party. While Civis
+served us well in the past, its limitations became evident as our
+organization grew and our data needs became more sophisticated. Prefect
+offered us a mature and comprehensive toolset for data orchestration,
+enabling us to implement best practices and streamline our development&nbsp;cycle.</p>
+<p>Overall, Prefect has provided us with a powerful and flexible solution
+for data orchestration, empowering our organization to meet the
+demands of our long-term political vision. By embracing Prefect, we
+have set ourselves up for success in managing our data infrastructure
+and driving our progressive campaigns&nbsp;forward. </p></div>
+    <footer>
+<p class="meta">
+  <span class="byline author vcard">
+    Posted by <span class="fn">
+        Austin Weisgrau
+    </span>
+  </span>
+<time datetime="2023-04-17T00:00:00-07:00" pubdate>Mon 17 April 2023</time>  <span class="categories">
+    <a class='category' href='https://austinweisgrau.github.io/category/sharing.html'>sharing</a>
+  </span>
+</p><div class="sharing">
+</div>    </footer>
+  </article>
+
+</div>
+<aside class="sidebar">
+  <section>
+    <h1>Recent Posts</h1>
+    <ul id="recent_posts">
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-from-civis-to-prefect.html">Migrating from Civis to Prefect</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-4-moving-a-script-from-civis-to-prefect.html">Migrating to Prefect, Part 4: Moving a Script from Civis to Prefect</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html">Migrating to Prefect, Part 2: Prefect & AWS ECS</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html">Migrating to Prefect, Part 3: Rate limiting API calls</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html">Migrating to Prefect. Part 1: Civis Woes</a>
+      </li>
+    </ul>
+  </section>
+  <section>
+      
+    <h1>Categories</h1>
+    <ul id="recent_posts">
+        <li><a href="https://austinweisgrau.github.io/category/learning.html">learning</a></li>
+        <li><a href="https://austinweisgrau.github.io/category/sharing.html">sharing</a></li>
+    </ul>
+  </section>
+ 
+
+  <section>
+  <h1>Tags</h1>
+  </section>
+
+
+    <section>
+        <h1>Social</h1>
+        <ul>
+            <li><a href="https://www.linkedin.com/in/austin-weisgrau-a784b042/" target="_blank">LinkedIn</a></li>
+            <li><a href="https://github.com/austinweisgrau" target="_blank">GitHub</a></li>
+        </ul>
+    </section>
+
+</aside>    </div>
+  </div>
+  <footer role="contentinfo"><p>
+    Copyright &copy;  2023  Austin Weisgrau &mdash;
+  <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
+</p></footer>
+  <script src="https://austinweisgrau.github.io/theme/js/modernizr-2.0.js"></script>
+  <script src="https://austinweisgrau.github.io/theme/js/ender.js"></script>
+  <script src="https://austinweisgrau.github.io/theme/js/octopress.js" type="text/javascript"></script>
+</body>
+</html>

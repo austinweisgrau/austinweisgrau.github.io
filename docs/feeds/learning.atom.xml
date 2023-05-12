@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Data Engineering the Left - learning</title><link href="https://austinweisgrau.github.io/" rel="alternate"></link><link href="https://austinweisgrau.github.io/feeds/learning.atom.xml" rel="self"></link><id>https://austinweisgrau.github.io/</id><updated>2023-02-07T00:00:00-08:00</updated><entry><title>(Data) Engineering Resources</title><link href="https://austinweisgrau.github.io/data-engineering-resources.html" rel="alternate"></link><published>2023-02-07T00:00:00-08:00</published><updated>2023-02-07T00:00:00-08:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-02-07:/data-engineering-resources.html</id><summary type="html">&lt;p&gt;Here is a collection of resources that I&amp;#8217;ve found useful in my
+development as a data engineer. I&amp;#8217;ll add to this page over&amp;nbsp;time.&lt;/p&gt;
+&lt;h1&gt;Books&lt;/h1&gt;
+&lt;h3&gt;&lt;a href="https://www.oreilly.com/library/view/data-pipelines-pocket/9781492087823/"&gt;Data Pipelines Pocket Reference,&amp;nbsp;Densmore&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;The best reference book I&amp;#8217;ve come across for the full picture of the modern data engineering toolkit …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Here is a collection of resources that I&amp;#8217;ve found useful in my
+development as a data engineer. I&amp;#8217;ll add to this page over&amp;nbsp;time.&lt;/p&gt;
+&lt;h1&gt;Books&lt;/h1&gt;
+&lt;h3&gt;&lt;a href="https://www.oreilly.com/library/view/data-pipelines-pocket/9781492087823/"&gt;Data Pipelines Pocket Reference,&amp;nbsp;Densmore&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;The best reference book I&amp;#8217;ve come across for the full picture of the modern data engineering toolkit and workflow. Has lots of useful example&amp;nbsp;code.&lt;/p&gt;
+&lt;h3&gt;&lt;a href="https://martinfowler.com/books/refactoring.html"&gt;Refactoring, Martin&amp;nbsp;Fowler&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;This book completely transformed my relationship to legacy code, and data engineers usually work with a lot of legacy code. If you can compose many trivial, behavior-preserving changes into coherently redesigned and simplified code, you will have no&amp;nbsp;fear.&lt;/p&gt;
+&lt;h3&gt;&lt;a href="https://jakevdp.github.io/PythonDataScienceHandbook/"&gt;Python Data Science Handbook,&amp;nbsp;VanderPlas&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;I especially appreciated its first chapter about&amp;nbsp;ipython.&lt;/p&gt;
+&lt;h1&gt;Articles&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://grugbrain.dev/"&gt;The Grug Brained&amp;nbsp;Developer&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span class="dquo"&gt;&amp;#8220;&lt;/span&gt;learn from many, many mistake grug make over long program&amp;nbsp;life&amp;#8221;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://catb.org/~esr/faqs/smart-questions.html"&gt;How to Ask Questions the Smart&amp;nbsp;Way&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Effective engineers are highly self-sufficient. You will answer 90% of your own questions before you have finished reformulating them as smart&amp;nbsp;questions.&lt;/p&gt;
+&lt;h1&gt;Tutorials&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://learnpythonthehardway.org/python3/"&gt;Learn Python the Hard&amp;nbsp;Way&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This is where I started. I am a big fan of the &amp;#8220;hard way&amp;#8221; learning philosophy. The main idea is to never read about how to do something without actually doing it yourself as you&amp;nbsp;read.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world"&gt;The Flask&amp;nbsp;Mega-Tutorial&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This tutorial carried me through my first year of work. Not necessarily relevant for data engineering, but if you want to know how to throw together a web application in python, this tutorial is&amp;nbsp;excellent.&lt;/p&gt;</content><category term="learning"></category></entry></feed>
