@@ -10,11 +10,12 @@ web application for executing SQL and python that interacts with our
 redshift data warehouse.
 
 Civis is an excellent tool for many progressive campaigns and
-organizations that have limited engineering resources and provides a
+organizations that have limited engineering resources. Civis provides a
 simple and accessible platform for analysts to easily interact with
 data without worrying about data engineering concerns. However, for
-more mature and long-lived organizations with sophisticated data
-needs, Civis has many limitations that make it [an inappropriate tool]({filename}/sharing/prefect_1.md).
+more mature and organizations that operate beyond a single political
+cycle with sophisticated data needs, Civis has many limitations that
+make it [an inappropriate tool]({filename}/sharing/prefect_1.md).
 
 Civis trades off many important data engineering best-practices in
 favor of ease-of-use. Civis' design leads users to make minimal use of
@@ -29,16 +30,18 @@ toolset for its data stack.
 ## Prefect to the Rescue
 
 There are a lot of orchestration tools out there, and we wanted to
-choose the best tool for the job! Several colleagues in the
+choose the best tool for the job. I had prior experience with Apache
+Airflow, which is one of the most popular and mature data
+orchestration tools on the market. Several colleagues in the
 progressive data space had been eyeing alternatives to Civis for the
-same reasons we were, and suggested Prefect to us.
+same reasons we were, and suggested Prefect as an attractive new tool
+worth evaluating. 
 
-I had prior experience with Apache Airflow, which is one of the most
-popular and mature data orchestration tools on the market. Prefect
-offers most of the features of Airflow, but was more compelling to us
-for a few reasons. High on our list was that Airflow can be
-complicated to set up, and managed deployments like Astronomer or AWS
-MWAA can end up being quite expensive.
+Prefect offers most of the features of Airflow, but was more compelling
+to us for a few reasons. Airflow can be complicated to set up, and
+managed deployments like Astronomer or AWS MWAA can end up being quite
+expensive. Prefect offers a lower infrastructural lift for getting
+started.
 
 Another advantage of Prefect over Airflow is that migrating existing
 Python code to Prefect is much simpler than migrating to
