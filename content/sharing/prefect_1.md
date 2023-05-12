@@ -14,10 +14,8 @@ of "data pipelines", which extract data from sources, load it to
 destinations, and transform it along the way.
 
 [Civis](https://civisanalytics.com) is a widely used orchestration platform across the progressive
-space. One reason for this is that access to Civis is included with
-membership in [The Movement Cooperative](https://movementcooperative.org/), and is an afforadable and
-accessible platform for writing and running SQL and python in a cloud
-environment.
+political space. Civis is an afforadable and accessible platform for
+writing and running SQL and python in a cloud environment.
 
 Civis is an all-inclusive data platform that allows campaigns nd
 organizations to manipulate data in their Redshift warehouse, automate
@@ -83,26 +81,6 @@ change before it showed up in the production environment at all.
 
 There are many, many other scenarios where version control is a
 critical element of keeping a team functioning in the long term.
-
-## Permissions and visibility
-
-Limitations on permissions and visibility apply specifically to
-federated Civis users, such as those whose access to Civis comes
-through The Movement Cooperative and aren't intrinsic to Civis
-itself.
-
-Civis through TMC lacks an effective way to administer permissions and
-access to resources between users. No user can be granted access to
-everything in Civis. Instead, each individual user must manually share
-their assets with other users. If a user doesn't have access to an
-asset in Civis, Civis will report that the asset does not exist, rather
-than identifying the permissions issue.
-
-This is problematic because it means team members can create scripts
-that run on production services without that activity being visible to
-anyone else. There is no way to compile a list of all Civis scripts
-running on production services and be sure that it is a complete
-list. This creates a fundamental problem with oversight.
 
 ## Environment variables
 

@@ -77,11 +77,11 @@ Alternatively, [this tutorial](https://medium.com/@nwosupaul141/serverless-deplo
 Cloud Run. We may switch to this implementation if we end up moving
 off of Redshift and into Google Biguery at some point.
 
-## Needing a dedicated IP for access to TMC redshift
+## Needing a dedicated IP for access to redshift
 
 The Movement Cooperative (TMC) is a cooperatively run organization
 that supports progressive organizations run their tech stacks. TMC
-manages our organizations data warehouse in Redshift.
+manages our organization's data warehouse in Redshift.
 
 We needed to enable a dedicated IP address for our execution
 layer so that we could have our IP address whitelisted by TMC in order

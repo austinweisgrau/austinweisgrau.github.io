@@ -4,11 +4,10 @@ date: 2023-04-17
 ## The Problem: Data Orchestration in Civis
 
 Like many progressive political organizations, Working Families Party
-has worked with The Movement Cooperative to set up our data
-infrastructure. TMC manages a redshift data warehouse for its members
-and includes access to Civis, a user-friendly orchestration platform
-web application for executing SQL and python to interact with the
-warehouse.
+has worked with Civis to set up and access our data
+infrastructure. Civis is a user-friendly orchestration platform and
+web application for executing SQL and python that interacts with our
+redshift data warehouse.
 
 Civis is an excellent tool for many progressive campaigns and
 organizations that have limited engineering resources and provides a
