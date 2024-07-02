@@ -1,5 +1,329 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Data Engineering the Left - sharing</title><link href="https://austinweisgrau.github.io/" rel="alternate"></link><link href="https://austinweisgrau.github.io/feeds/sharing.atom.xml" rel="self"></link><id>https://austinweisgrau.github.io/</id><updated>2023-04-17T00:00:00-07:00</updated><entry><title>Migrating from Civis to Prefect</title><link href="https://austinweisgrau.github.io/migrating-from-civis-to-prefect.html" rel="alternate"></link><published>2023-04-17T00:00:00-07:00</published><updated>2023-04-17T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-04-17:/migrating-from-civis-to-prefect.html</id><summary type="html">&lt;h2&gt;The Problem: Data Orchestration in&amp;nbsp;Civis&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Data Engineering the Left - sharing</title><link href="https://austinweisgrau.github.io/" rel="alternate"></link><link href="https://austinweisgrau.github.io/feeds/sharing.atom.xml" rel="self"></link><id>https://austinweisgrau.github.io/</id><updated>2024-07-02T00:00:00-07:00</updated><entry><title>Deduplicating EveryAction</title><link href="https://austinweisgrau.github.io/deduplicating-everyaction.html" rel="alternate"></link><published>2024-07-02T00:00:00-07:00</published><updated>2024-07-02T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2024-07-02:/deduplicating-everyaction.html</id><summary type="html">&lt;p&gt;Like most progressive political organizations, Working Families Party
+(&lt;span class="caps"&gt;WFP&lt;/span&gt;) reluctantly uses EveryAction, the volunteer-management side of
+&lt;span class="caps"&gt;NGPVAN&lt;/span&gt;, as our &lt;span class="caps"&gt;CRM&lt;/span&gt; for keeping track of our activists and
+donors. EveryAction has many issues, support is difficult to access,
+and its issues are unlikely to dramatically improve since its recent
+acquisition by …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Like most progressive political organizations, Working Families Party
+(&lt;span class="caps"&gt;WFP&lt;/span&gt;) reluctantly uses EveryAction, the volunteer-management side of
+&lt;span class="caps"&gt;NGPVAN&lt;/span&gt;, as our &lt;span class="caps"&gt;CRM&lt;/span&gt; for keeping track of our activists and
+donors. EveryAction has many issues, support is difficult to access,
+and its issues are unlikely to dramatically improve since its recent
+acquisition by private equity and subsequent mass&amp;nbsp;layoffs.&lt;/p&gt;
+&lt;p&gt;One common issue with EveryAction is the proliferation of duplicate
+contacts. Staff working with EveryAction will search for a contact and
+notice that two or more contacts for the same person seem to
+exist. This creates a problem with getting accurate metrics out of
+EveryAction and also introduces confusing workflow issues for any
+staff who want to add or update contact attributes. Which contact
+should be updated? Pick either one? Update&amp;nbsp;both?&lt;/p&gt;
+&lt;p&gt;Contacts can be manually merged in the EveryAction web app, but the
+process is slow and untenable if duplicates exist at scale. And for
+any organization that uses EveryAction for several years or longer,
+duplicates can certainly go to scale. At &lt;span class="caps"&gt;WFP&lt;/span&gt; we estimate that
+somewhere between 5%-10% of our EveryAction contacts are&amp;nbsp;duplicates.&lt;/p&gt;
+&lt;p&gt;Bonterra, the organization behind EveryAction, is aware of the common
+issue with duplication and offers a paid service to deduplicate your
+data for you. The fee for the service is exorbitant and a questionable
+offering when dealing with duplicates is arguably more of a bug in the
+product than a feature to be upsold&amp;nbsp;on.&lt;/p&gt;
+&lt;p&gt;We decided to tackle deduplicating our data ourselves and want to
+share our process and learnings with the rest of the progressive
+organizations who are still locked in to this&amp;nbsp;product. &lt;/p&gt;
+&lt;p&gt;To tackle the proliferation of duplicates in EveryAction, we needed to
+answer a few key&amp;nbsp;questions:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Where are the duplicates coming from? // How can we mitigate the
+   creation of new&amp;nbsp;duplicates?&lt;/li&gt;
+&lt;li&gt;Which contacts are duplicates? // How can we match and merge
+   existing&amp;nbsp;duplicates?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Whence&amp;nbsp;??&lt;/h2&gt;
+&lt;h3&gt;Where are the duplicates coming&amp;nbsp;from?&lt;/h3&gt;
+&lt;p&gt;&lt;em&gt;Before we dive in, I will note that I did this engineering work and wrote this blog post about a year ago, and some small things have changed with EveryAction’s duplicate handling in that time. Some of the details I found through trial and error may not still behave in exactly the same way, although most of the behavior described here should still&amp;nbsp;hold.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;When data is loaded into EveryAction, EveryAction attempts to validate the new data with an existing contact record using one of four combinations of data&amp;nbsp;fields.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;first name, last name, date of&amp;nbsp;birth&lt;/li&gt;
+&lt;li&gt;first name, last name, phone&amp;nbsp;number&lt;/li&gt;
+&lt;li&gt;first name, last name,&amp;nbsp;email&lt;/li&gt;
+&lt;li&gt;first name, last name, street number, street name,&amp;nbsp;zipcode&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If a match is found on any of those sets of attributes, EveryAction
+will load associated data to that existing matched contact. Good! If
+no match can be found, a new contact is created. Makes&amp;nbsp;sense.&lt;/p&gt;
+&lt;p&gt;There are a few bugs in this process, however, that cause issues with&amp;nbsp;matching.&lt;/p&gt;
+&lt;p&gt;If a phone or email that can&amp;#8217;t be parsed as valid are provided in the
+set of contact attributes, EveryAction will fail to make a match, even
+if there are enough other attributes available to make a&amp;nbsp;match.&lt;/p&gt;
+&lt;p&gt;If none of the preferred supplementary contact attributes are
+available, EveryAction will make a new contact. If you only ever
+obtain first names and last names for certain contacts and regularly
+load that data into EveryAction, you will make duplicates of those
+same contacts each and every&amp;nbsp;time.&lt;/p&gt;
+&lt;p&gt;And of course, people&amp;#8217;s contact details and even their names change
+over time, typos arise all the time,&amp;nbsp;etc.&lt;/p&gt;
+&lt;h3&gt;How can we mitigate the creation of new&amp;nbsp;duplicates?&lt;/h3&gt;
+&lt;p&gt;To mitigate the creation of new duplicates, we needed to improve the
+performance of the &amp;#8220;matching&amp;#8221; step that happens before data is loaded
+onto a matched or created&amp;nbsp;contact.&lt;/p&gt;
+&lt;p&gt;Data is loaded into our EveryAction instance in three&amp;nbsp;ways:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Some tools like Mobilize have built-in integrations with
+   EveryAction and load data&amp;nbsp;directly.&lt;/li&gt;
+&lt;li&gt;We use the &lt;span class="caps"&gt;API&lt;/span&gt; to programmatically sync data from other
+   platforms (like ActBlue and Spoke) that don&amp;#8217;t have direct&amp;nbsp;integrations.&lt;/li&gt;
+&lt;li&gt;Sometimes staff do a bulk upload manually through the web&amp;nbsp;app. &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I assume that all three methods use the same logic to make matches,
+but I&amp;#8217;ve only personally verified the behavior of the &lt;span class="caps"&gt;API&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The EveryAction &lt;span class="caps"&gt;API&lt;/span&gt; offers two endpoints for finding contact matches.
+- &lt;code&gt;/find&lt;/code&gt; will search for a match, and raise various errors on failure
+  to find a match.
+- &lt;code&gt;/findOrCreate&lt;/code&gt; will search for a match, and create a new contact if
+  no match is found. This endpoint always returns a contact, and
+  there&amp;#8217;s no simple way to know if the contact was a match or is a new&amp;nbsp;creation.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;/findOrCreate&lt;/code&gt; is very convenient for getting a sync up and
+running. Many of our legacy syncs to EveryAction used that
+endpoint. However, to mitigate the creation of new duplicates, we need
+to improve the default matching behavior. We can achieve this
+improvement by separating the &amp;#8220;find&amp;#8221; and &amp;#8220;create&amp;#8221; steps, and adding
+more flexibility into the matching logic before reverting to new contact&amp;nbsp;creation.&lt;/p&gt;
+&lt;p&gt;In pseudo-code, this looks like moving&amp;nbsp;from:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;contact_data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;van_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;find_or_create_van_id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;contact_data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;to&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;contact_data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;van_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;find_van_id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;contact_data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;van_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;try_harder_to_find_van_id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;contact_data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;van_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;create_van_id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;contact_data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If we don&amp;#8217;t default to creating a new contact whenever EveryAction
+fails to find a match, we have the opportunity to add some more
+flexible and intelligent matching logic into the&amp;nbsp;process.&lt;/p&gt;
+&lt;p&gt;There are several strategies we&amp;#8217;ve developed that seem to make many
+reliable matches that EveryAction fails to make. We are continuing to
+monitor the creation of new contacts to identify other heuristics that
+can be used in a function like &lt;code&gt;try_harder_to_find_van_id()&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If a middle initial or middle name gets input as part of a
+   first name, EveryAction will fail to make a match. e.g. &amp;#8220;Barbara
+   E. Walters, 858-555-5555&amp;#8221; will not match to &amp;#8220;Barbara Walters,
+   858-555-5555&amp;#8221;. Removing characters from a first name after an
+   initial space can more reliably match&amp;nbsp;contacts. &lt;/li&gt;
+&lt;li&gt;Apostrophes and quote marks are not reliably parsed by source
+   platforms or EveryAction. e.g. &amp;#8220;Mark O&amp;#8217;Donnell, 619-555-5555&amp;#8221;
+   will not match with &amp;#8220;Mark ODonnell, 619-555-5555&amp;#8221; or &amp;#8220;Mark
+   O`Donnell, 619-555-5555&amp;#8221;. Removing apostrophes and quote marks from
+   names seems to improve&amp;nbsp;matching.&lt;/li&gt;
+&lt;li&gt;Cleaning and validating phone numbers, emails, and street numbers
+   and zipcodes before attempting to make a match improves matching.
+   e.g. &amp;#8220;John Green, 750-555-3499a, jgreen @hotmail.co&amp;#8221; will not
+   normally match to &amp;#8220;John Green, 750-555-3499,&amp;nbsp;jgreen@hotmail.com&amp;#8221;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A working example version of a python function built on top of the
+ &lt;code&gt;parsons&lt;/code&gt; package that implements the logic described above can be
+ seen&amp;nbsp;here.&lt;/p&gt;
+&lt;p&gt;By cleaning and validating data and making other improvements to
+matching heuristics, we can more reliably find matches to our source
+data before defaulting to creating new&amp;nbsp;contacts.&lt;/p&gt;
+&lt;h2&gt;Whomst&amp;nbsp;??&lt;/h2&gt;
+&lt;h3&gt;Which contacts are&amp;nbsp;duplicates?&lt;/h3&gt;
+&lt;p&gt;The problem of identifying records in a dataset that refer to the same
+person is called &amp;#8220;entity resolution,&amp;#8221; or more specifically &amp;#8220;identity
+resolution&amp;#8221; if your duplicated entities are&amp;nbsp;people.&lt;/p&gt;
+&lt;p&gt;Identity resolution is a nearly universal data quality
+issue. Depending on how data is gathered, it is usually very hard or
+impossible to track individuals over time with complete
+certainty. There are very few contact attributes that are not subject
+to change over time. In the context of community organizing, we only
+generally gather basic contact attributes like name, email, phone, and
+address. All of those contact attributes are subject to change, and
+sometimes frequent change. This makes matching contact data back up
+into a consolidated list of individual persons&amp;nbsp;difficult.&lt;/p&gt;
+&lt;p&gt;The problem of identifying which contacts in our data our duplicates
+of each other is essentially a problem of identity&amp;nbsp;resolution.&lt;/p&gt;
+&lt;p&gt;Luckily, because this is a common business problem, there are many
+resources available to help address the issue. In particular, the free
+and open source packages splink and zingg appeared promising to our
+team. Both packages train and deploy machine learning models developed
+from academic statistics research into identity&amp;nbsp;resolution.&lt;/p&gt;
+&lt;p&gt;Machine learning models can make powerful, accurate predictions, but
+may be non-deterministic and can obscure the logic used under-the-hood
+to make their predictions. Without some kind of baseline, it would be
+hard for us to tell how well these models were performing in
+identifying duplicates in our data. To improve our understanding of
+our problem, we first developed a series of &lt;span class="caps"&gt;SQL&lt;/span&gt; models to identify
+duplicates according to a set of reliable, deterministic&amp;nbsp;criteria.&lt;/p&gt;
+&lt;h4&gt;&lt;span class="caps"&gt;SQL&lt;/span&gt;&amp;nbsp;Models&lt;/h4&gt;
+&lt;p&gt;We made two sets of criteria for identifying duplicates at different
+levels of confidence. &amp;#8220;High confidence matches&amp;#8221; were matches that we
+felt so confident of, we were willing to merge without manual
+review. &amp;#8220;Medium confidence matches&amp;#8221; are mostly duplicates, but contain
+many false positives that we want to weed out with either manual
+review or future revisions of our &lt;span class="caps"&gt;SQL&lt;/span&gt;&amp;nbsp;models.&lt;/p&gt;
+&lt;h5&gt;High confidence&amp;nbsp;matches&lt;/h5&gt;
+&lt;p&gt;Our high confidence criteria are based on the same criteria that
+EveryAction uses. By design there should be few or zero duplicates on
+the contact sets that EveryAction uses to make matches, but we found
+about 3% of our contacts were duplicates on these canonical contact
+attributes. (Our support contact at EveryAction thinks these are
+likely due to ongoing or legacy bugs in the matching&amp;nbsp;system).&lt;/p&gt;
+&lt;p&gt;We expand this set by cleaning and normalizing the contact attributes
+before they are&amp;nbsp;matched.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Names are cleaned of all non-alphabet or space characters,
+  trimmed of leading or trailing&amp;nbsp;spaces&lt;/li&gt;
+&lt;li&gt;All characters are&amp;nbsp;lower-cased&lt;/li&gt;
+&lt;li&gt;First names are reduced to the first word before a&amp;nbsp;space&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This expanded set includes an additional ~0.3% of our total&amp;nbsp;contacts.&lt;/p&gt;
+&lt;h5&gt;Medium confidence&amp;nbsp;matches&lt;/h5&gt;
+&lt;p&gt;Our medium confidence criteria are a bit more expansive, and represent
+different heuristics we developed based on looking through our data to
+try and guess at what patterns were generating&amp;nbsp;duplicates. &lt;/p&gt;
+&lt;p&gt;One very common pattern we noticed was contacts recorded with a first
+initial as a first name. For example, &amp;#8220;Barbara Smith, 555-555-5555&amp;#8221;
+may have a duplicate &amp;#8220;B Smith,&amp;nbsp;555-555-5555&amp;#8221;.&lt;/p&gt;
+&lt;p&gt;Another common pattern we saw was a match in email usernames with
+either a change or typo in email
+domain. e.g. &amp;#8220;barbsmith1972@yahoo.com&amp;#8221; should match
+&amp;#8220;barbsmith1972@gmail.com&amp;#8221; or&amp;nbsp;&amp;#8220;barbsmith1972@yahoo.co&amp;#8221;.&lt;/p&gt;
+&lt;p&gt;This medium confidence model mimics the high confidence model, but
+expands the match criteria to catch these first initial matches and
+email username&amp;nbsp;matches.&lt;/p&gt;
+&lt;p&gt;The other common pattern we catch in this model is matches on first
+name and last name when these other contact attributes are all
+null. As discussed above, when contact data with only first name and
+last name are loaded to Every Action, a new contact is created every
+time. We want to find and merge all such&amp;nbsp;examples.&lt;/p&gt;
+&lt;p&gt;When we filter out overlaps with the high confidence model, this
+medium confidence model finds an additional ~1% of our total&amp;nbsp;contacts.&lt;/p&gt;
+&lt;p&gt;We do expect that some of these are false positives, and we want to
+manually review all of these medium confidence matches before
+programmatically merging&amp;nbsp;them.&lt;/p&gt;
+&lt;h5&gt;Review&lt;/h5&gt;
+&lt;p&gt;Using these clear and deterministic criteria, we find that 3-4% of our
+total contacts may be duplicates. Likely some portion of these are
+false positives, but we also expect that we capture only a small
+portion of the total duplicates that fail to match on these particular&amp;nbsp;criteria.&lt;/p&gt;
+&lt;p&gt;The contacts identified by our &lt;span class="caps"&gt;SQL&lt;/span&gt; models give us a useful baseline
+for comparison to our machine learning models. We can now estimate
+their performance by comparing the overlap in contacts identified by&amp;nbsp;each.&lt;/p&gt;
+&lt;h4&gt;Machine Learning&amp;nbsp;Models&lt;/h4&gt;
+&lt;p&gt;While deterministic criteria may work for identifying many potential
+duplicates, there are likely many more whose similarity is less easily
+defined. Typos or changes across multiple fields may make comparison
+difficult, and even with fuzzy matching we would still want to
+differentially weight matches on different attributes. For example, an
+exact match on date of birth is worth more than an exact match on&amp;nbsp;zipcode.&lt;/p&gt;
+&lt;p&gt;The free and open source packages &lt;a href="https://moj-analytical-services.github.io/splink/"&gt;splink&lt;/a&gt; and &lt;a href="https://www.zingg.ai/"&gt;zingg&lt;/a&gt; were both
+designed by data scientists with way more expertise than myself in
+this problem area, and I&amp;#8217;m inclined to trust that expertise and
+implement their solutions to our identity resolution&amp;nbsp;problem.&lt;/p&gt;
+&lt;p&gt;Both packages will take a dataset and output matches with confidence
+scores. However, especially at first, I need to understand the
+threshold at which the confidence of splink or zingg compares to my
+own confidence. My initial approach is to send all matches above a
+certain lower bound on confidence for manual review before
+programmatically merging any of them. So I am treating all these
+matches as &amp;#8220;medium&amp;nbsp;confidence&amp;#8221;.&lt;/p&gt;
+&lt;p&gt;zingg looks a bit shinier, but splink looks easier to implement. zingg
+and splink can both run on Apache Spark, but splink can also run on
+duckdb. splink&amp;#8217;s duckdb backend was impressively capable of running
+predictions on our entire contacts table on my &lt;span class="caps"&gt;16GB&lt;/span&gt; &lt;span class="caps"&gt;RAM&lt;/span&gt; laptop in a
+few&amp;nbsp;minutes. &lt;/p&gt;
+&lt;p&gt;I set up an automated workflow for splink to run as a Prefect flow and
+load its predictions to a redshift table. The splink model needs some
+configuration to tell it which records to compare and how different
+attributes should be compared. I based my configuration off their official
+tutorial which some minor changes to reflect what we know about
+EveryAction contact&amp;nbsp;matches. &lt;/p&gt;
+&lt;p&gt;splink makes a &lt;span class="caps"&gt;LOT&lt;/span&gt; of predicted matches. We set our lower confidence
+bound around 0.3 (on a scale from 0-1) and about 20% of the contacts
+in our database are predicted to be duplicates at this level of
+confidence. We expect many of these to be false positive matches, and
+can select some subset of the top matches to manually&amp;nbsp;validate.&lt;/p&gt;
+&lt;p&gt;|    | sql confidence   |   count |   splink max |   splink min |   splink mean |   splink median |\n|&amp;#8212;-:|:&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;-|&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;:|&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;-:|&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;-:|&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;:|&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;&amp;#8212;:|\n|  0 | high             |   16562 |            1 |     0        |      0.997379 |        1        |\n|  1 | medium           |    8935 |            1 |     0        |      0.949009 |        0.958971 |\n|  2 | 0                | 6933193 |            1 |     0.300087 |      0.9452   |        0.944315&amp;nbsp;|&lt;/p&gt;
+&lt;p&gt;This table compares how splink matches line up against our &lt;span class="caps"&gt;SQL&lt;/span&gt;
+models. You can make your own conclusions, but I have a few key&amp;nbsp;takeaways:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;splink makes several orders of magnitude more match predictions than
+    my &lt;span class="caps"&gt;SQL&lt;/span&gt;&amp;nbsp;models&lt;/li&gt;
+&lt;li&gt;splink confidence levels trend quite high, with a median of 94%
+    confidence across all ~7 million predicted matches. Likely there
+    is a huge difference in the quality of matches between 99%
+    confidence and 94%&amp;nbsp;confidence&lt;/li&gt;
+&lt;li&gt;splink confidence does seem to track with my &lt;span class="caps"&gt;SQL&lt;/span&gt; models. My high
+    confidence &lt;span class="caps"&gt;SQL&lt;/span&gt; matches correspond to a median splink confidence of
+    100%, down to 95.9% for my medium confidence &lt;span class="caps"&gt;SQL&lt;/span&gt; matches, and then
+    down again to 94.4% for matches not identified by my &lt;span class="caps"&gt;SQL&lt;/span&gt;&amp;nbsp;models.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Some manual review of splink&amp;#8217;s top matches that aren&amp;#8217;t covered by my
+&lt;span class="caps"&gt;SQL&lt;/span&gt; models validates the expected behavior. splink makes matches
+between contacts that are clearly duplicated on manual review, but
+don&amp;#8217;t fall into the deterministic criteria I set in my &lt;span class="caps"&gt;SQL&lt;/span&gt;
+models. Some of these&amp;nbsp;scenarios:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A nickname is used in one contact, making a match on firstname&amp;nbsp;fail&lt;/li&gt;
+&lt;li&gt;A small typo exists in an email address or street&amp;nbsp;address&lt;/li&gt;
+&lt;li&gt;A contact&amp;#8217;s last name changed, perhaps due to&amp;nbsp;marriage&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;splink makes more match predictions than we can easily handle, and
+seems to be performing well enough that we don&amp;#8217;t need to bother
+setting up&amp;nbsp;zingg.&lt;/p&gt;
+&lt;h3&gt;Manual&amp;nbsp;Validation&lt;/h3&gt;
+&lt;p&gt;Merging contacts is an irreversible operation, so it is important to
+be quite confident about matches before executing a merge. For matches
+identified by the high confidence &lt;span class="caps"&gt;SQL&lt;/span&gt; model defined above, we feel
+confident about a programmatic merge. However, for all the matches
+identified by our &amp;#8220;medium confidence&amp;#8221; &lt;span class="caps"&gt;SQL&lt;/span&gt; model, and all matches
+identified by our splink implementation, we want to execute a manual
+validation before&amp;nbsp;merging. &lt;/p&gt;
+&lt;p&gt;To manually validate contacts, we have set up a web application that
+pulls matches and all associated contact details. Contacts and their
+details are displayed side by side, and a user selects whether the
+match is valid, invalid, or unclear. The validation workflow is
+somewhat boring and tedious, but quite fast. Using the web app, a
+single person can validate 500-1000 matches in an&amp;nbsp;hour. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot of validation app" src="https://austinweisgrau.github.io/images/validation_app.png"&gt;&lt;/p&gt;
+&lt;p&gt;Over time, using the web app to manually validate contacts helps to
+generate new &amp;#8220;high confidence&amp;#8221; heuristics that can be used to identify
+matches without needing a manual review step. For example, we may
+realize we have a large number of contacts with first name &amp;#8220;undefined&amp;#8221;
+and last name &amp;#8220;undefined&amp;#8221;, and we can investigate those further and
+purge them from the database. Another example is that we have found
+that contacts that are matched on first name and last name but have no 
+additional contact details defined can be merged with high&amp;nbsp;confidence.&lt;/p&gt;
+&lt;h2&gt;Whereunto&amp;nbsp;??&lt;/h2&gt;
+&lt;p&gt;EveryAction should take responsibility for the management of duplicate
+contacts as a critical feature in their &lt;span class="caps"&gt;CRM&lt;/span&gt;. However, in lieu of them
+fixing this problem, it is possible for users with sufficient
+engineering capacity to understand the problem and implement a fix on
+our&amp;nbsp;own. &lt;/p&gt;
+&lt;p&gt;We use &lt;span class="caps"&gt;SQL&lt;/span&gt; queries to identify matches at two levels of confidence,
+and we use splink to identify another batch of duplicates. We feel
+confident we can programmatically merge higher confidence &lt;span class="caps"&gt;SQL&lt;/span&gt; matches
+without review, but we want to manually validate all the other
+matches. We can use a web application to make the manual validation a
+quick and easy process and manually validate thousands of potential
+matches in just a few&amp;nbsp;days. &lt;/p&gt;
+&lt;p&gt;High confidence and validated matches are accumulated in a database
+table and staged for processing by a programmatic merge script. This
+script iterates through each match and executes an &lt;span class="caps"&gt;API&lt;/span&gt; call to the
+EveryAction &lt;span class="caps"&gt;API&lt;/span&gt; endpoint &lt;code&gt;/people/{vanid}/mergeInto&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;We run our &lt;span class="caps"&gt;SQL&lt;/span&gt; models, splink, and the programmatic merge on a weekly
+basis to identify and merge duplicates. Manual validation happens on a
+rolling basis and all validated contacts are aggregated and merged on
+the next schedule merge&amp;nbsp;flow.&lt;/p&gt;
+&lt;p&gt;If you want to know more about any of this, feel free to reach out. I
+also tentatively plan on making an affordable plug-and-play version of
+this application available to &lt;span class="caps"&gt;TMC&lt;/span&gt; members in early 2025 - let me know
+if you might be interested in beta testing&amp;nbsp;this.&lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Migrating from Civis to Prefect</title><link href="https://austinweisgrau.github.io/migrating-from-civis-to-prefect.html" rel="alternate"></link><published>2023-04-17T00:00:00-07:00</published><updated>2023-04-17T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-04-17:/migrating-from-civis-to-prefect.html</id><summary type="html">&lt;h2&gt;The Problem: Data Orchestration in&amp;nbsp;Civis&lt;/h2&gt;
 &lt;p&gt;Like many progressive political organizations, Working Families Party
 has worked with Civis to set up and access our data
 infrastructure. Civis is a user-friendly orchestration platform and
@@ -115,17 +439,17 @@ following&amp;nbsp;steps:&lt;/p&gt;
 &lt;p&gt;We can use the following Civis script as an example to work&amp;nbsp;with.&lt;/p&gt;
 &lt;p&gt;This script pulls a list of &lt;span class="caps"&gt;VAN&lt;/span&gt; IDs from a Redshift table and updates
 these &lt;span class="caps"&gt;VAN&lt;/span&gt; IDs in EveryAction with an origin source&amp;nbsp;code. &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;parsons&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;parsons&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;VAN&lt;/span&gt;
 
-&lt;span class="n"&gt;van_source_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;12345&lt;/span&gt;
+&lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;12345&lt;/span&gt;
 
-&lt;span class="n"&gt;van_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 
-&lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;select vanid from some_important_table&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;select vanid from some_important_table&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-    &lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished applying source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -135,56 +459,56 @@ these &lt;span class="caps"&gt;VAN&lt;/span&gt; IDs in EveryAction with an origi
 minimum change necessary to make a Prefect flow out of existing code
 is to encapsulate the code within a method that has the
 &lt;code&gt;@flow()&lt;/code&gt; decorator&amp;nbsp;applied.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;parsons&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;prefect&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;flow&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;parsons&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;VAN&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;prefect&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;flow&lt;/span&gt;
 
 
-&lt;span class="n"&gt;van_source_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;12345&lt;/span&gt;
+&lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;12345&lt;/span&gt;
 
 &lt;span class="nd"&gt;@flow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Update VAN Source Codes Sync&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-    &lt;span class="n"&gt;van_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 
-    &lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;select vanid from some_important_table&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;select vanid from some_important_table&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-        &lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished applying source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished applying source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-    &lt;span class="n"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Better yet is to break out some of the methods within the flow as
 prefect tasks, to gain greater oversight and control over the&amp;nbsp;flow.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;parsons&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;prefect&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;flow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;task&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;parsons&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;VAN&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;prefect&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;flow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;task&lt;/span&gt;
 
 
-&lt;span class="n"&gt;van_source_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;12345&lt;/span&gt;
-
-&lt;span class="nd"&gt;@task&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_query_results&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-    &lt;span class="n"&gt;query_results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;select vanid from some_important_table&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;query_results&lt;/span&gt;
+&lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;12345&lt;/span&gt;
 
 &lt;span class="nd"&gt;@task&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-    &lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;fetch_query_results&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;select vanid from some_important_table&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;query_results&lt;/span&gt;
+
+&lt;span class="nd"&gt;@task&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="nd"&gt;@flow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Update VAN Source Codes Sync&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-    &lt;span class="n"&gt;van_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 
-    &lt;span class="n"&gt;query_results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fetch_query_results&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fetch_query_results&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
-    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-        &lt;span class="n"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished applying source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished applying source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Swap out&amp;nbsp;loggers&lt;/h2&gt;
@@ -201,16 +525,16 @@ statements, you can define your flow&amp;nbsp;with:&lt;/p&gt;
 &lt;p&gt;You can set print logging globally with the Prefect config variable
 &lt;code&gt;PREFECT_LOGGING_LOG_PRINTS=True&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;You can also alternatively use the prefect&amp;nbsp;logger.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;prefect&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;flow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;task&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;get_run_logger&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;prefect&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;flow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;task&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;get_run_logger&lt;/span&gt;
 
 &lt;span class="o"&gt;...&lt;/span&gt;
 
 &lt;span class="nd"&gt;@flow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Update VAN Source Codes Sync&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
 
-    &lt;span class="o"&gt;...&lt;/span&gt; 
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
 
-    &lt;span class="n"&gt;get_run_logger&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished apply source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;get_run_logger&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished apply source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Swap out credential fetching&amp;nbsp;methods&lt;/h2&gt;
@@ -255,29 +579,29 @@ running a command&amp;nbsp;like&lt;/p&gt;
 task.submit() or task.map() to take advantage of prefect&amp;nbsp;concurrency.&lt;/p&gt;
 &lt;p&gt;Using our custom &lt;a href=""&gt;task concurrency limiter&lt;/a&gt;, we can set a rate limit of
 3 as advised by the &lt;a href="https://docs.ngpvan.com/docs/throttling-guidelines"&gt;EveryAction documentation&lt;/a&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;utilities.concurrency&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;limit_concurrency&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;utilities.concurrency&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;limit_concurrency&lt;/span&gt;
 
 &lt;span class="o"&gt;...&lt;/span&gt;
 
 &lt;span class="nd"&gt;@task&lt;/span&gt;
 &lt;span class="nd"&gt;@limit_concurrency&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_workers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-    &lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_person_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;source_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 
 &lt;span class="nd"&gt;@flow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Update VAN Source Codes Sync&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-    &lt;span class="n"&gt;van_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;update_van_source_codes&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;van_client&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;VAN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;EveryAction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;VAN_API_KEY_PASSWORD&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 
-    &lt;span class="n"&gt;query_results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fetch_query_results&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fetch_query_results&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
-    &lt;span class="n"&gt;van_ids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;van_ids&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;vanid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;query_results&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 
-    &lt;span class="c1"&gt;# Await results before finishing flow&lt;/span&gt;
-    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;future&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_ids&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;# Await results before finishing flow&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;apply_origin_source_code&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;van_ids&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;van_source_code&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
-    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished applying source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Finished applying source codes.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Refactor, expand tests and&amp;nbsp;documentation&lt;/h2&gt;
