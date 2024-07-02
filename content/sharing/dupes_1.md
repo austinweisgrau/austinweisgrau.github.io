@@ -1,5 +1,5 @@
 title: Deduplicating EveryAction
-date: 2023-05-22
+date: 2024-07-02
 
 Like most progressive political organizations, Working Families Party
 (WFP) reluctantly uses EveryAction, the volunteer-management side of
