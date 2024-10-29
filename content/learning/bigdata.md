@@ -11,7 +11,8 @@ and RAM doesn't scale well.
 
 In my opinion, the only truly appropriate tooling for data
 transformations above a very small scale is to load the data into an
-OLAP data warehouse and execute your transformations using SQL.
+OLAP data warehouse and execute your transformations using SQL (or,
+ideally, [dbt](https://getdbt.com)).
 
 However, sometimes you need a drop-in solution that can scale-up
 dataframe-based transformations. 

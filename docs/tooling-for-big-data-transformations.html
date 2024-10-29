@@ -58,7 +58,8 @@ running these workflows on cloud servers with massive amounts of <span class="ca
 and <span class="caps">RAM</span> doesn&#8217;t scale&nbsp;well.</p>
 <p>In my opinion, the only truly appropriate tooling for data
 transformations above a very small scale is to load the data into an
-<span class="caps">OLAP</span> data warehouse and execute your transformations using <span class="caps">SQL</span>.</p>
+<span class="caps">OLAP</span> data warehouse and execute your transformations using <span class="caps">SQL</span> (or,
+ideally, <a href="https://getdbt.com">dbt</a>).</p>
 <p>However, sometimes you need a drop-in solution that can scale-up
 dataframe-based&nbsp;transformations. </p>
 <p>Traditionally, the usual approach was to use distributed computing
