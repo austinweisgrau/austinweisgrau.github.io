@@ -78,17 +78,17 @@ following&nbsp;steps:</p>
 <p>We can use the following Civis script as an example to work&nbsp;with.</p>
 <p>This script pulls a list of <span class="caps">VAN</span> IDs from a Redshift table and updates
 these <span class="caps">VAN</span> IDs in EveryAction with an origin source&nbsp;code. </p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">parsons</span> <span class="kn">import</span> <span class="n">Redshift</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">VAN</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">parsons</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">Redshift</span><span class="p">,</span><span class="w"> </span><span class="n">Table</span><span class="p">,</span><span class="w"> </span><span class="n">VAN</span>
 
-<span class="n">van_source_code</span> <span class="o">=</span> <span class="mi">12345</span>
+<span class="n">van_source_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span>
 
-<span class="n">van_client</span> <span class="o">=</span> <span class="n">VAN</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s2">&quot;EveryAction&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;VAN_API_KEY_PASSWORD&quot;</span><span class="p">])</span>
+<span class="n">van_client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VAN</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s2">&quot;EveryAction&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;VAN_API_KEY_PASSWORD&quot;</span><span class="p">])</span>
 
-<span class="n">query_results</span><span class="p">:</span> <span class="n">Table</span> <span class="o">=</span> <span class="n">Redshift</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;select vanid from some_important_table&quot;</span><span class="p">)</span>
+<span class="n">query_results</span><span class="p">:</span><span class="w"> </span><span class="n">Table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Redshift</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;select vanid from some_important_table&quot;</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">query_results</span><span class="p">:</span>
-    <span class="n">van_client</span><span class="o">.</span><span class="n">apply_person_code</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;vanid&#39;</span><span class="p">],</span> <span class="n">van_source_code</span><span class="p">)</span>
+<span class="k">for</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">query_results</span><span class="p">:</span>
+<span class="w">    </span><span class="n">van_client</span><span class="o">.</span><span class="n">apply_person_code</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;vanid&#39;</span><span class="p">],</span><span class="w"> </span><span class="n">van_source_code</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished applying source codes.&quot;</span><span class="p">)</span>
 </code></pre></div>
@@ -98,56 +98,56 @@ these <span class="caps">VAN</span> IDs in EveryAction with an origin source&nbs
 minimum change necessary to make a Prefect flow out of existing code
 is to encapsulate the code within a method that has the
 <code>@flow()</code> decorator&nbsp;applied.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">parsons</span> <span class="kn">import</span> <span class="n">Redshift</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">VAN</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">parsons</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">Redshift</span><span class="p">,</span><span class="w"> </span><span class="n">Table</span><span class="p">,</span><span class="w"> </span><span class="n">VAN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">flow</span>
 
 
-<span class="n">van_source_code</span> <span class="o">=</span> <span class="mi">12345</span>
+<span class="n">van_source_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Update VAN Source Codes Sync&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">update_van_source_codes</span><span class="p">():</span>
-    <span class="n">van_client</span> <span class="o">=</span> <span class="n">VAN</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s2">&quot;EveryAction&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;VAN_API_KEY_PASSWORD&quot;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_van_source_codes</span><span class="p">():</span>
+<span class="w">    </span><span class="n">van_client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VAN</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s2">&quot;EveryAction&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;VAN_API_KEY_PASSWORD&quot;</span><span class="p">])</span>
 
-    <span class="n">query_results</span><span class="p">:</span> <span class="n">Table</span> <span class="o">=</span> <span class="n">Redshift</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;select vanid from some_important_table&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">query_results</span><span class="p">:</span><span class="w"> </span><span class="n">Table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Redshift</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;select vanid from some_important_table&quot;</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">query_results</span><span class="p">:</span>
-        <span class="n">van_client</span><span class="o">.</span><span class="n">apply_person_code</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;vanid&#39;</span><span class="p">],</span> <span class="n">van_source_code</span><span class="p">)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">query_results</span><span class="p">:</span>
+<span class="w">        </span><span class="n">van_client</span><span class="o">.</span><span class="n">apply_person_code</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;vanid&#39;</span><span class="p">],</span><span class="w"> </span><span class="n">van_source_code</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished applying source codes.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished applying source codes.&quot;</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">update_van_source_codes</span><span class="p">()</span>
+<span class="k">if</span><span class="w"> </span><span class="vm">__name__</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="n">update_van_source_codes</span><span class="p">()</span>
 </code></pre></div>
 
 <p>Better yet is to break out some of the methods within the flow as
 prefect tasks, to gain greater oversight and control over the&nbsp;flow.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">parsons</span> <span class="kn">import</span> <span class="n">Redshift</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">VAN</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">parsons</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">Redshift</span><span class="p">,</span><span class="w"> </span><span class="n">Table</span><span class="p">,</span><span class="w"> </span><span class="n">VAN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">flow</span><span class="p">,</span><span class="w"> </span><span class="n">task</span>
 
 
-<span class="n">van_source_code</span> <span class="o">=</span> <span class="mi">12345</span>
-
-<span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">fetch_query_results</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
-    <span class="n">query_results</span> <span class="o">=</span> <span class="n">Redshift</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;select vanid from some_important_table&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">query_results</span>
+<span class="n">van_source_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">apply_origin_source_code</span><span class="p">(</span><span class="n">van_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">source_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">van_client</span><span class="o">.</span><span class="n">apply_person_code</span><span class="p">(</span><span class="n">van_id</span><span class="p">,</span> <span class="n">source_code</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_query_results</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Table</span><span class="p">:</span>
+<span class="w">    </span><span class="n">query_results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Redshift</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;select vanid from some_important_table&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">query_results</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_origin_source_code</span><span class="p">(</span><span class="n">van_id</span><span class="p">:</span><span class="w"> </span><span class="nb">int</span><span class="p">,</span><span class="w"> </span><span class="n">source_code</span><span class="p">:</span><span class="w"> </span><span class="nb">int</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="n">van_client</span><span class="o">.</span><span class="n">apply_person_code</span><span class="p">(</span><span class="n">van_id</span><span class="p">,</span><span class="w"> </span><span class="n">source_code</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Update VAN Source Codes Sync&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">update_van_source_codes</span><span class="p">():</span>
-    <span class="n">van_client</span> <span class="o">=</span> <span class="n">VAN</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s2">&quot;EveryAction&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;VAN_API_KEY_PASSWORD&quot;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_van_source_codes</span><span class="p">():</span>
+<span class="w">    </span><span class="n">van_client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VAN</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s2">&quot;EveryAction&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;VAN_API_KEY_PASSWORD&quot;</span><span class="p">])</span>
 
-    <span class="n">query_results</span> <span class="o">=</span> <span class="n">fetch_query_results</span><span class="p">()</span>
+<span class="w">    </span><span class="n">query_results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fetch_query_results</span><span class="p">()</span>
 
-    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">query_results</span><span class="p">:</span>
-        <span class="n">apply_origin_source_code</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;vanid&#39;</span><span class="p">],</span> <span class="n">van_source_code</span><span class="p">)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">query_results</span><span class="p">:</span>
+<span class="w">        </span><span class="n">apply_origin_source_code</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;vanid&#39;</span><span class="p">],</span><span class="w"> </span><span class="n">van_source_code</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished applying source codes.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished applying source codes.&quot;</span><span class="p">)</span>
 </code></pre></div>
 
 <h2>Swap out&nbsp;loggers</h2>
@@ -164,16 +164,16 @@ statements, you can define your flow&nbsp;with:</p>
 <p>You can set print logging globally with the Prefect config variable
 <code>PREFECT_LOGGING_LOG_PRINTS=True</code></p>
 <p>You can also alternatively use the prefect&nbsp;logger.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">flow</span><span class="p">,</span><span class="w"> </span><span class="n">task</span><span class="p">,</span><span class="w"> </span><span class="n">get_run_logger</span>
 
 <span class="o">...</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Update VAN Source Codes Sync&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">update_van_source_codes</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_van_source_codes</span><span class="p">():</span>
 
-    <span class="o">...</span> 
+<span class="w">    </span><span class="o">...</span><span class="w"> </span>
 
-    <span class="n">get_run_logger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished apply source codes.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">get_run_logger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished apply source codes.&quot;</span><span class="p">)</span>
 </code></pre></div>
 
 <h2>Swap out credential fetching&nbsp;methods</h2>
@@ -218,29 +218,29 @@ running a command&nbsp;like</p>
 task.submit() or task.map() to take advantage of prefect&nbsp;concurrency.</p>
 <p>Using our custom <a href="">task concurrency limiter</a>, we can set a rate limit of
 3 as advised by the <a href="https://docs.ngpvan.com/docs/throttling-guidelines">EveryAction documentation</a>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">utilities.concurrency</span> <span class="kn">import</span> <span class="n">limit_concurrency</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">utilities.concurrency</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">limit_concurrency</span>
 
 <span class="o">...</span>
 
 <span class="nd">@task</span>
 <span class="nd">@limit_concurrency</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">apply_origin_source_code</span><span class="p">(</span><span class="n">van_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">source_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">van_client</span><span class="o">.</span><span class="n">apply_person_code</span><span class="p">(</span><span class="n">van_id</span><span class="p">,</span> <span class="n">source_code</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_origin_source_code</span><span class="p">(</span><span class="n">van_id</span><span class="p">:</span><span class="w"> </span><span class="nb">int</span><span class="p">,</span><span class="w"> </span><span class="n">source_code</span><span class="p">:</span><span class="w"> </span><span class="nb">int</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="n">van_client</span><span class="o">.</span><span class="n">apply_person_code</span><span class="p">(</span><span class="n">van_id</span><span class="p">,</span><span class="w"> </span><span class="n">source_code</span><span class="p">)</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Update VAN Source Codes Sync&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">update_van_source_codes</span><span class="p">():</span>
-    <span class="n">van_client</span> <span class="o">=</span> <span class="n">VAN</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s2">&quot;EveryAction&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;VAN_API_KEY_PASSWORD&quot;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_van_source_codes</span><span class="p">():</span>
+<span class="w">    </span><span class="n">van_client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VAN</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s2">&quot;EveryAction&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;VAN_API_KEY_PASSWORD&quot;</span><span class="p">])</span>
 
-    <span class="n">query_results</span> <span class="o">=</span> <span class="n">fetch_query_results</span><span class="p">()</span>
+<span class="w">    </span><span class="n">query_results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fetch_query_results</span><span class="p">()</span>
 
-    <span class="n">van_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;vanid&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">query_results</span><span class="p">]</span>
+<span class="w">    </span><span class="n">van_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;vanid&#39;</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">query_results</span><span class="p">]</span>
 
-    <span class="c1"># Await results before finishing flow</span>
-    <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">apply_origin_source_code</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">van_ids</span><span class="p">,</span> <span class="n">van_source_code</span><span class="p">):</span>
-        <span class="n">future</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Await results before finishing flow</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">apply_origin_source_code</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">van_ids</span><span class="p">,</span><span class="w"> </span><span class="n">van_source_code</span><span class="p">):</span>
+<span class="w">        </span><span class="n">future</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished applying source codes.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished applying source codes.&quot;</span><span class="p">)</span>
 </code></pre></div>
 
 <h2>Refactor, expand tests and&nbsp;documentation</h2>
@@ -268,6 +268,12 @@ important pieces of the&nbsp;code!</p></div>
     <h1>Recent Posts</h1>
     <ul id="recent_posts">
       <li class="post">
+          <a href="https://austinweisgrau.github.io/tooling-for-big-data-transformations.html">Tooling for Big Data Transformations</a>
+      </li>
+      <li class="post">
+          <a href="https://austinweisgrau.github.io/deduplicating-everyaction.html">Deduplicating EveryAction</a>
+      </li>
+      <li class="post">
           <a href="https://austinweisgrau.github.io/migrating-from-civis-to-prefect.html">Migrating from Civis to Prefect</a>
       </li>
       <li class="post">
@@ -275,12 +281,6 @@ important pieces of the&nbsp;code!</p></div>
       </li>
       <li class="post">
           <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html">Migrating to Prefect, Part 2: Prefect & AWS ECS</a>
-      </li>
-      <li class="post">
-          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html">Migrating to Prefect, Part 3: Rate limiting API calls</a>
-      </li>
-      <li class="post">
-          <a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html">Migrating to Prefect. Part 1: Civis Woes</a>
       </li>
     </ul>
   </section>
@@ -310,7 +310,7 @@ important pieces of the&nbsp;code!</p></div>
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2023  Austin Weisgrau &mdash;
+    Copyright &copy;  2023&ndash;2024  Austin Weisgrau &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://austinweisgrau.github.io/theme/js/modernizr-2.0.js"></script>

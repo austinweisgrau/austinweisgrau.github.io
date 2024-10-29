@@ -4,7 +4,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>(Data) Engineering Resources &mdash; Data Engineering the Left</title>
+  <title>Tooling for Big Data Transformations &mdash; Data Engineering the Left</title>
   <meta name="author" content="Austin Weisgrau">
 
 
@@ -44,38 +44,45 @@
 <div>
   <article class="hentry" role="article">
 <header>
-      <h1 class="entry-title">(Data) Engineering Resources</h1>
+      <h1 class="entry-title">Tooling for Big Data Transformations</h1>
     <p class="meta">
-<time datetime="2023-02-07T00:00:00-08:00" pubdate>Tue 07 February 2023</time>    </p>
+<time datetime="2024-10-29T00:00:00-07:00" pubdate>Tue 29 October 2024</time>    </p>
 </header>
 
-  <div class="entry-content"><p>Here is a collection of resources that I&#8217;ve found useful in my
-development as a data engineer. I&#8217;ll add to this page over&nbsp;time.</p>
-<h1>Books</h1>
-<h3><a href="https://www.oreilly.com/library/view/data-pipelines-pocket/9781492087823/">Data Pipelines Pocket Reference,&nbsp;Densmore</a></h3>
-<p>The best reference book I&#8217;ve come across for the full picture of the modern data engineering toolkit and workflow. Has lots of useful example&nbsp;code.</p>
-<h3><a href="https://martinfowler.com/books/refactoring.html">Refactoring, Martin&nbsp;Fowler</a></h3>
-<p>This book completely transformed my relationship to legacy code, and data engineers usually work with a lot of legacy code. If you can compose many trivial, behavior-preserving changes into coherently redesigned and simplified code, you will have no&nbsp;fear.</p>
-<h3><a href="https://jakevdp.github.io/PythonDataScienceHandbook/">Python Data Science Handbook,&nbsp;VanderPlas</a></h3>
-<p>I especially appreciated its first chapter about&nbsp;ipython.</p>
-<h1>Articles</h1>
+  <div class="entry-content"><p>Data teams sometimes struggle to find appropriate tooling for large
+analytics workflows. A common pattern is for an analyst to work
+primarily using the R tidyverse or Python pandas. This works fine for
+awhile, but as the workflow scales up and the amount of data being
+processed increases, eventually these tools struggle to keep up. Even
+running these workflows on cloud servers with massive amounts of <span class="caps">CPU</span>
+and <span class="caps">RAM</span> doesn&#8217;t scale&nbsp;well.</p>
+<p>In my opinion, the only truly appropriate tooling for data
+transformations above a very small scale is to load the data into an
+<span class="caps">OLAP</span> data warehouse and execute your transformations using <span class="caps">SQL</span>.</p>
+<p>However, sometimes you need a drop-in solution that can scale-up
+dataframe-based&nbsp;transformations. </p>
+<p>Traditionally, the usual approach was to use distributed computing
+frameworks like Spark or Hadoop to execute dataframe transformations
+at scale. However, these require pretty elaborate and complex cloud&nbsp;infrastructure.</p>
+<p>These days, there are much better tools for working with big data on a
+single machine, using columnar data storage locally like an <span class="caps">OLAP</span>&nbsp;database. </p>
 <ul>
-<li><a href="https://grugbrain.dev/">The Grug Brained&nbsp;Developer</a></li>
+<li>
+<p>Apache Arrow is a <span class="caps">CSV</span>-alternative typed columnar data storage format
+  that enables pandas-alternatives like <a href="https://github.com/pola-rs/polars">polars</a>.</p>
+</li>
+<li>
+<p>duckdb is a sqlite-like dead simple local database that uses
+  columnar storage behind the scenes, and can be used as a backend for
+  <a href="https://duckdb.org/docs/api/python/spark_api">Spark</a>&nbsp;workflows</p>
+</li>
 </ul>
-<p><span class="dquo">&#8220;</span>learn from many, many mistake grug make over long program&nbsp;life&#8221;</p>
-<ul>
-<li><a href="http://catb.org/~esr/faqs/smart-questions.html">How to Ask Questions the Smart&nbsp;Way</a></li>
-</ul>
-<p>Effective engineers are highly self-sufficient. You will answer 90% of your own questions before you have finished reformulating them as smart&nbsp;questions.</p>
-<h1>Tutorials</h1>
-<ul>
-<li><a href="https://learnpythonthehardway.org/python3/">Learn Python the Hard&nbsp;Way</a></li>
-</ul>
-<p>This is where I started. I am a big fan of the &#8220;hard way&#8221; learning philosophy. The main idea is to never read about how to do something without actually doing it yourself as you&nbsp;read.</p>
-<ul>
-<li><a href="https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world">The Flask&nbsp;Mega-Tutorial</a></li>
-</ul>
-<p>This tutorial carried me through my first year of work. Not necessarily relevant for data engineering, but if you want to know how to throw together a web application in python, this tutorial is&nbsp;excellent.</p></div>
+<p>I <a href="https://austinweisgrau.github.io/deduplicating-everyaction.html">previously wrote</a> about how at Working Families Party we use duckdb
+as the backend for a machine learning identity resolution workflow
+(<a href="https://moj-analytical-services.github.io/splink/getting_started.html">splink</a>).</p>
+<p>For an overview of the larger trends in cloud computing and big data
+transformations, see this really good article by Mother Duck, the
+company behind DuckDB: <a href="https://motherduck.com/blog/the-simple-joys-of-scaling-up/">The Simple Joys of Scaling&nbsp;Up</a></p></div>
     <footer>
 <p class="meta">
   <span class="byline author vcard">
@@ -83,7 +90,7 @@ development as a data engineer. I&#8217;ll add to this page over&nbsp;time.</p>
         Austin Weisgrau
     </span>
   </span>
-<time datetime="2023-02-07T00:00:00-08:00" pubdate>Tue 07 February 2023</time>  <span class="categories">
+<time datetime="2024-10-29T00:00:00-07:00" pubdate>Tue 29 October 2024</time>  <span class="categories">
     <a class='category' href='https://austinweisgrau.github.io/category/learning.html'>learning</a>
   </span>
 </p><div class="sharing">

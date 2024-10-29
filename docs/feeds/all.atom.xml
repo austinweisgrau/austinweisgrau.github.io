@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Data Engineering the Left</title><link href="https://austinweisgrau.github.io/" rel="alternate"></link><link href="https://austinweisgrau.github.io/feeds/all.atom.xml" rel="self"></link><id>https://austinweisgrau.github.io/</id><updated>2024-07-02T00:00:00-07:00</updated><entry><title>Deduplicating EveryAction</title><link href="https://austinweisgrau.github.io/deduplicating-everyaction.html" rel="alternate"></link><published>2024-07-02T00:00:00-07:00</published><updated>2024-07-02T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2024-07-02:/deduplicating-everyaction.html</id><summary type="html">&lt;p&gt;Like most progressive political organizations, Working Families Party
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Data Engineering the Left</title><link href="https://austinweisgrau.github.io/" rel="alternate"></link><link href="https://austinweisgrau.github.io/feeds/all.atom.xml" rel="self"></link><id>https://austinweisgrau.github.io/</id><updated>2024-10-29T00:00:00-07:00</updated><entry><title>Tooling for Big Data Transformations</title><link href="https://austinweisgrau.github.io/tooling-for-big-data-transformations.html" rel="alternate"></link><published>2024-10-29T00:00:00-07:00</published><updated>2024-10-29T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2024-10-29:/tooling-for-big-data-transformations.html</id><summary type="html">&lt;p&gt;Data teams sometimes struggle to find appropriate tooling for large
+analytics workflows. A common pattern is for an analyst to work
+primarily using the R tidyverse or Python pandas. This works fine for
+awhile, but as the workflow scales up and the amount of data being
+processed increases, eventually these …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Data teams sometimes struggle to find appropriate tooling for large
+analytics workflows. A common pattern is for an analyst to work
+primarily using the R tidyverse or Python pandas. This works fine for
+awhile, but as the workflow scales up and the amount of data being
+processed increases, eventually these tools struggle to keep up. Even
+running these workflows on cloud servers with massive amounts of &lt;span class="caps"&gt;CPU&lt;/span&gt;
+and &lt;span class="caps"&gt;RAM&lt;/span&gt; doesn&amp;#8217;t scale&amp;nbsp;well.&lt;/p&gt;
+&lt;p&gt;In my opinion, the only truly appropriate tooling for data
+transformations above a very small scale is to load the data into an
+&lt;span class="caps"&gt;OLAP&lt;/span&gt; data warehouse and execute your transformations using &lt;span class="caps"&gt;SQL&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;However, sometimes you need a drop-in solution that can scale-up
+dataframe-based&amp;nbsp;transformations. &lt;/p&gt;
+&lt;p&gt;Traditionally, the usual approach was to use distributed computing
+frameworks like Spark or Hadoop to execute dataframe transformations
+at scale. However, these require pretty elaborate and complex cloud&amp;nbsp;infrastructure.&lt;/p&gt;
+&lt;p&gt;These days, there are much better tools for working with big data on a
+single machine, using columnar data storage locally like an &lt;span class="caps"&gt;OLAP&lt;/span&gt;&amp;nbsp;database. &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Apache Arrow is a &lt;span class="caps"&gt;CSV&lt;/span&gt;-alternative typed columnar data storage format
+  that enables pandas-alternatives like &lt;a href="https://github.com/pola-rs/polars"&gt;polars&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;duckdb is a sqlite-like dead simple local database that uses
+  columnar storage behind the scenes, and can be used as a backend for
+  &lt;a href="https://duckdb.org/docs/api/python/spark_api"&gt;Spark&lt;/a&gt;&amp;nbsp;workflows&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I &lt;a href="https://austinweisgrau.github.io/deduplicating-everyaction.html"&gt;previously wrote&lt;/a&gt; about how at Working Families Party we use duckdb
+as the backend for a machine learning identity resolution workflow
+(&lt;a href="https://moj-analytical-services.github.io/splink/getting_started.html"&gt;splink&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;For an overview of the larger trends in cloud computing and big data
+transformations, see this really good article by Mother Duck, the
+company behind DuckDB: &lt;a href="https://motherduck.com/blog/the-simple-joys-of-scaling-up/"&gt;The Simple Joys of Scaling&amp;nbsp;Up&lt;/a&gt;&lt;/p&gt;</content><category term="learning"></category></entry><entry><title>Deduplicating EveryAction</title><link href="https://austinweisgrau.github.io/deduplicating-everyaction.html" rel="alternate"></link><published>2024-07-02T00:00:00-07:00</published><updated>2024-07-02T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2024-07-02:/deduplicating-everyaction.html</id><summary type="html">&lt;p&gt;Like most progressive political organizations, Working Families Party
 (&lt;span class="caps"&gt;WFP&lt;/span&gt;) reluctantly uses EveryAction, the volunteer-management side of
 &lt;span class="caps"&gt;NGPVAN&lt;/span&gt;, as our &lt;span class="caps"&gt;CRM&lt;/span&gt; for keeping track of our activists and
 donors. EveryAction has many issues, support is difficult to access,
