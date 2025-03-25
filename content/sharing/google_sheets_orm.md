@@ -1,5 +1,5 @@
 title: An ORM for Google Sheets
-date: 2024-03-27
+date: 2025-03-27
 
 ## Using the Parsons Google Sheets Connector
 
