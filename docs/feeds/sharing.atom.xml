@@ -95,7 +95,7 @@ session.commit()
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Incredible.&amp;nbsp;Elegant.&lt;/p&gt;
-&lt;p&gt;Anyways, a quick &lt;code&gt;pip install shelleilagh[gsheetsapi]&lt;/code&gt; allows you to
+&lt;p&gt;Anyways, a quick &lt;code&gt;pip install shillelagh[gsheetsapi]&lt;/code&gt; allows you to
 do this kind of workflow with a &lt;span class="caps"&gt;GOOGLESHEET&lt;/span&gt;. I&amp;#8217;m beside myself. I&amp;#8217;m
 despondent I didn&amp;#8217;t look into this &lt;span class="caps"&gt;YEARS&lt;/span&gt;&amp;nbsp;ago.&lt;/p&gt;
 &lt;p&gt;Now, SQLAlchemy has about 10 different paradigms, too many, and so the
