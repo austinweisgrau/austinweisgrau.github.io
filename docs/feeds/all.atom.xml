@@ -66,7 +66,7 @@ more dynamic range of&amp;nbsp;behaviors.&lt;/p&gt;
 &lt;h2&gt;A Whole New&amp;nbsp;World&lt;/h2&gt;
 &lt;p&gt;Using gspread, or the underlying google-api-python-client methods,
 allow for a much wider range of interactions with Google Sheets. My
-favorite new approach, however, is to use the &lt;a href="https://github.com/betodealmeida/shillelagh"&gt;shelleilagh&lt;/a&gt; library as a
+favorite new approach, however, is to use the &lt;a href="https://github.com/betodealmeida/shillelagh"&gt;shillelagh&lt;/a&gt; library as a
 SQLAlchemy dialect as a Google Sheets &lt;span class="caps"&gt;ORM&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;ORMs are kind of the critical, central domain knowledge of the data
 engineer, and perhaps get less attention than they deserve. An &lt;span class="caps"&gt;ORM&lt;/span&gt; is
@@ -78,9 +78,9 @@ with data in your database as if it were a normal Python&amp;nbsp;object.&lt;/p&
 &lt;p&gt;As a basic generic pseudocode example of an &lt;span class="caps"&gt;ORM&lt;/span&gt;&amp;nbsp;workflow:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gh"&gt;#&lt;/span&gt; Write a new row to the databse
 user = User(
-  name = &amp;#39;Austin&amp;#39;,
-  active = True
-)  
+    name = &amp;#39;Austin&amp;#39;,
+    active = True
+)
 
 session.add(User)
 session.commit()
@@ -181,7 +181,7 @@ the &lt;code&gt;service_account_info&lt;/code&gt; argument instead of
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That&amp;#8217;s it! Go try&amp;nbsp;it!&lt;/p&gt;
-&lt;p&gt;Deep gratitude to SQLAlchemy and especially the &lt;a href="https://github.com/betodealmeida/shillelagh"&gt;Shelleilagh&lt;/a&gt;
+&lt;p&gt;Deep gratitude to SQLAlchemy and especially the &lt;a href="https://github.com/betodealmeida/shillelagh"&gt;shillelagh&lt;/a&gt;
 developers for making this&amp;nbsp;possible.&lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Tooling for Big Data Transformations</title><link href="https://austinweisgrau.github.io/tooling-for-big-data-transformations.html" rel="alternate"></link><published>2024-10-29T00:00:00-07:00</published><updated>2024-10-29T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2024-10-29:/tooling-for-big-data-transformations.html</id><summary type="html">&lt;p&gt;Data teams sometimes struggle to find appropriate tooling for large
 analytics workflows. A common pattern is for an analyst to work
 primarily using the R tidyverse or Python pandas. This works fine for

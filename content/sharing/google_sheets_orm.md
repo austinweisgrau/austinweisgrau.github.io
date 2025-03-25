@@ -78,7 +78,7 @@ more dynamic range of behaviors.
 
 Using gspread, or the underlying google-api-python-client methods,
 allow for a much wider range of interactions with Google Sheets. My
-favorite new approach, however, is to use the [shelleilagh](https://github.com/betodealmeida/shillelagh) library as a
+favorite new approach, however, is to use the [shillelagh](https://github.com/betodealmeida/shillelagh) library as a
 SQLAlchemy dialect as a Google Sheets ORM.
 
 ORMs are kind of the critical, central domain knowledge of the data
@@ -95,9 +95,9 @@ As a basic generic pseudocode example of an ORM workflow:
 ```{python3}
 # Write a new row to the databse
 user = User(
-  name = 'Austin',
-  active = True
-)  
+    name = 'Austin',
+    active = True
+)
 
 session.add(User)
 session.commit()
@@ -212,5 +212,5 @@ class User(ORMTableBase):
 
 That's it! Go try it!
 
-Deep gratitude to SQLAlchemy and especially the [Shelleilagh](https://github.com/betodealmeida/shillelagh)
+Deep gratitude to SQLAlchemy and especially the [shillelagh](https://github.com/betodealmeida/shillelagh)
 developers for making this possible.
