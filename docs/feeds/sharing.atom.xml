@@ -323,7 +323,190 @@ the next schedule merge&amp;nbsp;flow.&lt;/p&gt;
 &lt;p&gt;If you want to know more about any of this, feel free to reach out. I
 also tentatively plan on making an affordable plug-and-play version of
 this application available to &lt;span class="caps"&gt;TMC&lt;/span&gt; members in early 2025 - let me know
-if you might be interested in beta testing&amp;nbsp;this.&lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Migrating from Civis to Prefect</title><link href="https://austinweisgrau.github.io/migrating-from-civis-to-prefect.html" rel="alternate"></link><published>2023-04-17T00:00:00-07:00</published><updated>2023-04-17T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-04-17:/migrating-from-civis-to-prefect.html</id><summary type="html">&lt;h2&gt;The Problem: Data Orchestration in&amp;nbsp;Civis&lt;/h2&gt;
+if you might be interested in beta testing&amp;nbsp;this.&lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>An ORM for Google Sheets</title><link href="https://austinweisgrau.github.io/an-orm-for-google-sheets.html" rel="alternate"></link><published>2024-03-27T00:00:00-07:00</published><updated>2024-03-27T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2024-03-27:/an-orm-for-google-sheets.html</id><summary type="html">&lt;h2&gt;Using the Parsons Google Sheets&amp;nbsp;Connector&lt;/h2&gt;
+&lt;p&gt;Google Sheets is a core competency for most professionals these days,
+and so is often the interface between a technical data team and the
+non-technical staff. Being able to effectively orchestrate the loading
+of data into Google Sheets is therefore an extremely useful&amp;nbsp;skill …&lt;/p&gt;</summary><content type="html">&lt;h2&gt;Using the Parsons Google Sheets&amp;nbsp;Connector&lt;/h2&gt;
+&lt;p&gt;Google Sheets is a core competency for most professionals these days,
+and so is often the interface between a technical data team and the
+non-technical staff. Being able to effectively orchestrate the loading
+of data into Google Sheets is therefore an extremely useful&amp;nbsp;skill.&lt;/p&gt;
+&lt;p&gt;Using python libraries like &lt;a href="https://developers.google.com/workspace/sheets/api/quickstart/python"&gt;google-api-python-client&lt;/a&gt;, &lt;a href="https://docs.gspread.org/en/latest/"&gt;gspread&lt;/a&gt;, or
+wrappers like the &lt;a href="https://move-coop.github.io/parsons/html/stable/google.html#google-sheets"&gt;Parsons google sheet connector&lt;/a&gt; can make these
+workflows easier. For instance, here&amp;#8217;s some sample code for loading a
+&lt;span class="caps"&gt;CSV&lt;/span&gt; into a google sheet using&amp;nbsp;Parsons:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;parsons&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;GoogleSheets&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;
+
+&lt;span class="n"&gt;google_sheet_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;SsoifdsIOsdfdsi023s8&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="c1"&gt;# this is fake&lt;/span&gt;
+
+&lt;span class="n"&gt;tbl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;from_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/path/to/file.csv&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;GoogleSheets&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;overwrite_sheet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;google_sheet_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;table&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;tbl&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Not&amp;nbsp;bad.&lt;/p&gt;
+&lt;p&gt;So let&amp;#8217;s say you&amp;#8217;ve set up a script to load a custom query delivering
+all your Wisconsin Mobilize volunteers to a google sheet on a daily
+basis, and the organizers are using this sheet to do followup
+calls. Great! But wait - they&amp;#8217;ve added an extra column to the sheet to
+track call notes. Unfortunately, that column gets deleted every time
+your script runs because we&amp;#8217;re overwriting the&amp;nbsp;sheet.&lt;/p&gt;
+&lt;p&gt;&lt;span class="caps"&gt;OK&lt;/span&gt;, so maybe we&amp;#8217;ll just append new rows to the sheet instead of
+overwriting the whole sheet every time. That&amp;#8217;s not&amp;nbsp;bad.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;parsons&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;GoogleSheets&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;
+
+&lt;span class="n"&gt;google_sheet_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;SsoifdsIOsdfdsi023s8&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="c1"&gt;# this is fake&lt;/span&gt;
+
+&lt;span class="n"&gt;tbl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;from_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/path/to/file.csv&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;tbl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tbl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select_rows&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;{created_at}&lt;/span&gt;&lt;span class="s2"&gt; &amp;gt; &amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;date&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;today&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isoformat&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="n"&gt;GoogleSheets&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append_to_sheet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;google_sheet_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;table&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;tbl&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;That&amp;#8217;s a little better! So that works for a purely incremental data
+load. But what if we have metadata that updates regularly, and we want
+those updates to flow into the sheet? For example, maybe some
+volunteers update their contact info in Mobilize, and we want the
+google sheet to reflect their updated info. Or we want a field that
+lists the most recent Mobilize event they&amp;nbsp;attended.&lt;/p&gt;
+&lt;p&gt;So we want to not only insert new rows, but also to update existing
+rows. Well, this is a&amp;nbsp;problem.&lt;/p&gt;
+&lt;p&gt;I basically got stuck here for several years. Perhaps for lack of
+trying. As a data team, we had various workarounds. Staff would create
+a second tab in a Google Sheet and import the data from the &amp;#8220;syncing&amp;#8221;
+tab. Mostly, we encouraged staff to use airtable, which is designed to
+operate much more like a database and can handle sophisticated load&amp;nbsp;logic.&lt;/p&gt;
+&lt;p&gt;But I was a fool! The Google Sheets &lt;span class="caps"&gt;API&lt;/span&gt; is absolutely sophisticated
+enough to handle much more sophisticated kinds of data loading
+logic. &lt;strong&gt;I fell victim to the classic discoverability blinder
+blunder.&lt;/strong&gt; By using the extremely convenient Parsons Google Sheets
+connector, I was never exposed to the underlying APIs and their much
+more dynamic range of&amp;nbsp;behaviors.&lt;/p&gt;
+&lt;h2&gt;A Whole New&amp;nbsp;World&lt;/h2&gt;
+&lt;p&gt;Using gspread, or the underlying google-api-python-client methods,
+allow for a much wider range of interactions with Google Sheets. My
+favorite new approach, however, is to use the &lt;a href="https://github.com/betodealmeida/shillelagh"&gt;shelleilagh&lt;/a&gt; library as a
+SQLAlchemy dialect as a Google Sheets &lt;span class="caps"&gt;ORM&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;ORMs are kind of the critical, central domain knowledge of the data
+engineer, and perhaps get less attention than they deserve. An &lt;span class="caps"&gt;ORM&lt;/span&gt; is
+an &amp;#8220;object-relational mapping,&amp;#8221; and essentially translates between
+object-oriented programming languages (like Python or Javascript) and
+relational scripting languages (&lt;span class="caps"&gt;SQL&lt;/span&gt;). An &lt;span class="caps"&gt;ORM&lt;/span&gt; allows you to interact
+with data in your database as if it were a normal Python&amp;nbsp;object.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://docs.sqlalchemy.org"&gt;SQLAlchemy&lt;/a&gt; is the standard, all-around favorite &lt;span class="caps"&gt;ORM&lt;/span&gt; in&amp;nbsp;Python.&lt;/p&gt;
+&lt;p&gt;As a basic generic pseudocode example of an &lt;span class="caps"&gt;ORM&lt;/span&gt;&amp;nbsp;workflow:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gh"&gt;#&lt;/span&gt; Write a new row to the databse
+user = User(
+  name = &amp;#39;Austin&amp;#39;,
+  active = True
+)  
+
+session.add(User)
+session.commit()
+
+&lt;span class="gh"&gt;#&lt;/span&gt; Read a row from the database by its ID
+user_id = 1
+user = session.get(User, user_id)
+
+&lt;span class="gh"&gt;#&lt;/span&gt; Update a row attribute in the database
+user.active = False
+session.commit()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Incredible.&amp;nbsp;Elegant.&lt;/p&gt;
+&lt;p&gt;Anyways, a quick &lt;code&gt;pip install shelleilagh[gsheetsapi]&lt;/code&gt; allows you to
+do this kind of workflow with a &lt;span class="caps"&gt;GOOGLESHEET&lt;/span&gt;. I&amp;#8217;m beside myself. I&amp;#8217;m
+despondent I didn&amp;#8217;t look into this &lt;span class="caps"&gt;YEARS&lt;/span&gt;&amp;nbsp;ago.&lt;/p&gt;
+&lt;p&gt;Now, SQLAlchemy has about 10 different paradigms, too many, and so the
+documentation is always a bit confusing to navigate. I will share some
+code I&amp;#8217;ve developed over the years that helps cut through the
+complexity and &amp;#8220;just works&amp;#8221;. I offer this to you as a nice starter
+pack that you should be able to get a lot of good mileage out&amp;nbsp;of.&lt;/p&gt;
+&lt;p&gt;Here&amp;#8217;s the generic bones, which need to be customized depending on the
+type of database you&amp;#8217;re connecting&amp;nbsp;to:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;sqlalchemy&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;create_engine&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sqlalchemy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Engine&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;connection_string&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;connection_kwargs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sqlalchemy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_engine&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;connection_string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;connection_kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;get_session&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;create_engine&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;session_factory&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sqlalchemy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;orm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sessionmaker&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;session_factory&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;session&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;ORMTableBase&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sqlalchemy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;orm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DeclarativeBase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;_table_name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;_primary_key&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;
+
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nd"&gt;@sqlalchemy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;orm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;declared_attr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;directive&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;__table__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sqlalchemy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_table_name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="n"&gt;sqlalchemy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;MetaData&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="n"&gt;autoload_with&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;create_engine&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nd"&gt;@sqlalchemy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;orm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;declared_attr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;directive&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;__mapper_args__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;primary_key&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;getattr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__table__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_primary_key&lt;/span&gt;&lt;span class="p"&gt;)}&lt;/span&gt;
+
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="fm"&gt;__repr__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;lt;&lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s2"&gt;&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vm"&gt;__class__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__table__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="nb"&gt;getattr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_primary_key&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Once you have &lt;code&gt;create_engine()&lt;/code&gt; customized, you&amp;#8217;re pretty much good to
+go! Right out of the box you can initiate workflows like those I
+showed&amp;nbsp;above:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;(&lt;span class="n"&gt;ORMTableBase&lt;/span&gt;):
+    &lt;span class="n"&gt;_table_name&lt;/span&gt; = &lt;span class="s"&gt;&amp;#39;user&amp;#39;&lt;/span&gt;
+    &lt;span class="n"&gt;_primary_key&lt;/span&gt; = &lt;span class="s"&gt;&amp;#39;user_id&amp;#39;&lt;/span&gt;
+
+&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;get_session&lt;/span&gt;() &lt;span class="n"&gt;as&lt;/span&gt; &lt;span class="n"&gt;session:&lt;/span&gt;
+    &lt;span class="n"&gt;user&lt;/span&gt; = &lt;span class="n"&gt;session&lt;/span&gt;.&lt;span class="nb"&gt;get&lt;/span&gt;(&lt;span class="n"&gt;User&lt;/span&gt;, &lt;span class="mi"&gt;1&lt;/span&gt;)
+    &lt;span class="n"&gt;user&lt;/span&gt;.&lt;span class="n"&gt;is_valid&lt;/span&gt; = &lt;span class="nb"&gt;True&lt;/span&gt;
+    &lt;span class="n"&gt;session&lt;/span&gt;.&lt;span class="n"&gt;commit&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now I&amp;#8217;ll show you the secret sauce for getting this all to work with
+Google&amp;nbsp;Sheets.&lt;/p&gt;
+&lt;p&gt;To authenticate using a service account &lt;span class="caps"&gt;JSON&lt;/span&gt; file, you can set up the
+engine&amp;nbsp;with&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;create_engine&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sqlalchemy&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Engine&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;connection_string&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;gsheets://&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sqlalchemy&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_engine&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;connection_string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;service_account_file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;/path/to/service_account.json&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="kr"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Alternatively you can pass the parsed &lt;span class="caps"&gt;JSON&lt;/span&gt; contents of that file using
+the &lt;code&gt;service_account_info&lt;/code&gt; argument instead of
+&lt;code&gt;service_account_file&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;When subclassing &lt;code&gt;ORMTableBase&lt;/code&gt;, use the google sheet &lt;span class="caps"&gt;URL&lt;/span&gt; as the
+&lt;code&gt;_table_name&lt;/code&gt; value.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;(&lt;span class="n"&gt;ORMTableBase&lt;/span&gt;):
+    &lt;span class="n"&gt;_table_name&lt;/span&gt; = &lt;span class="s"&gt;&amp;#39;https://docs.google.com/spreadsheets/d/28398sdfsdkfksf8s823/edit&amp;#39;&lt;/span&gt;
+    &lt;span class="n"&gt;_primary_key&lt;/span&gt; = &lt;span class="s"&gt;&amp;#39;user_id&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;That&amp;#8217;s it! Go try&amp;nbsp;it!&lt;/p&gt;
+&lt;p&gt;Deep gratitude to SQLAlchemy and especially the &lt;a href="https://github.com/betodealmeida/shillelagh"&gt;Shelleilagh&lt;/a&gt;
+developers for making this&amp;nbsp;possible.&lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Migrating from Civis to Prefect</title><link href="https://austinweisgrau.github.io/migrating-from-civis-to-prefect.html" rel="alternate"></link><published>2023-04-17T00:00:00-07:00</published><updated>2023-04-17T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-04-17:/migrating-from-civis-to-prefect.html</id><summary type="html">&lt;h2&gt;The Problem: Data Orchestration in&amp;nbsp;Civis&lt;/h2&gt;
 &lt;p&gt;Like many progressive political organizations, Working Families Party
 has worked with Civis to set up and access our data
 infrastructure. Civis is a user-friendly orchestration platform and
