@@ -113,7 +113,7 @@ session.commit()
 
 Incredible. Elegant.
 
-Anyways, a quick `pip install shelleilagh[gsheetsapi]` allows you to
+Anyways, a quick `pip install shillelagh[gsheetsapi]` allows you to
 do this kind of workflow with a GOOGLESHEET. I'm beside myself. I'm
 despondent I didn't look into this YEARS ago.
 
