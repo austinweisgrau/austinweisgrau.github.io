@@ -27,6 +27,8 @@ I especially appreciated its first chapter about ipython.
 - [How to Ask Questions the Smart Way](http://catb.org/~esr/faqs/smart-questions.html)
 
 Effective engineers are highly self-sufficient. You will answer 90% of your own questions before you have finished reformulating them as smart questions.
+
+- [hacker laws](https://hacker-laws.com)
   
 # Tutorials
 
