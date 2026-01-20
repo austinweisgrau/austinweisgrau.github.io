@@ -13,7 +13,9 @@ Once the pandemic hit and much community organizing work transitioned online, I 
     
 ## Experience
 
-**Working Families Party** | Data Engineer | January 2023 - ongoing
+**Working Families Party** | Director of Engineering | June 2024 - ongoing
+
+**Working Families Party** | Data Engineer | January 2023 - June 2024
 
 **BlueLabs** | Data Engineer | March 2022 - December 2022
 
