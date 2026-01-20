@@ -1,2 +1,4 @@
-pelican<5
+pelican < 5
 markdown
+smartypants
+typogrify
