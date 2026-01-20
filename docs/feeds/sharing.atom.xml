@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Data Engineering the Left - sharing</title><link href="https://austinweisgrau.github.io/" rel="alternate"></link><link href="https://austinweisgrau.github.io/feeds/sharing.atom.xml" rel="self"></link><id>https://austinweisgrau.github.io/</id><updated>2025-03-27T00:00:00-07:00</updated><entry><title>An ORM for Google Sheets</title><link href="https://austinweisgrau.github.io/an-orm-for-google-sheets.html" rel="alternate"></link><published>2025-03-27T00:00:00-07:00</published><updated>2025-03-27T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2025-03-27:/an-orm-for-google-sheets.html</id><summary type="html">&lt;h2&gt;Using the Parsons Google Sheets&amp;nbsp;Connector&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Data Engineering the Left - sharing</title><link href="https://austinweisgrau.github.io/" rel="alternate"/><link href="https://austinweisgrau.github.io/feeds/sharing.atom.xml" rel="self"/><id>https://austinweisgrau.github.io/</id><updated>2025-03-27T00:00:00-07:00</updated><entry><title>An ORM for Google Sheets</title><link href="https://austinweisgrau.github.io/an-orm-for-google-sheets.html" rel="alternate"/><published>2025-03-27T00:00:00-07:00</published><updated>2025-03-27T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2025-03-27:/an-orm-for-google-sheets.html</id><summary type="html">&lt;h2&gt;Using the Parsons Google Sheets&amp;nbsp;Connector&lt;/h2&gt;
 &lt;p&gt;Google Sheets is a core competency for most professionals these days,
 and so is often the interface between a technical data team and the
 non-technical staff. Being able to effectively orchestrate the loading
@@ -95,7 +95,7 @@ session.commit()
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Incredible.&amp;nbsp;Elegant.&lt;/p&gt;
-&lt;p&gt;Anyways, a quick &lt;code&gt;pip install shillelagh[gsheetsapi]&lt;/code&gt; allows you to
+&lt;p&gt;Anyways, a&amp;nbsp;quick &lt;code&gt;pip install shillelagh[gsheetsapi]&lt;/code&gt; allows you to
 do this kind of workflow with a &lt;span class="caps"&gt;GOOGLESHEET&lt;/span&gt;. I&amp;#8217;m beside myself. I&amp;#8217;m
 despondent I didn&amp;#8217;t look into this &lt;span class="caps"&gt;YEARS&lt;/span&gt;&amp;nbsp;ago.&lt;/p&gt;
 &lt;p&gt;Now, SQLAlchemy has about 10 different paradigms, too many, and so the
@@ -145,7 +145,7 @@ type of database you&amp;#8217;re connecting&amp;nbsp;to:&lt;/p&gt;
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Once you have &lt;code&gt;create_engine()&lt;/code&gt; customized, you&amp;#8217;re pretty much good to
+&lt;p&gt;Once you&amp;nbsp;have &lt;code&gt;create_engine()&lt;/code&gt; customized, you&amp;#8217;re pretty much good to
 go! Right out of the box you can initiate workflows like those I
 showed&amp;nbsp;above:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;(&lt;span class="n"&gt;ORMTableBase&lt;/span&gt;):
@@ -170,10 +170,9 @@ engine&amp;nbsp;with&lt;/p&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="kr"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Alternatively you can pass the parsed &lt;span class="caps"&gt;JSON&lt;/span&gt; contents of that file using
-the &lt;code&gt;service_account_info&lt;/code&gt; argument instead of
+&lt;p&gt;Alternatively you can pass the parsed &lt;span class="caps"&gt;JSON&lt;/span&gt; contents of that file using&amp;nbsp;the &lt;code&gt;service_account_info&lt;/code&gt; argument instead&amp;nbsp;of
 &lt;code&gt;service_account_file&lt;/code&gt;. &lt;/p&gt;
-&lt;p&gt;When subclassing &lt;code&gt;ORMTableBase&lt;/code&gt;, use the google sheet &lt;span class="caps"&gt;URL&lt;/span&gt; as the
+&lt;p&gt;When&amp;nbsp;subclassing &lt;code&gt;ORMTableBase&lt;/code&gt;, use the google sheet &lt;span class="caps"&gt;URL&lt;/span&gt; as&amp;nbsp;the
 &lt;code&gt;_table_name&lt;/code&gt; value.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;(&lt;span class="n"&gt;ORMTableBase&lt;/span&gt;):
     &lt;span class="n"&gt;_table_name&lt;/span&gt; = &lt;span class="s"&gt;&amp;#39;https://docs.google.com/spreadsheets/d/28398sdfsdkfksf8s823/edit&amp;#39;&lt;/span&gt;
@@ -182,7 +181,7 @@ the &lt;code&gt;service_account_info&lt;/code&gt; argument instead of
 
 &lt;p&gt;That&amp;#8217;s it! Go try&amp;nbsp;it!&lt;/p&gt;
 &lt;p&gt;Deep gratitude to SQLAlchemy and especially the &lt;a href="https://github.com/betodealmeida/shillelagh"&gt;shillelagh&lt;/a&gt;
-developers for making this&amp;nbsp;possible.&lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Deduplicating EveryAction</title><link href="https://austinweisgrau.github.io/deduplicating-everyaction.html" rel="alternate"></link><published>2024-07-02T00:00:00-07:00</published><updated>2024-07-02T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2024-07-02:/deduplicating-everyaction.html</id><summary type="html">&lt;p&gt;Like most progressive political organizations, Working Families Party
+developers for making this&amp;nbsp;possible.&lt;/p&gt;</content><category term="sharing"/></entry><entry><title>Deduplicating EveryAction</title><link href="https://austinweisgrau.github.io/deduplicating-everyaction.html" rel="alternate"/><published>2024-07-02T00:00:00-07:00</published><updated>2024-07-02T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2024-07-02:/deduplicating-everyaction.html</id><summary type="html">&lt;p&gt;Like most progressive political organizations, Working Families Party
 (&lt;span class="caps"&gt;WFP&lt;/span&gt;) reluctantly uses EveryAction, the volunteer-management side of
 &lt;span class="caps"&gt;NGPVAN&lt;/span&gt;, as our &lt;span class="caps"&gt;CRM&lt;/span&gt; for keeping track of our activists and
 donors. EveryAction has many issues, support is difficult to access,
@@ -259,10 +258,8 @@ onto a matched or created&amp;nbsp;contact.&lt;/p&gt;
 &lt;/ol&gt;
 &lt;p&gt;I assume that all three methods use the same logic to make matches,
 but I&amp;#8217;ve only personally verified the behavior of the &lt;span class="caps"&gt;API&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;The EveryAction &lt;span class="caps"&gt;API&lt;/span&gt; offers two endpoints for finding contact matches.
-- &lt;code&gt;/find&lt;/code&gt; will search for a match, and raise various errors on failure
-  to find a match.
-- &lt;code&gt;/findOrCreate&lt;/code&gt; will search for a match, and create a new contact if
+&lt;p&gt;The EveryAction &lt;span class="caps"&gt;API&lt;/span&gt; offers two endpoints for finding contact matches.&amp;nbsp;- &lt;code&gt;/find&lt;/code&gt; will search for a match, and raise various errors on failure
+  to find a match.&amp;nbsp;- &lt;code&gt;/findOrCreate&lt;/code&gt; will search for a match, and create a new contact if
   no match is found. This endpoint always returns a contact, and
   there&amp;#8217;s no simple way to know if the contact was a match or is a new&amp;nbsp;creation.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;/findOrCreate&lt;/code&gt; is very convenient for getting a sync up and
@@ -291,7 +288,7 @@ flexible and intelligent matching logic into the&amp;nbsp;process.&lt;/p&gt;
 &lt;p&gt;There are several strategies we&amp;#8217;ve developed that seem to make many
 reliable matches that EveryAction fails to make. We are continuing to
 monitor the creation of new contacts to identify other heuristics that
-can be used in a function like &lt;code&gt;try_harder_to_find_van_id()&lt;/code&gt;.&lt;/p&gt;
+can be used in a function&amp;nbsp;like &lt;code&gt;try_harder_to_find_van_id()&lt;/code&gt;.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;If a middle initial or middle name gets input as part of a
    first name, EveryAction will fail to make a match. e.g. &amp;#8220;Barbara
@@ -308,7 +305,7 @@ can be used in a function like &lt;code&gt;try_harder_to_find_van_id()&lt;/code&
    e.g. &amp;#8220;John Green, 750-555-3499a, jgreen @hotmail.co&amp;#8221; will not
    normally match to &amp;#8220;John Green, 750-555-3499,&amp;nbsp;jgreen@hotmail.com&amp;#8221;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;A working example version of a python function built on top of the
+&lt;p&gt;A working example version of a python function built on top of&amp;nbsp;the
  &lt;code&gt;parsons&lt;/code&gt; package that implements the logic described above can be
  seen&amp;nbsp;here.&lt;/p&gt;
 &lt;p&gt;By cleaning and validating data and making other improvements to
@@ -498,7 +495,7 @@ matches in just a few&amp;nbsp;days. &lt;/p&gt;
 &lt;p&gt;High confidence and validated matches are accumulated in a database
 table and staged for processing by a programmatic merge script. This
 script iterates through each match and executes an &lt;span class="caps"&gt;API&lt;/span&gt; call to the
-EveryAction &lt;span class="caps"&gt;API&lt;/span&gt; endpoint &lt;code&gt;/people/{vanid}/mergeInto&lt;/code&gt;. &lt;/p&gt;
+EveryAction &lt;span class="caps"&gt;API&lt;/span&gt;&amp;nbsp;endpoint &lt;code&gt;/people/{vanid}/mergeInto&lt;/code&gt;. &lt;/p&gt;
 &lt;p&gt;We run our &lt;span class="caps"&gt;SQL&lt;/span&gt; models, splink, and the programmatic merge on a weekly
 basis to identify and merge duplicates. Manual validation happens on a
 rolling basis and all validated contacts are aggregated and merged on
@@ -506,7 +503,7 @@ the next schedule merge&amp;nbsp;flow.&lt;/p&gt;
 &lt;p&gt;If you want to know more about any of this, feel free to reach out. I
 also tentatively plan on making an affordable plug-and-play version of
 this application available to &lt;span class="caps"&gt;TMC&lt;/span&gt; members in early 2025 - let me know
-if you might be interested in beta testing&amp;nbsp;this.&lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Migrating from Civis to Prefect</title><link href="https://austinweisgrau.github.io/migrating-from-civis-to-prefect.html" rel="alternate"></link><published>2023-04-17T00:00:00-07:00</published><updated>2023-04-17T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-04-17:/migrating-from-civis-to-prefect.html</id><summary type="html">&lt;h2&gt;The Problem: Data Orchestration in&amp;nbsp;Civis&lt;/h2&gt;
+if you might be interested in beta testing&amp;nbsp;this.&lt;/p&gt;</content><category term="sharing"/></entry><entry><title>Migrating from Civis to Prefect</title><link href="https://austinweisgrau.github.io/migrating-from-civis-to-prefect.html" rel="alternate"/><published>2023-04-17T00:00:00-07:00</published><updated>2023-04-17T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-04-17:/migrating-from-civis-to-prefect.html</id><summary type="html">&lt;h2&gt;The Problem: Data Orchestration in&amp;nbsp;Civis&lt;/h2&gt;
 &lt;p&gt;Like many progressive political organizations, Working Families Party
 has worked with Civis to set up and access our data
 infrastructure. Civis is a user-friendly orchestration platform and
@@ -589,7 +586,7 @@ enabling us to implement best practices and streamline our development&amp;nbsp;
 for data orchestration, empowering our organization to meet the
 demands of our long-term political vision. By embracing Prefect, we
 have set ourselves up for success in managing our data infrastructure
-and driving our progressive campaigns&amp;nbsp;forward. &lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Migrating to Prefect, Part 4: Moving a Script from Civis to Prefect</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-4-moving-a-script-from-civis-to-prefect.html" rel="alternate"></link><published>2023-03-27T00:00:00-07:00</published><updated>2023-03-27T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-03-27:/migrating-to-prefect-part-4-moving-a-script-from-civis-to-prefect.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post is the fourth in a series about migrating off of Civis and
+and driving our progressive campaigns&amp;nbsp;forward. &lt;/p&gt;</content><category term="sharing"/></entry><entry><title>Migrating to Prefect, Part 4: Moving a Script from Civis to Prefect</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-4-moving-a-script-from-civis-to-prefect.html" rel="alternate"/><published>2023-03-27T00:00:00-07:00</published><updated>2023-03-27T00:00:00-07:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-03-27:/migrating-to-prefect-part-4-moving-a-script-from-civis-to-prefect.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post is the fourth in a series about migrating off of Civis and
 onto Prefect as our orchestration tool. The &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html"&gt;first post&lt;/a&gt; is about
 the limitations of Civis, and the &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html"&gt;second&lt;/a&gt; and &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html"&gt;third&lt;/a&gt; posts are about
 setting up and using&amp;nbsp;Prefect.&lt;/em&gt;&lt;/p&gt;
@@ -640,7 +637,7 @@ these &lt;span class="caps"&gt;VAN&lt;/span&gt; IDs in EveryAction with an origi
 &lt;h2&gt;Copy the code, add task and flow decorators,&amp;nbsp;encapsulate&lt;/h2&gt;
 &lt;p&gt;Prefect is intended to be simple to implement with existing code. The
 minimum change necessary to make a Prefect flow out of existing code
-is to encapsulate the code within a method that has the
+is to encapsulate the code within a method that has&amp;nbsp;the
 &lt;code&gt;@flow()&lt;/code&gt; decorator&amp;nbsp;applied.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;parsons&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Redshift&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;VAN&lt;/span&gt;
@@ -705,7 +702,7 @@ statements, you can define your flow&amp;nbsp;with:&lt;/p&gt;
 &lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;You can set print logging globally with the Prefect config variable
+&lt;p&gt;You can set print logging globally with the Prefect config&amp;nbsp;variable
 &lt;code&gt;PREFECT_LOGGING_LOG_PRINTS=True&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;You can also alternatively use the prefect&amp;nbsp;logger.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;prefect&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;flow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;task&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;get_run_logger&lt;/span&gt;
@@ -722,7 +719,7 @@ statements, you can define your flow&amp;nbsp;with:&lt;/p&gt;
 
 &lt;h2&gt;Swap out credential fetching&amp;nbsp;methods&lt;/h2&gt;
 &lt;p&gt;Now that we&amp;#8217;re out of Prefect, we&amp;#8217;re not bound to using environment
-variables with those pesky mandatory &lt;code&gt;_PASSWORD&lt;/code&gt; suffixes!&lt;/p&gt;
+variables with those pesky&amp;nbsp;mandatory &lt;code&gt;_PASSWORD&lt;/code&gt; suffixes!&lt;/p&gt;
 &lt;p&gt;You can fetch credentials using any implementation that makes sense
 for your team and Prefect stack. You can add environment variables
 to your Docker image, or fetch them from a secret store like &lt;span class="caps"&gt;AWS&lt;/span&gt;
@@ -791,7 +788,7 @@ task.submit() or task.map() to take advantage of prefect&amp;nbsp;concurrency.&l
 &lt;p&gt;Every time you are looking anew at a script is a great opportunity to
 clean up the code, notice where it is unclear, and documentation to
 clarify technical logic and business logic, and add tests to validate
-important pieces of the&amp;nbsp;code!&lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Migrating to Prefect, Part 2: Prefect &amp; AWS ECS</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html" rel="alternate"></link><published>2023-03-07T00:00:00-08:00</published><updated>2023-03-07T00:00:00-08:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-03-07:/migrating-to-prefect-part-2-prefect-aws-ecs.html</id><summary type="html">&lt;p&gt;&lt;em&gt;In my &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html"&gt;previous blog post&lt;/a&gt;, I explained the limitations with Civis
+important pieces of the&amp;nbsp;code!&lt;/p&gt;</content><category term="sharing"/></entry><entry><title>Migrating to Prefect, Part 2: Prefect &amp; AWS ECS</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html" rel="alternate"/><published>2023-03-07T00:00:00-08:00</published><updated>2023-03-07T00:00:00-08:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-03-07:/migrating-to-prefect-part-2-prefect-aws-ecs.html</id><summary type="html">&lt;p&gt;&lt;em&gt;In my &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html"&gt;previous blog post&lt;/a&gt;, I explained the limitations with Civis
 as a production tool for a data/engineering team. These limitations
 led our data team at Working Families Party to choose to move our
 orchestration tooling off of Civis and into another tool. After
@@ -867,7 +864,7 @@ tools in &lt;span class="caps"&gt;AWS&lt;/span&gt;. Some new vocab words for me:
 &lt;p&gt;The dataflow-ops template included an &lt;a href="https://github.com/anna-geller/dataflow-ops/blob/main/infrastructure/ecs_cluster_prefect_agent.yml"&gt;&lt;span class="caps"&gt;AWS&lt;/span&gt; CloudFormation Script&lt;/a&gt; for
 setting up the &lt;span class="caps"&gt;ECS&lt;/span&gt; Task and its networking infrastructure. I modified
 that script using &lt;a href="https://gist.github.com/jbesw/f9401b4c52a7446ef1bb71ceea8cc3e8"&gt;this template&lt;/a&gt; to enable the use of an &amp;#8220;elastic &lt;span class="caps"&gt;IP&lt;/span&gt;&amp;#8221;
-address in &lt;span class="caps"&gt;AWS&lt;/span&gt; for our &lt;span class="caps"&gt;ECS&lt;/span&gt; tasks. I also needed to modify the
+address in &lt;span class="caps"&gt;AWS&lt;/span&gt; for our &lt;span class="caps"&gt;ECS&lt;/span&gt; tasks. I also needed to modify&amp;nbsp;the
 &lt;code&gt;prefect_aws.ECSTask&lt;/code&gt; block stored in our Prefect Cloud instance to
 always use the correct (private) &lt;span class="caps"&gt;VPC&lt;/span&gt; subnets (see our &lt;a href="https://github.com/austinweisgrau/prefect-ecs-template/blob/main/infrastructure/ecs_cluster_prefect_agent.yml"&gt;full configuration script for CloudFormation here&lt;/a&gt;). &lt;/p&gt;
 &lt;h2&gt;Deploying&amp;nbsp;Changes&lt;/h2&gt;
@@ -889,7 +886,7 @@ Github Actions deployment script included in the &lt;a href="https://github.com/
 to rebuild and reupload the docker image anytime the code is
 updated. Our flow deployments do not include a storage&amp;nbsp;block.&lt;/p&gt;
 &lt;p&gt;See our &lt;a href="https://github.com/austinweisgrau/Prefect-ecs-template/blob/main/.github/workflows/main.yaml"&gt;deployment Github Actions script here&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;The next post in this series explores a &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html"&gt;useful utility for working in Prefect&lt;/a&gt;: rate-limiting &lt;span class="caps"&gt;API&lt;/span&gt;&amp;nbsp;calls. &lt;/p&gt;</content><category term="sharing"></category></entry><entry><title>Migrating to Prefect, Part 3: Rate limiting API calls</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html" rel="alternate"></link><published>2023-03-02T00:00:00-08:00</published><updated>2023-03-02T00:00:00-08:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-03-02:/migrating-to-prefect-part-3-rate-limiting-api-calls.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post is the third in a series about migrating off of Civis and
+&lt;p&gt;The next post in this series explores a &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html"&gt;useful utility for working in Prefect&lt;/a&gt;: rate-limiting &lt;span class="caps"&gt;API&lt;/span&gt;&amp;nbsp;calls. &lt;/p&gt;</content><category term="sharing"/></entry><entry><title>Migrating to Prefect, Part 3: Rate limiting API calls</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-3-rate-limiting-api-calls.html" rel="alternate"/><published>2023-03-02T00:00:00-08:00</published><updated>2023-03-02T00:00:00-08:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-03-02:/migrating-to-prefect-part-3-rate-limiting-api-calls.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post is the third in a series about migrating off of Civis and
 onto Prefect as our orchestration tool. The &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html"&gt;first post&lt;/a&gt; is about the
 limitations of Civis, and the &lt;a href="https://austinweisgrau.github.io/migrating-to-prefect-part-2-prefect-aws-ecs.html"&gt;second post&lt;/a&gt; is about setting up Prefect
 with &lt;span class="caps"&gt;AWS&lt;/span&gt; &lt;span class="caps"&gt;ECS&lt;/span&gt;.&lt;/em&gt;&lt;/p&gt;
@@ -912,8 +909,7 @@ with asyncio. It also represents a technical hurdle and maintenance
 burden on smaller teams. For a simple workflow like rate-limited &lt;span class="caps"&gt;API&lt;/span&gt;
 calls, using asyncio would be significant&amp;nbsp;overkill.&lt;/p&gt;
 &lt;p&gt;Multithreading can be complicated to set up, but the python standard
-library includes a high-level &lt;span class="caps"&gt;API&lt;/span&gt; to simplify the use of
-multithreading: &lt;code&gt;concurrency.futures&lt;/code&gt;. I like to use the
+library includes a high-level &lt;span class="caps"&gt;API&lt;/span&gt; to simplify the use of&amp;nbsp;multithreading: &lt;code&gt;concurrency.futures&lt;/code&gt;. I like to use&amp;nbsp;the
 &lt;code&gt;ThreadPoolExecutor&lt;/code&gt;, which can be easily configured to limit the
 number of active&amp;nbsp;threads. &lt;/p&gt;
 &lt;p&gt;A standard implementation of concurrent rate-limited &lt;span class="caps"&gt;API&lt;/span&gt; calls in
@@ -951,7 +947,7 @@ can seamlessly work with python scripts written using asyncio. For
 reasons described above, I don&amp;#8217;t want to use&amp;nbsp;asyncio.&lt;/p&gt;
 &lt;p&gt;Prefect tasks are the main building block of flows in Prefect, and are
 also the main mechanism for orchestrating concurrency. Prefect tasks
-called with &lt;code&gt;task.submit()&lt;/code&gt; or &lt;code&gt;task.map()&lt;/code&gt; are sent to a &lt;a href="https://docs.prefect.io/concepts/task-runners/"&gt;Task Runner&lt;/a&gt;
+called&amp;nbsp;with &lt;code&gt;task.submit()&lt;/code&gt; or &lt;code&gt;task.map()&lt;/code&gt; are sent to a &lt;a href="https://docs.prefect.io/concepts/task-runners/"&gt;Task Runner&lt;/a&gt;
 for (potentially) concurrent execution. Sequential, concurrent or parallel
 execution will occur depending on which task runner is used. The
 default task runner is a&amp;nbsp;ConcurrentTaskRunner.&lt;/p&gt;
@@ -1017,7 +1013,7 @@ utilities are incompatible with multithreaded task code. &lt;a href="https://git
 &lt;p&gt;In the end, the approach I settled on with some help from the Prefect
 development team involved using a python &lt;a href="https://superfastpython.com/thread-semaphore/"&gt;&lt;code&gt;threading.Semaphore&lt;/code&gt;&lt;/a&gt;. A
 Semaphore is a standard approach for rate limiting multithreaded python
-code, used behind the scenes by high-level APIs like
+code, used behind the scenes by high-level APIs&amp;nbsp;like
 &lt;code&gt;concurrent.futures.ThreadPoolExecutor&lt;/code&gt;. Each thread attempts to access
 an open &amp;#8220;slot&amp;#8221; from the Semaphore, and waits until a slot is available
 to run. While it runs, it holds a slot, and releases that slot once it
@@ -1044,7 +1040,7 @@ repository &lt;a href="https://github.com/austinweisgrau/prefect-ecs-template/bl
     &lt;span class="n"&gt;responses&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;make_api_call&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;payloads&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Identical to the implementation with &lt;code&gt;ThreadPoolExecutor&lt;/code&gt; above,
+&lt;p&gt;Identical to the implementation&amp;nbsp;with &lt;code&gt;ThreadPoolExecutor&lt;/code&gt; above,
 executing 30 &lt;span class="caps"&gt;API&lt;/span&gt; calls that take 1 second each will take about 10
 seconds with this&amp;nbsp;implementation.&lt;/p&gt;
 &lt;h2&gt;&lt;a id="solution"&gt;&lt;/a&gt;My concurrency limiting task&amp;nbsp;decorator&lt;/h2&gt;
@@ -1084,7 +1080,7 @@ seconds with this&amp;nbsp;implementation.&lt;/p&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;limited_concurrent_func&lt;/span&gt;
 
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;pseudo_decorator&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="sharing"></category></entry><entry><title>Migrating to Prefect. Part 1: Civis Woes</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html" rel="alternate"></link><published>2023-02-22T00:00:00-08:00</published><updated>2023-02-22T00:00:00-08:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-02-22:/migrating-to-prefect-part-1-civis-woes.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This is the first post in a series of blog posts about our migration
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="sharing"/></entry><entry><title>Migrating to Prefect. Part 1: Civis Woes</title><link href="https://austinweisgrau.github.io/migrating-to-prefect-part-1-civis-woes.html" rel="alternate"/><published>2023-02-22T00:00:00-08:00</published><updated>2023-02-22T00:00:00-08:00</updated><author><name>Austin Weisgrau</name></author><id>tag:austinweisgrau.github.io,2023-02-22:/migrating-to-prefect-part-1-civis-woes.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This is the first post in a series of blog posts about our migration
 to Prefect at Working Families Party. I&amp;#8217;ll start by describing our
 current orchestration and execution platform, Civis, and its many&amp;nbsp;limitations.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;In a data context, &amp;#8220;orchestration&amp;#8221; refers to the work of coordinating,
@@ -1160,9 +1156,9 @@ that aren&amp;#8217;t directly stored in the code. Environment variables can be
 set in Civis container scripts as &amp;#8220;Parameters.&amp;#8221; Parameters can be set
 to credentials that are saved separately at a User level in&amp;nbsp;Civis.&lt;/p&gt;
 &lt;p&gt;Credentials saved in Civis can &lt;span class="caps"&gt;ONLY&lt;/span&gt; be made availabe in the
-environment using a &lt;code&gt;_USERNAME&lt;/code&gt; and &lt;code&gt;_PASSWORD&lt;/code&gt; suffix. That is, if
-your credential is named &lt;code&gt;SLACK_API_KEY&lt;/code&gt;, Civis forces you to make
-secret values available in the environment using keys
+environment using&amp;nbsp;a &lt;code&gt;_USERNAME&lt;/code&gt; and &lt;code&gt;_PASSWORD&lt;/code&gt; suffix. That is, if
+your credential is&amp;nbsp;named &lt;code&gt;SLACK_API_KEY&lt;/code&gt;, Civis forces you to make
+secret values available in the environment using&amp;nbsp;keys
 &lt;code&gt;SLACK_API_KEY_USERNAME&lt;/code&gt; and &lt;code&gt;SLACK_API_KEY_PASSWORD&lt;/code&gt;. This choice clearly
 doesn&amp;#8217;t always make sense and requires a workaround for every
 credential that does not fit this&amp;nbsp;pattern.&lt;/p&gt;
@@ -1197,4 +1193,4 @@ can go years, from team to team, working exclusively in Civis and
 never learn data engineering best practices or even fundamental data
 engineering concepts. Ultimately, the technical capacity of the
 progressive movement depends on technical staff working closer to and
-more directly with their data&amp;nbsp;infrastructure.&lt;/p&gt;</content><category term="sharing"></category></entry></feed>
+more directly with their data&amp;nbsp;infrastructure.&lt;/p&gt;</content><category term="sharing"/></entry></feed>

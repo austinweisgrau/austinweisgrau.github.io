@@ -141,7 +141,7 @@ session.commit()
 </code></pre></div>
 
 <p>Incredible.&nbsp;Elegant.</p>
-<p>Anyways, a quick <code>pip install shillelagh[gsheetsapi]</code> allows you to
+<p>Anyways, a&nbsp;quick <code>pip install shillelagh[gsheetsapi]</code> allows you to
 do this kind of workflow with a <span class="caps">GOOGLESHEET</span>. I&#8217;m beside myself. I&#8217;m
 despondent I didn&#8217;t look into this <span class="caps">YEARS</span>&nbsp;ago.</p>
 <p>Now, SQLAlchemy has about 10 different paradigms, too many, and so the
@@ -191,7 +191,7 @@ type of database you&#8217;re connecting&nbsp;to:</p>
 <span class="w">        </span><span class="p">)</span>
 </code></pre></div>
 
-<p>Once you have <code>create_engine()</code> customized, you&#8217;re pretty much good to
+<p>Once you&nbsp;have <code>create_engine()</code> customized, you&#8217;re pretty much good to
 go! Right out of the box you can initiate workflows like those I
 showed&nbsp;above:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="n">User</span>(<span class="n">ORMTableBase</span>):
@@ -216,10 +216,9 @@ engine&nbsp;with</p>
 <span class="w">    </span><span class="kr">return</span><span class="w"> </span><span class="n">engine</span>
 </code></pre></div>
 
-<p>Alternatively you can pass the parsed <span class="caps">JSON</span> contents of that file using
-the <code>service_account_info</code> argument instead of
+<p>Alternatively you can pass the parsed <span class="caps">JSON</span> contents of that file using&nbsp;the <code>service_account_info</code> argument instead&nbsp;of
 <code>service_account_file</code>. </p>
-<p>When subclassing <code>ORMTableBase</code>, use the google sheet <span class="caps">URL</span> as the
+<p>When&nbsp;subclassing <code>ORMTableBase</code>, use the google sheet <span class="caps">URL</span> as&nbsp;the
 <code>_table_name</code> value.</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="n">User</span>(<span class="n">ORMTableBase</span>):
     <span class="n">_table_name</span> = <span class="s">&#39;https://docs.google.com/spreadsheets/d/28398sdfsdkfksf8s823/edit&#39;</span>

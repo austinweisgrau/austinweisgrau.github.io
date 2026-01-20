@@ -121,10 +121,8 @@ onto a matched or created&nbsp;contact.</p>
 </ol>
 <p>I assume that all three methods use the same logic to make matches,
 but I&#8217;ve only personally verified the behavior of the <span class="caps">API</span>.</p>
-<p>The EveryAction <span class="caps">API</span> offers two endpoints for finding contact matches.
-- <code>/find</code> will search for a match, and raise various errors on failure
-  to find a match.
-- <code>/findOrCreate</code> will search for a match, and create a new contact if
+<p>The EveryAction <span class="caps">API</span> offers two endpoints for finding contact matches.&nbsp;- <code>/find</code> will search for a match, and raise various errors on failure
+  to find a match.&nbsp;- <code>/findOrCreate</code> will search for a match, and create a new contact if
   no match is found. This endpoint always returns a contact, and
   there&#8217;s no simple way to know if the contact was a match or is a new&nbsp;creation.</p>
 <p><code>/findOrCreate</code> is very convenient for getting a sync up and
@@ -153,7 +151,7 @@ flexible and intelligent matching logic into the&nbsp;process.</p>
 <p>There are several strategies we&#8217;ve developed that seem to make many
 reliable matches that EveryAction fails to make. We are continuing to
 monitor the creation of new contacts to identify other heuristics that
-can be used in a function like <code>try_harder_to_find_van_id()</code>.</p>
+can be used in a function&nbsp;like <code>try_harder_to_find_van_id()</code>.</p>
 <ul>
 <li>If a middle initial or middle name gets input as part of a
    first name, EveryAction will fail to make a match. e.g. &#8220;Barbara
@@ -170,7 +168,7 @@ can be used in a function like <code>try_harder_to_find_van_id()</code>.</p>
    e.g. &#8220;John Green, 750-555-3499a, jgreen @hotmail.co&#8221; will not
    normally match to &#8220;John Green, 750-555-3499,&nbsp;jgreen@hotmail.com&#8221;</li>
 </ul>
-<p>A working example version of a python function built on top of the
+<p>A working example version of a python function built on top of&nbsp;the
  <code>parsons</code> package that implements the logic described above can be
  seen&nbsp;here.</p>
 <p>By cleaning and validating data and making other improvements to
@@ -360,7 +358,7 @@ matches in just a few&nbsp;days. </p>
 <p>High confidence and validated matches are accumulated in a database
 table and staged for processing by a programmatic merge script. This
 script iterates through each match and executes an <span class="caps">API</span> call to the
-EveryAction <span class="caps">API</span> endpoint <code>/people/{vanid}/mergeInto</code>. </p>
+EveryAction <span class="caps">API</span>&nbsp;endpoint <code>/people/{vanid}/mergeInto</code>. </p>
 <p>We run our <span class="caps">SQL</span> models, splink, and the programmatic merge on a weekly
 basis to identify and merge duplicates. Manual validation happens on a
 rolling basis and all validated contacts are aggregated and merged on

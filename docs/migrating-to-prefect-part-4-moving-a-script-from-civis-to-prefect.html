@@ -96,7 +96,7 @@ these <span class="caps">VAN</span> IDs in EveryAction with an origin source&nbs
 <h2>Copy the code, add task and flow decorators,&nbsp;encapsulate</h2>
 <p>Prefect is intended to be simple to implement with existing code. The
 minimum change necessary to make a Prefect flow out of existing code
-is to encapsulate the code within a method that has the
+is to encapsulate the code within a method that has&nbsp;the
 <code>@flow()</code> decorator&nbsp;applied.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">parsons</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">Redshift</span><span class="p">,</span><span class="w"> </span><span class="n">Table</span><span class="p">,</span><span class="w"> </span><span class="n">VAN</span>
@@ -161,7 +161,7 @@ statements, you can define your flow&nbsp;with:</p>
 <span class="w">   </span><span class="p">...</span>
 </code></pre></div>
 
-<p>You can set print logging globally with the Prefect config variable
+<p>You can set print logging globally with the Prefect config&nbsp;variable
 <code>PREFECT_LOGGING_LOG_PRINTS=True</code></p>
 <p>You can also alternatively use the prefect&nbsp;logger.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">flow</span><span class="p">,</span><span class="w"> </span><span class="n">task</span><span class="p">,</span><span class="w"> </span><span class="n">get_run_logger</span>
@@ -178,7 +178,7 @@ statements, you can define your flow&nbsp;with:</p>
 
 <h2>Swap out credential fetching&nbsp;methods</h2>
 <p>Now that we&#8217;re out of Prefect, we&#8217;re not bound to using environment
-variables with those pesky mandatory <code>_PASSWORD</code> suffixes!</p>
+variables with those pesky&nbsp;mandatory <code>_PASSWORD</code> suffixes!</p>
 <p>You can fetch credentials using any implementation that makes sense
 for your team and Prefect stack. You can add environment variables
 to your Docker image, or fetch them from a secret store like <span class="caps">AWS</span>

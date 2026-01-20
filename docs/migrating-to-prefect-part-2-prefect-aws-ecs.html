@@ -121,7 +121,7 @@ tools in <span class="caps">AWS</span>. Some new vocab words for me: &#8220;<spa
 <p>The dataflow-ops template included an <a href="https://github.com/anna-geller/dataflow-ops/blob/main/infrastructure/ecs_cluster_prefect_agent.yml"><span class="caps">AWS</span> CloudFormation Script</a> for
 setting up the <span class="caps">ECS</span> Task and its networking infrastructure. I modified
 that script using <a href="https://gist.github.com/jbesw/f9401b4c52a7446ef1bb71ceea8cc3e8">this template</a> to enable the use of an &#8220;elastic <span class="caps">IP</span>&#8221;
-address in <span class="caps">AWS</span> for our <span class="caps">ECS</span> tasks. I also needed to modify the
+address in <span class="caps">AWS</span> for our <span class="caps">ECS</span> tasks. I also needed to modify&nbsp;the
 <code>prefect_aws.ECSTask</code> block stored in our Prefect Cloud instance to
 always use the correct (private) <span class="caps">VPC</span> subnets (see our <a href="https://github.com/austinweisgrau/prefect-ecs-template/blob/main/infrastructure/ecs_cluster_prefect_agent.yml">full configuration script for CloudFormation here</a>). </p>
 <h2>Deploying&nbsp;Changes</h2>

@@ -68,8 +68,7 @@ with asyncio. It also represents a technical hurdle and maintenance
 burden on smaller teams. For a simple workflow like rate-limited <span class="caps">API</span>
 calls, using asyncio would be significant&nbsp;overkill.</p>
 <p>Multithreading can be complicated to set up, but the python standard
-library includes a high-level <span class="caps">API</span> to simplify the use of
-multithreading: <code>concurrency.futures</code>. I like to use the
+library includes a high-level <span class="caps">API</span> to simplify the use of&nbsp;multithreading: <code>concurrency.futures</code>. I like to use&nbsp;the
 <code>ThreadPoolExecutor</code>, which can be easily configured to limit the
 number of active&nbsp;threads. </p>
 <p>A standard implementation of concurrent rate-limited <span class="caps">API</span> calls in
@@ -107,7 +106,7 @@ can seamlessly work with python scripts written using asyncio. For
 reasons described above, I don&#8217;t want to use&nbsp;asyncio.</p>
 <p>Prefect tasks are the main building block of flows in Prefect, and are
 also the main mechanism for orchestrating concurrency. Prefect tasks
-called with <code>task.submit()</code> or <code>task.map()</code> are sent to a <a href="https://docs.prefect.io/concepts/task-runners/">Task Runner</a>
+called&nbsp;with <code>task.submit()</code> or <code>task.map()</code> are sent to a <a href="https://docs.prefect.io/concepts/task-runners/">Task Runner</a>
 for (potentially) concurrent execution. Sequential, concurrent or parallel
 execution will occur depending on which task runner is used. The
 default task runner is a&nbsp;ConcurrentTaskRunner.</p>
@@ -173,7 +172,7 @@ utilities are incompatible with multithreaded task code. <a href="https://github
 <p>In the end, the approach I settled on with some help from the Prefect
 development team involved using a python <a href="https://superfastpython.com/thread-semaphore/"><code>threading.Semaphore</code></a>. A
 Semaphore is a standard approach for rate limiting multithreaded python
-code, used behind the scenes by high-level APIs like
+code, used behind the scenes by high-level APIs&nbsp;like
 <code>concurrent.futures.ThreadPoolExecutor</code>. Each thread attempts to access
 an open &#8220;slot&#8221; from the Semaphore, and waits until a slot is available
 to run. While it runs, it holds a slot, and releases that slot once it
@@ -200,7 +199,7 @@ repository <a href="https://github.com/austinweisgrau/prefect-ecs-template/blob/
     <span class="n">responses</span> <span class="o">=</span> <span class="n">make_api_call</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">payloads</span><span class="p">)</span>
 </code></pre></div>
 
-<p>Identical to the implementation with <code>ThreadPoolExecutor</code> above,
+<p>Identical to the implementation&nbsp;with <code>ThreadPoolExecutor</code> above,
 executing 30 <span class="caps">API</span> calls that take 1 second each will take about 10
 seconds with this&nbsp;implementation.</p>
 <h2><a id="solution"></a>My concurrency limiting task&nbsp;decorator</h2>
